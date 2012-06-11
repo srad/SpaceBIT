@@ -1,0 +1,46 @@
+# Blender MTL File: 'affe.blend'
+# Material Count: 4
+newmtl Material.001_untitled.001
+Ns 350.980392
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd affe.png
+
+
+newmtl Material.002_untitled.001
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.615166 0.417829 0.160183
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd affe.png
+
+
+newmtl Material.003_untitled.001
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd affe.png
+
+
+newmtl Material_untitled.001
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.069709 0.016709 0.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd affe.png
+
+

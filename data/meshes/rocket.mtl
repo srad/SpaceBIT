@@ -1,0 +1,57 @@
+# Blender MTL File: 'rocket.blend'
+# Material Count: 5
+newmtl Material.002_untitled.007
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd untitled.png
+
+
+newmtl Material.003_untitled.007
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd untitled.png
+
+
+newmtl Material.005_untitled.007
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.358832 0.000000 0.016305
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd untitled.png
+
+
+newmtl Material.006_untitled.007
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd untitled.png
+
+
+newmtl Material.007_untitled.007
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.410930 0.410930 0.410930
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd untitled.png
+
+

@@ -1,0 +1,13 @@
+# Blender MTL File: 'untitled.blend'
+# Material Count: 1
+newmtl Material.003_untitled.003
+Ns 127.450980
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.476089 0.000000
+Ks 1.000000 1.000000 1.000000
+Ni 1.000000
+d 0.091429
+illum 2
+map_Kd ring_normals.png
+
+

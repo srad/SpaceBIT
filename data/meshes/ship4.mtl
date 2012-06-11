@@ -1,0 +1,45 @@
+# Blender MTL File: 'ship4-fixed-holes.blend'
+# Material Count: 4
+newmtl Material.001_untitled.005
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.191468 0.736283 0.087091
+Ks 0.956071 1.000000 0.332134
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd normals.png
+
+
+newmtl Material.002_untitled.005
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.293068 0.640000
+Ks 1.000000 0.676198 0.439365
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd normals.png
+
+
+newmtl Material.004_untitled.005
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.749885 0.800000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd normals.png
+
+
+newmtl None_untitled.005
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd normals.png
+
+
