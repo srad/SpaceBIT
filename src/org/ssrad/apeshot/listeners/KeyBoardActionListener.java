@@ -6,6 +6,7 @@ import org.ssrad.apeshot.nodes.Laser;
 
 
 import com.jme3.input.controls.ActionListener;
+import com.jme3.math.Vector3f;
 
 public class KeyBoardActionListener extends AListener implements ActionListener {
 

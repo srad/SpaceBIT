@@ -9,10 +9,11 @@ import org.ssrad.apeshot.interfaces.IDamageTaker;
 import org.ssrad.apeshot.interfaces.IDestroyable;
 
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.texture.Texture;
 
 public class Ufo extends ANode implements IDestroyable, IDamageMaker, IDamageTaker, ICollidable {
 	
@@ -21,36 +22,39 @@ public class Ufo extends ANode implements IDestroyable, IDamageMaker, IDamageTak
 	public Ufo(Game game) {
 		super(game);
 	}
+	
+	ArrayList<Laser> lasers = new ArrayList<Laser>();
 
 	@Override
 	protected void init() {
-		s = this.assetManager.loadModel("ufo/ufo.obj");	
+		s = this.assetManager.loadModel("ufo4/ufo4.obj");	
 		
-		Material m = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-	    Texture tex_ml = assetManager.loadTexture("ufo/ufo2.png");
-	    m.setTexture("ColorMap", tex_ml);
-		
-//		m = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
-//		m.setTexture("DiffuseMap", assetManager.loadTexture("ufo/ufo2.png"));
-//		m.setTexture("NormalMap", assetManager.loadTexture("ufo/ufo_normals.png"));
+//		Material m = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//	    Texture tex_ml = assetManager.loadTexture("ufo/ufo2.png");
+//	    m.setTexture("ColorMap", tex_ml);
 //		
-//		m.setBoolean("UseMaterialColors", true);
-//		m.setColor("Specular", ColorRGBA.Green);
-//		m.setColor("Diffuse", ColorRGBA.Pink);
-//		m.setFloat("Shininess", 128f); // [1,128]
+		m = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
+		m.setTexture("DiffuseMap", assetManager.loadTexture("ufo4/ufo4.png"));
+		m.setTexture("NormalMap", assetManager.loadTexture("ufo4/ufo4_normals.png"));
 
-		s.rotate(FastMath.PI/10, 0, 0);
+		s.rotate(FastMath.PI / 10, 0, 0);
 		
-		setShadowMode(ShadowMode.CastAndReceive);
+		setShadowMode(ShadowMode.Cast);
 		
-		scale(1.4f);
+		s.scale(2.5f);
 		attachChild(s);
+		
+		PointLight l = new PointLight();
+		l.setRadius(1000f);
+		l.setColor(ColorRGBA.White);
+		l.setPosition(s.getLocalTranslation());
+		addLight(l);
 	}
 
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-		rotate(0, FastMath.PI * tpf * 1.4f, 0);
+		s.rotate(0, FastMath.PI * tpf * 2f, 0);
 	}
 
 	@Override

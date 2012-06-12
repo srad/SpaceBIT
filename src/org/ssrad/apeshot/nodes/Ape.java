@@ -79,6 +79,7 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 		for (Iterator<Banana> it = bananas.iterator(); it.hasNext();) {
 			Banana banana = (Banana) it.next();
 			it.remove();
+			game.addExplosion(new ShockWaveExplosion(game, banana.getLocalTranslation()));
 			game.getRootNode().detachChild(banana);
 		}
 	}
@@ -145,10 +146,12 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 
 	@Override
 	public void onCollision(ANode collidedWith) {
+		// Making damage
 		if (collidedWith instanceof IDamageTaker) {
 			// Send this damage
 			((IDamageTaker) collidedWith).onDamage(getDamage());
 		}
+		// Taking damage
 		if (collidedWith instanceof IDamageMaker) {
 			
 			IDamageMaker damageMaker = (IDamageMaker) collidedWith;
@@ -180,7 +183,7 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 
 	@Override
 	public boolean destroyOnCollision() {
-		return health <= 0f;
+		return health <= 0;
 	}
 
 	@Override

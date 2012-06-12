@@ -92,7 +92,6 @@ public class FireExplosion extends ANode {
 			roundspark.killAllParticles();
 			shockwave.killAllParticles();
 
-			//game.removeExplosion();
 			active = false;
 		}
 	}

@@ -1,5 +1,6 @@
 package org.ssrad.apeshot.nodes;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.ssrad.apeshot.game.Game;
@@ -58,4 +59,10 @@ public abstract class ANode extends Node {
 		return active;
 	}
 	
+	/**
+	 * List of {@link ANode} which we avoid collisions for the spawning process.
+	 * @return
+	 */
+	//public abstract <T> ArrayList<T> getCollisionAvoiders();
+
 }

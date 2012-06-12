@@ -51,7 +51,7 @@ public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestro
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);		
-		rotate(0, FastMath.PI * tpf, 0);
+		s.rotate(0, FastMath.PI * tpf, 0);
 	}
 	
 	public Spatial getSpatial() {

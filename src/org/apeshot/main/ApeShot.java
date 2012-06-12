@@ -25,7 +25,7 @@ public class ApeShot {
 		
 
 		game.setSettings(settings);
-//		game.setShowSettings(false);
+		game.setShowSettings(false);
 
 		game.start();
 	}

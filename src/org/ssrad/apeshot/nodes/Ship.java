@@ -124,15 +124,12 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	}
 	
 	private void addLight() {
-		PointLight l3 = new PointLight();
-		l3.setColor(ColorRGBA.White);
-		l3.setRadius(20f);
-		this.addLight(l3);	
+		PointLight pl = new PointLight();
+		pl.setColor(ColorRGBA.White);
+		pl.setRadius(200f);
+		pl.setPosition(s.getLocalTranslation().clone().addLocal(3, 2, 3));
 		
-		PointLight l1 = (PointLight) l3.clone();
-		l1.setPosition(s.getLocalTranslation().clone().add(0, 0, 5));
-		
-		addLight(l1);
+		s.addLight(pl);
 	}
 	
 	public Spatial getSpatial() {
@@ -229,7 +226,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	public int getDamage() {
 		// Damage on collision, let's say we make
 		// as much damage as we have health yet.
-		return health;
+		return -health;
 	}
 	
 }

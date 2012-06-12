@@ -8,6 +8,7 @@ import org.apeshot.enums.GameLevel;
 import org.ssrad.apeshot.listeners.KeyBoardActionListener;
 import org.ssrad.apeshot.listeners.KeyboardAnalogListener;
 import org.ssrad.apeshot.listeners.MouseListener;
+import org.ssrad.apeshot.nodes.ANode;
 import org.ssrad.apeshot.nodes.Ape;
 import org.ssrad.apeshot.nodes.BullsEye;
 import org.ssrad.apeshot.nodes.FireExplosion;
@@ -31,10 +32,13 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Spatial.CullHint;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
@@ -83,10 +87,7 @@ public class Game extends SimpleApplication {
 	public void simpleInitApp() {	
 		hudScreen = new HudScreen(this);
 		
-		light = new PointLight();
-		light.setColor(ColorRGBA.White);
-		light.setRadius(100f);
-		rootNode.addLight(light);
+
 		
 		ship = new Ship(this);
 		rootNode.attachChild(ship);
@@ -103,9 +104,9 @@ public class Game extends SimpleApplication {
 		pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
 	    pssmRenderer.setDirection(new Vector3f(0,0,20f)); // light direction
 	    viewPort.addProcessor(pssmRenderer);
-		
+
 	    rootNode.setShadowMode(ShadowMode.Off);
-	    
+
 		initKeys();
 		setUpLight();
 
@@ -115,7 +116,7 @@ public class Game extends SimpleApplication {
 	private void setUpLight() {
 		// We add light so we see the scene
 		AmbientLight al = new AmbientLight();
-		al.setColor(ColorRGBA.White.mult(5f));
+		al.setColor(ColorRGBA.White.mult(50f));
 		rootNode.addLight(al);
 	}
 
@@ -173,6 +174,8 @@ public class Game extends SimpleApplication {
 	public void simpleUpdate(float tpf) {
 		super.simpleUpdate(tpf);
 		
+		//System.err.println(ufos.size() + ", " + fireExplosions.size() + ", " + shockWaveExplosions.size() + ", " + torusCoins.size() + ", " + hearts.size());
+		
 		if (titleScreen.isActive()) {
 			titleScreen.update(tpf);
 		}
@@ -183,10 +186,7 @@ public class Game extends SimpleApplication {
 
 		if (!ship.isActive()) {
 			rootNode.detachChild(ship);
-		} else {
-			light.setPosition(new Vector3f(ship.getLocalTranslation().clone().add(0, 4, 0)));
 		}
-
 		hudScreen.update(tpf);
 		ship.update(tpf);
 		
@@ -310,22 +310,10 @@ public class Game extends SimpleApplication {
 		}
 	}
 	
-	private void spawnRandomApes() {
-		if (random.nextInt(10) > 5 && (getTimer().getTimeInSeconds() % 1f <= 0.005f)) {
-			Ape ape = new Ape(this);
-			Vector3f position = ship.getLocalTranslation().clone().add(0f, 0f, 50f);
-			// Random x position + random sign
-			// Minus: left side of the ship, Positive: right side
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
-			ape.setLocalTranslation(position);
-			addApe(ape);
-		}
-	}
-	
 	private void spawnRandomStars() {
 		if ((random.nextInt(10) > 6) && getTimer().getTimeInSeconds()  % 1f <= 0.1f) {
 			Star star = new Star(this);
-			Vector3f position = ship.getLocalTranslation().clone().add(0f, 0f, 50f);
+			Vector3f position = ship.getLocalTranslation().clone().add(0f, 0f, random.nextFloat() * 70f + 40f);
 			// Random x position + random sign
 			// Minus: left side of the ship, Positive: right side
 			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 40f;
@@ -334,16 +322,57 @@ public class Game extends SimpleApplication {
 		}
 	}
 	
-	private void spawnRandomUfos() {
+	private void spawnRandomApes() {
 		if ((random.nextInt(10) > 4) && getTimer().getTimeInSeconds() % 1f <= 0.01f) {
 
-			Ufo ufo = new Ufo(this);
+			Ape newApe = new Ape(this);
 			
 			Vector3f position = ship.getLocalTranslation().clone().add(0f, 0f, 50f);			
 			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+
+			newApe.setLocalTranslation(position);			
+			newApe.setCullHint(CullHint.Always);
 			
-			ufo.setLocalTranslation(position);			
-			addUfo(ufo);
+			// Check for free space
+			for (Iterator<Ape> it = apes.iterator(); it.hasNext();) {
+				Ape currentUfo = (Ape) it.next();
+				
+				// First test if not colliding with another ape
+				rootNode.attachChild(newApe);
+				if (newApe.getWorldBound().intersects(currentUfo.getWorldBound())) {
+					rootNode.detachChild(newApe);
+					return;
+				}
+			}
+			newApe.setCullHint(CullHint.Never);
+			addApe(newApe);
+		}
+	}
+	
+	private void spawnRandomUfos() {
+		if ((random.nextInt(10) > 4) && getTimer().getTimeInSeconds() % 1f <= 0.01f) {
+
+			Ufo newUfo = new Ufo(this);
+			
+			Vector3f position = ship.getLocalTranslation().clone().add(0f, 0f, 50f);			
+			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+
+			newUfo.setLocalTranslation(position);			
+			newUfo.setCullHint(CullHint.Always);
+			
+			// Check for free space
+			for (Iterator<Ufo> it = ufos.iterator(); it.hasNext();) {
+				Ufo currentUfo = (Ufo) it.next();
+				
+				// First test if not colliding with another ufo
+				rootNode.attachChild(newUfo);
+				if (newUfo.getWorldBound().intersects(currentUfo.getWorldBound())) {
+					rootNode.detachChild(newUfo);
+					return;
+				}
+			}
+			newUfo.setCullHint(CullHint.Never);
+			addUfo(newUfo);
 		}
 	}
 	
@@ -436,6 +465,10 @@ public class Game extends SimpleApplication {
 
 	public void setLevel(GameLevel level) {
 		this.level = level;
+	}
+
+	public ArrayList<Ufo> getAllUfos() {
+		return ufos;
 	}
 
 }

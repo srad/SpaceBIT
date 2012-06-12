@@ -12,6 +12,7 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 
@@ -33,7 +34,6 @@ public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroya
 		
 		s = assetManager.loadModel("heart.obj");		
 		s.setMaterial(m);
-		move(0f, 1f, 0);
 		attachChild(s);
 		
 		setShadowMode(ShadowMode.Cast);
@@ -42,7 +42,7 @@ public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroya
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);		
-		rotate(0, FastMath.PI * tpf, 0);
+		s.rotate(0, FastMath.PI * tpf * 2.5f, 0);
 	}
 
 	@SuppressWarnings("serial")

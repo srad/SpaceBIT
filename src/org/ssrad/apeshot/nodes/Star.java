@@ -22,7 +22,7 @@ public class Star extends ANode {
 	protected void init() {
 		r = new Random();
 		
-		Sphere sphere = new Sphere(10, 10, r.nextFloat() + .1f);
+		Sphere sphere = new Sphere(30, 30, r.nextFloat() + .2f);
         s = (Spatial) new Geometry("star", sphere);
         
 		m = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -45,11 +45,6 @@ public class Star extends ANode {
 		default:
 			return ColorRGBA.White;
 		}
-	}
-	
-	@Override
-	public void update(float tpf) {
-		super.update(tpf);
 	}
 
 }

@@ -32,6 +32,11 @@ public class ShockWaveExplosion extends ANode implements Destroyable {
 	public ShockWaveExplosion(Game game) {
 		super(game);
 	}
+	
+	public ShockWaveExplosion(Game game, Vector3f location) {
+		super(game);
+		setLocalTranslation(location);
+	}
 
 	@Override
 	protected void init() {

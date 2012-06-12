@@ -12,6 +12,8 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Cylinder;
 
@@ -35,7 +37,13 @@ public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroya
 		rocket.setMaterial(m);
 
 		attachChild(rocket);
+		
+//		Vector3f cursor = game.getCamera().getWorldCoordinates(new Vector2f(game.getInputManager().getCursorPosition().x, game.getInputManager().getCursorPosition().y), 0);
+//		Vector3f target = game.getShip().getLocalTranslation().clone().mult(cursor);
+//		
+//		lookAt(target, Vector3f.UNIT_Y);
 		setLocalTranslation(game.getShip().getLocalTranslation());
+		
 		move(0, 0, 6f);
 	}
 	
