@@ -60,4 +60,9 @@ public class HeartBar extends ANode {
 		hearts.setText("Lives  " + game.getShip().getLives());
 	}
 
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
+	}
+
 }

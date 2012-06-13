@@ -1,12 +1,12 @@
 package org.ssrad.apeshot.nodes;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.ssrad.apeshot.game.Game;
 import org.ssrad.apeshot.interfaces.ICollidable;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -20,6 +20,7 @@ public abstract class ANode extends Node {
 		
 	Spatial s;
 	Material m;
+	PointLight light;
 	
 	public ANode(Game game) {
 		this.game = game;
@@ -58,6 +59,8 @@ public abstract class ANode extends Node {
 	public boolean isActive() {
 		return active;
 	}
+	
+	public abstract void destroy();
 	
 	/**
 	 * List of {@link ANode} which we avoid collisions for the spawning process.

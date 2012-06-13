@@ -17,7 +17,7 @@ import com.jme3.scene.Spatial;
 
 
 public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestroyable {
-
+	
 	public TorusCoin(Game game) {
 		super(game);
 	}
@@ -39,19 +39,20 @@ public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestro
 		
 		attachChild(s);
 	}
-	
-	private void addLight() {
-		PointLight l = new PointLight();
-		l.setColor(ColorRGBA.Yellow);
-		l.setRadius(40f);
-
-		s.addLight(l);
-	}
 
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);		
 		s.rotate(0, FastMath.PI * tpf, 0);
+		light.setPosition(getLocalTranslation());	
+	}
+	
+	private void addLight() {
+		light = new PointLight();
+		light.setColor(ColorRGBA.Yellow);
+		light.setRadius(20f);
+		
+		game.getRootNode().addLight(light);
 	}
 	
 	public Spatial getSpatial() {
@@ -85,6 +86,7 @@ public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestro
 	@Override
 	public void destroy() {
 		active = false;
+		game.getRootNode().removeLight(light);
 		game.getRootNode().detachChild(this);		
 	}
 

@@ -54,7 +54,7 @@ public class Banana extends ANode implements ICollidable, IDamageMaker, IDestroy
 		rotate(FastMath.PI * tpf, 0, 0);
 
 		float deltaMove = FastMath.exp(speed * timer) / 100;
-		this.move(0, 0, -deltaMove);
+		move(0, 0, -deltaMove);
 	}
 
 	@Override
@@ -109,12 +109,13 @@ public class Banana extends ANode implements ICollidable, IDamageMaker, IDestroy
 	@Override
 	public void destroy() {
 		game.getRootNode().detachChild(this);
-		
+
 		ShockWaveExplosion e = new ShockWaveExplosion(game);
 		e.setLocalTranslation(getLocalTranslation());
 		game.addExplosion(e);
-		
+
 		active = false;
+		System.err.println("b");
 	}
 
 	@Override

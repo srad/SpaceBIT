@@ -79,7 +79,11 @@ public class CoinBar extends ANode {
 		}
 		
 		attachChild(coinsNode);
-		coins.setText("Coins  " + game.getShip().getCoins());
+		coins.setText("Coins " + game.getShip().getCoins());
 	}
 
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
+	}
 }

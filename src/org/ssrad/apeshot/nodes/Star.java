@@ -47,4 +47,9 @@ public class Star extends ANode {
 		}
 	}
 
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
+	}
+
 }

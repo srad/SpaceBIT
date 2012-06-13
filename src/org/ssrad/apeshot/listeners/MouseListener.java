@@ -13,7 +13,6 @@ public class MouseListener extends AListener implements ActionListener {
 	@Override
 	public void onAction(String name, boolean keyPressed, float tpf) {
 		if (name.equals("shoot")) {
-			System.err.println("shoot");
 		}
 	}
 

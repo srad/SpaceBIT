@@ -96,6 +96,11 @@ public class FireExplosion extends ANode {
 		}
 	}
 	
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
+	}
+	
 	/**
 	 * Create a flame particle emitter.
 	 */

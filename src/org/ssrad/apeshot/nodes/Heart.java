@@ -9,18 +9,14 @@ import org.ssrad.apeshot.interfaces.IDamageTaker;
 import org.ssrad.apeshot.interfaces.IDestroyable;
 
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Spatial;
 
 public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroyable {
 	
-	Spatial s;
-	Material m;
-
 	public Heart(Game game) {
 		super(game);
 	}
@@ -35,14 +31,24 @@ public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroya
 		s = assetManager.loadModel("heart.obj");		
 		s.setMaterial(m);
 		attachChild(s);
+		addLight();
 		
 		setShadowMode(ShadowMode.Cast);
 	}
-	
+
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);		
 		s.rotate(0, FastMath.PI * tpf * 2.5f, 0);
+		light.setPosition(getLocalTranslation());
+	}
+	
+	private void addLight() {
+		light = new PointLight();
+		light.setColor(ColorRGBA.Red);
+		light.setRadius(20f);
+
+		game.getRootNode().addLight(light);
 	}
 
 	@SuppressWarnings("serial")
@@ -78,8 +84,9 @@ public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroya
 
 	@Override
 	public void destroy() {
-		game.getRootNode().detachChild(this);		
 		active = false;
+		game.getRootNode().removeLight(light);
+		game.getRootNode().detachChild(this);		
 	}
 
 	@Override

@@ -31,4 +31,9 @@ public class BullsEye extends ANode {
 		super.update(tpf);
 	}
 
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
+	}
+
 }

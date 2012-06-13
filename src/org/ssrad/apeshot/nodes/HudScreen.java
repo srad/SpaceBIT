@@ -6,8 +6,6 @@ import com.jme3.font.BitmapText;
 
 public class HudScreen extends ANode {
 	
-	BitmapText coins;
-
 	HealthBar healthBar;
 	HeartBar heartBar;
 	CoinBar coinBar;
@@ -51,9 +49,14 @@ public class HudScreen extends ANode {
 
 	private void addHealthBar() {
 		healthBar = new HealthBar(game);
-		healthBar.setLocalTranslation(10, 50, 0f);
+		healthBar.setLocalTranslation(15, 50, 0f);
 
 		attachChild(healthBar);
+	}
+
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
 	}
 
 }

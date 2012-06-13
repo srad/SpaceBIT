@@ -56,7 +56,7 @@ public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroya
 		move(0, 0, deltaMove);
 		
 		if (moveDistance > 80f) {
-			destroy();
+			active = false;
 		}
 	}
 

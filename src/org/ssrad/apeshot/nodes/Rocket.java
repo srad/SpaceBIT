@@ -22,5 +22,11 @@ public class Rocket extends ANode {
 		super.update(tpf);
 		s.rotate(0, FastMath.PI/8 * tpf, 0);
 	}
+	
+
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
+	}
 
 }

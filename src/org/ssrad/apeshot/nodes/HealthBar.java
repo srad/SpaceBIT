@@ -71,4 +71,9 @@ public class HealthBar extends ANode {
 		fg.setLocalScale(percent, 1f, 1f);
 	}
 
+	@Override
+	public void destroy() {
+		game.getRootNode().detachChild(this);
+	}
+	
 }

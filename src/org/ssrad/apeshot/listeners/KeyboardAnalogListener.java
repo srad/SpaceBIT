@@ -19,24 +19,24 @@ public class KeyboardAnalogListener extends AListener implements AnalogListener 
 		Vector3f shipLocation = game.getShip().clone().getLocalTranslation();
 		Vector3f newLocation = null;
 		
-		float moveOffset = 0.1f;
+		float moveOffset = 20f;
 		
 		if (name.equals("left")) {
-			newLocation = shipLocation.add(moveOffset, 0, 0);
-			game.getShip().left();
+			newLocation = shipLocation.add(moveOffset * tpf, 0, 0);
+			game.getShip().left(tpf);
 		}
 		
 		if (name.equals("right")) {
-			newLocation = shipLocation.add(-moveOffset, 0, 0);
-			game.getShip().right();
+			newLocation = shipLocation.add(-moveOffset * tpf, 0, 0);
+			game.getShip().right(tpf);
 		}
 		
 		if (name.equals("up")) {
-			newLocation = shipLocation.add(0, 0, moveOffset);
+			newLocation = shipLocation.add(0, 0, moveOffset * tpf);
 		}
 		
 		if (name.equals("down")) {
-			newLocation = shipLocation.add(0, 0, -moveOffset);
+			newLocation = shipLocation.add(0, 0, -moveOffset * tpf);
 		}
 				
 		//System.err.println(game.getCamera().getLeft() + ", " + game.getShip().getLocalTranslation());

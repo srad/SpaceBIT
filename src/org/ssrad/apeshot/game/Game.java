@@ -8,13 +8,13 @@ import org.apeshot.enums.GameLevel;
 import org.ssrad.apeshot.listeners.KeyBoardActionListener;
 import org.ssrad.apeshot.listeners.KeyboardAnalogListener;
 import org.ssrad.apeshot.listeners.MouseListener;
-import org.ssrad.apeshot.nodes.ANode;
 import org.ssrad.apeshot.nodes.Ape;
 import org.ssrad.apeshot.nodes.BullsEye;
 import org.ssrad.apeshot.nodes.FireExplosion;
 import org.ssrad.apeshot.nodes.Heart;
 import org.ssrad.apeshot.nodes.HudScreen;
 import org.ssrad.apeshot.nodes.Laser;
+import org.ssrad.apeshot.nodes.Planet;
 import org.ssrad.apeshot.nodes.Ship;
 import org.ssrad.apeshot.nodes.ShockWaveExplosion;
 import org.ssrad.apeshot.nodes.Star;
@@ -29,10 +29,8 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
@@ -74,6 +72,7 @@ public class Game extends SimpleApplication {
 	private ArrayList<FireExplosion> fireExplosions = new ArrayList<FireExplosion>();
 	
 	private ArrayList<Star> stars = new ArrayList<Star>();
+	private ArrayList<Planet> planets = new ArrayList<Planet>();
 
 	private GameLevel level;
 	
@@ -86,9 +85,7 @@ public class Game extends SimpleApplication {
 	@Override
 	public void simpleInitApp() {	
 		hudScreen = new HudScreen(this);
-		
 
-		
 		ship = new Ship(this);
 		rootNode.attachChild(ship);
 		
@@ -116,8 +113,13 @@ public class Game extends SimpleApplication {
 	private void setUpLight() {
 		// We add light so we see the scene
 		AmbientLight al = new AmbientLight();
-		al.setColor(ColorRGBA.White.mult(50f));
+		al.setColor(ColorRGBA.White.mult(500f));
 		rootNode.addLight(al);
+		
+		light = new PointLight();
+		light.setRadius(100f);
+		light.setColor(ColorRGBA.White);
+		rootNode.addLight(light);
 	}
 
 	/**
@@ -174,8 +176,10 @@ public class Game extends SimpleApplication {
 	public void simpleUpdate(float tpf) {
 		super.simpleUpdate(tpf);
 		
-		//System.err.println(ufos.size() + ", " + fireExplosions.size() + ", " + shockWaveExplosions.size() + ", " + torusCoins.size() + ", " + hearts.size());
-		
+		if (DEBUG) {
+			System.err.println(ufos.size() + ", " + fireExplosions.size() + ", " + shockWaveExplosions.size() + ", " + torusCoins.size() + ", " + hearts.size());
+		}
+				
 		if (titleScreen.isActive()) {
 			titleScreen.update(tpf);
 		}
@@ -185,10 +189,12 @@ public class Game extends SimpleApplication {
 		}
 
 		if (!ship.isActive()) {
-			rootNode.detachChild(ship);
+			ship.destroy();
 		}
-		hudScreen.update(tpf);
 		ship.update(tpf);
+		light.setPosition(ship.getLocalTranslation().clone().add(0,0,5));
+
+		hudScreen.update(tpf);
 		
 //		Vector2f cursor = inputManager.getCursorPosition().clone();
 //		Vector3f currentPos = ship.getWorldTranslation().clone();
@@ -198,11 +204,12 @@ public class Game extends SimpleApplication {
 				
 		// Update lasers
 		for (Iterator<Laser> it = lasers.iterator(); it.hasNext();) {
-			Laser p = (Laser) it.next();
-			if (!p.isActive()) {
+			Laser laser = (Laser) it.next();
+			if (!laser.isActive()) {
 				it.remove();
+				laser.destroy();
 			} else {
-				p.update(tpf);
+				laser.update(tpf);
 			}
 		}
 
@@ -211,6 +218,7 @@ public class Game extends SimpleApplication {
 			TorusCoin t = (TorusCoin) it.next();
 			if (!t.isActive()) {
 				it.remove();
+				t.destroy();
 				ship.incCoins();
 			} else {
 				t.update(tpf);
@@ -228,7 +236,7 @@ public class Game extends SimpleApplication {
 			}
 		}
 		
-		// Update ape enemies
+		// Update ufo enemies
 		for (Iterator<Ufo> it = ufos.iterator(); it.hasNext();) {
 			Ufo ufo = (Ufo) it.next();
 			if (!ufo.isActive()) {
@@ -239,31 +247,46 @@ public class Game extends SimpleApplication {
 			}
 		}
 		
-		// Update ape enemies
+		// Update hearts
 		for (Iterator<Heart> it = hearts.iterator(); it.hasNext();) {
 			Heart heart = (Heart) it.next();
 			if (!heart.isActive()) {
 				it.remove();
+				heart.destroy();
 			} else {
 				heart.update(tpf);
 			}
 		}
 		
-		// Update ape enemies
+		// Update stars
 		for (Iterator<Star> it = stars.iterator(); it.hasNext();) {
 			Star star = (Star) it.next();
 			if (!star.isActive()) {
 				it.remove();
+				star.destroy();
 			} else {
 				star.update(tpf);
 			}
 		}
+		
+		// TODO:
+		// Update planets
+//		for (Iterator<Planet> it = planets.iterator(); it.hasNext();) {
+//			Planet planet = (Planet) it.next();
+//			if (!planet.isActive()) {
+//				it.remove();
+//				planet.destroy();
+//			} else {
+//				planet.update(tpf);
+//			}
+//		}
 
 		// Update explosions
 		for (Iterator<ShockWaveExplosion> it = shockWaveExplosions.iterator(); it.hasNext();) {
 			ShockWaveExplosion explosion = (ShockWaveExplosion) it.next();
 			if (!explosion.isActive()) {
 				it.remove();
+				explosion.destroy();
 			} else {
 				explosion.update(tpf);
 			}
@@ -274,19 +297,17 @@ public class Game extends SimpleApplication {
 			FireExplosion explosion = (FireExplosion) it.next();
 			if (!explosion.isActive()) {
 				it.remove();
+				explosion.destroy();
 			} else {
 				explosion.update(tpf);
 			}
 		}
 		
-		//System.err.println(lasers.size() + ", " + torusCoins.size() + ", " + apes.size() + ", " + hearts.size() + ", " + shockWaveExplosions.size() + ", " + fireExplosions.size());
-		if (DEBUG) {
-			System.err.println(ship.getCoins() + ", " + ship.getHealth());
-		}
-		
 		spawnRandomTorusCoins();
 		spawnRandomHeart();
 		spawnRandomStars();
+		// TODO:
+		//spawnRandomPlanet();
 		
 		if (level == GameLevel.LEVEL_ONE) {
 			spawnRandomApes();
@@ -309,6 +330,18 @@ public class Game extends SimpleApplication {
 			addTorusCoin(t);
 		}
 	}
+
+	private void spawnRandomPlanet() {
+		if (random.nextInt(10) > 7 && (getTimer().getTimeInSeconds() % 1f <= 0.01f)) {
+			Planet planet = new Planet(this);
+			Vector3f position = ship.getLocalTranslation().clone().add(0f, 0f, 50f);
+			// Random x position + random sign
+			// Minus: left side of the ship, Positive: right side
+			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			planet.setLocalTranslation(position);
+			addPlanet(planet);
+		}
+	}	
 	
 	private void spawnRandomStars() {
 		if ((random.nextInt(10) > 6) && getTimer().getTimeInSeconds()  % 1f <= 0.1f) {
@@ -436,6 +469,11 @@ public class Game extends SimpleApplication {
 		rootNode.attachChild(star);
 	}
 	
+	public void addPlanet(Planet planet) {
+		planets.add(planet);
+		rootNode.attachChild(planet);
+	}
+	
 	public AppSettings getSettings() {
 		return settings;
 	}
@@ -473,6 +511,14 @@ public class Game extends SimpleApplication {
 
 	public ArrayList<Ufo> getAllUfos() {
 		return ufos;
+	}
+	
+	public Vector3f getCursorLocation() {
+		Vector2f mousePositionScreen = inputManager.getCursorPosition();
+		Vector3f mousePosition3d = cam.getWorldCoordinates(mousePositionScreen, 0).clone();
+		mousePosition3d.y = 0f;
+		
+		return ship.getLocalTranslation();
 	}
 
 }

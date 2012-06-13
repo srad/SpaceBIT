@@ -56,18 +56,19 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 
 		timer += tpf;
 		
-		// Update bananas
-		for (Iterator<Banana> it = bananas.iterator(); it.hasNext();) {
-			Banana banana = (Banana) it.next();
-			
-			if (!banana.isActive()) {
-				it.remove();
-				banana.destroy();
-			} else {
-				banana.update(tpf);
-			}
-		}
-		spawnRandomBananas();
+		// TODO: object not cleaned up, no clue why
+//		// Update bananas
+//		for (Iterator<Banana> it = bananas.iterator(); it.hasNext();) {
+//			Banana banana = (Banana) it.next();
+//			
+//			if (!banana.isActive()) {
+//				it.remove();
+//				banana.destroy();
+//			} else {
+//				banana.update(tpf);
+//			}
+//		}
+//		spawnRandomBananas();
 	}
 	
 	/**
@@ -127,6 +128,10 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 		bananas.add(banana);
 		game.getRootNode().attachChild(banana);
 		banana.setLocalTranslation(getLocalTranslation());
+	}
+	
+	public ArrayList<Banana> getAllBananas() {
+		return bananas;
 	}
 
 	@Override

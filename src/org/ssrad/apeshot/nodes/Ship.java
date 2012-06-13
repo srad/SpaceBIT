@@ -24,6 +24,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	
 	public static final int MAX_HEALTH = 100;
 	public static final int MAX_COINS = 100;
+	private static final int MAX_LIVES = 5;
 	
 	private int coins = 0;
 	private int health = 100;
@@ -41,7 +42,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		addJets();
 		addLight();
 		
-		setShadowMode(ShadowMode.Off);
+		setShadowMode(ShadowMode.Cast);
 	}
 
 	@Override
@@ -131,9 +132,9 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		PointLight pl = new PointLight();
 		pl.setColor(ColorRGBA.White);
 		pl.setRadius(200f);
-		pl.setPosition(s.getLocalTranslation().clone().addLocal(3, 2, 3));
+		pl.setPosition(s.getLocalTranslation().clone().addLocal(-5, 5, -3));
 		
-		s.addLight(pl);
+		addLight(pl);
 	}
 	
 	public Spatial getSpatial() {
@@ -146,11 +147,14 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	
 	public void incLives() {
 		lives += 1;
+		if (lives > MAX_LIVES) {
+			lives = MAX_LIVES;
+		}
 	}
 	
 	public void incCoins(int amount) {
 		this.coins += amount;
-		if (coins >= MAX_COINS) {
+		if (coins >= MAX_COINS - 1) {
 			incLives();
 			// In case it overflows
 			coins = coins - MAX_COINS;
@@ -165,7 +169,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		return health;
 	}
 
-	public void left() {
+	public void left(float tpf) {
 		if (!left) {
 			float rotFactor = 1f;
 			if (right) {
@@ -177,7 +181,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		}
 	}
 
-	public void right() {
+	public void right(float tpf) {
 		if (!right) {
 			float rotFactor = 1f;
 			if (left) {
@@ -227,6 +231,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	@Override
 	public void destroy() {
 		active = false;
+		game.getRootNode().detachChild(this);
 		
 		FireExplosion e = new FireExplosion(game);
 		e.setLocalTranslation(getLocalTranslation());

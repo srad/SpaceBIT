@@ -27,34 +27,30 @@ public class Ufo extends ANode implements IDestroyable, IDamageMaker, IDamageTak
 
 	@Override
 	protected void init() {
-		s = this.assetManager.loadModel("ufo4/ufo4.obj");	
-		
-//		Material m = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//	    Texture tex_ml = assetManager.loadTexture("ufo/ufo2.png");
-//	    m.setTexture("ColorMap", tex_ml);
-//		
-		m = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
-		m.setTexture("DiffuseMap", assetManager.loadTexture("ufo4/ufo4.png"));
-		m.setTexture("NormalMap", assetManager.loadTexture("ufo4/ufo4_normals.png"));
+		s = this.assetManager.loadModel("ufo2/ufo2.obj");	
 
-		s.rotate(FastMath.PI / 10, 0, 0);
+		m = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
+		m.setTexture("DiffuseMap", assetManager.loadTexture("ufo2/ufo2.png"));
+		m.setTexture("NormalMap", assetManager.loadTexture("ufo2/ufo2_normals.png"));
+
+		s.rotate(FastMath.PI, 0, 0);
 		
 		setShadowMode(ShadowMode.Cast);
 		
-		s.scale(2.5f);
+		s.scale(2.6f);
 		attachChild(s);
 		
-		PointLight l = new PointLight();
-		l.setRadius(1000f);
-		l.setColor(ColorRGBA.White);
-		l.setPosition(s.getLocalTranslation());
-		addLight(l);
+		light = new PointLight();
+		light.setRadius(30f);
+		light.setColor(ColorRGBA.Gray);
+		game.getRootNode().addLight(light);
 	}
 
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-		s.rotate(0, FastMath.PI * tpf * 2f, 0);
+		s.rotate(0, FastMath.PI * tpf * 2.5f, 0);
+		light.setPosition(getLocalTranslation().clone().add(0, 0, 0));
 	}
 
 	@Override
@@ -64,9 +60,11 @@ public class Ufo extends ANode implements IDestroyable, IDamageMaker, IDamageTak
 
 	@Override
 	public void destroy() {
-		active = false;				
-		game.addFireExplosion(new FireExplosion(game, getLocalTranslation()));
+		active = false;	
+		
+		game.getRootNode().removeLight(light);
 		game.getRootNode().detachChild(this);
+		game.addFireExplosion(new FireExplosion(game, getLocalTranslation()));		
 	}
 
 	@Override
