@@ -79,13 +79,13 @@ public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestro
 
 	@Override
 	public int getCoins() {
-		return 1;
+		return 0;
 	}
 
 	@Override
 	public void destroy() {
-		game.getRootNode().detachChild(this);		
 		active = false;
+		game.getRootNode().detachChild(this);		
 	}
 
 	@Override

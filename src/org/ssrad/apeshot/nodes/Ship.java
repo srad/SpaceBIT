@@ -22,8 +22,12 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	ParticleEmitter leftJet;
 	ParticleEmitter rightJet;
 	
-	private int points = 0;
+	public static final int MAX_HEALTH = 100;
+	public static final int MAX_COINS = 100;
+	
+	private int coins = 0;
 	private int health = 100;
+	private int lives = 2;
 	
 	boolean left = false, right = false;
 
@@ -136,16 +140,25 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		return s;
 	}	
 	
-	public void incPoints() {
-		points += 1;
+	public void incCoins() {
+		coins += 1;
 	}
 	
-	public void incPoints(int points) {
-		this.points += points;
+	public void incLives() {
+		lives += 1;
 	}
 	
-	public int getPoints() {
-		return points;
+	public void incCoins(int amount) {
+		this.coins += amount;
+		if (coins >= MAX_COINS) {
+			incLives();
+			// In case it overflows
+			coins = coins - MAX_COINS;
+		}
+	}
+	
+	public int getCoins() {
+		return coins;
 	}
 	
 	public int getHealth() {
@@ -196,11 +209,14 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	@Override
 	public void onDamage(int damage) {
 		health += damage;
+		if (health > MAX_HEALTH) {
+			health = MAX_HEALTH;
+		}
 	}
 
 	@Override
 	public void takeCoins(int amount) {
-		points += amount;
+		incCoins(amount);
 	}
 
 	@Override
@@ -227,6 +243,10 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		// Damage on collision, let's say we make
 		// as much damage as we have health yet.
 		return -health;
+	}
+
+	public int getLives() {
+		return lives;
 	}
 	
 }

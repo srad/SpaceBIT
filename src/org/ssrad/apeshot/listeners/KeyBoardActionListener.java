@@ -32,7 +32,11 @@ public class KeyBoardActionListener extends AListener implements ActionListener 
 		}
 		
 		if (name.equals("pause") && !keyPressed) {
-			game.pause();
+			if (game.isRunning()) {
+				game.pause();
+			} else {
+				game.run();
+			}
 		}
 	
 	}

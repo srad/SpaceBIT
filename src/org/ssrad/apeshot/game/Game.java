@@ -211,7 +211,7 @@ public class Game extends SimpleApplication {
 			TorusCoin t = (TorusCoin) it.next();
 			if (!t.isActive()) {
 				it.remove();
-				ship.incPoints();
+				ship.incCoins();
 			} else {
 				t.update(tpf);
 			}
@@ -281,7 +281,7 @@ public class Game extends SimpleApplication {
 		
 		//System.err.println(lasers.size() + ", " + torusCoins.size() + ", " + apes.size() + ", " + hearts.size() + ", " + shockWaveExplosions.size() + ", " + fireExplosions.size());
 		if (DEBUG) {
-			System.err.println(ship.getPoints() + ", " + ship.getHealth());
+			System.err.println(ship.getCoins() + ", " + ship.getHealth());
 		}
 		
 		spawnRandomTorusCoins();
@@ -449,6 +449,10 @@ public class Game extends SimpleApplication {
 	public void pause() {
 		isRunning = false;
 		titleScreen.show();
+	}
+	
+	public boolean isRunning() {
+		return isRunning;
 	}
 	
 	public TitleScreen getTitleScreen() {

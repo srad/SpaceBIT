@@ -2,8 +2,10 @@ package org.ssrad.apeshot.nodes;
 
 import org.ssrad.apeshot.game.Game;
 
+import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
@@ -14,6 +16,7 @@ public class HealthBar extends ANode {
 	
 	private Geometry fg;
 	private Geometry bg;
+	private BitmapText health;
 
 	public HealthBar(Game game) {
 		super(game);
@@ -41,12 +44,22 @@ public class HealthBar extends ANode {
 		fg = new Geometry("healthbar_fg", quad.clone());
 		fg.setMaterial(m_fg);
 		fg.move(0, 0.1f, 0);
-		
+				
 		attachChild(fg);
+		
+		// TEXT		
+		health = new BitmapText(game.getGuiFont(), false);          
+		health.setSize(game.getGuiFont().getCharSet().getRenderedSize() * 1.5f);      // font size
+		health.setColor(ColorRGBA.Black);                             // font color
+		health.setLocalTranslation(0, -5, 0.1f); // position
+
+		attachChild(health);
 	}
 	
 	@Override
 	public void update(float tpf) {
+		health.setText("Health  " + game.getShip().getHealth());
+		setPercentage((float) game.getShip().getHealth() / 100);
 	}
 	
 	public void setPercentage (float percent) {
@@ -56,11 +69,6 @@ public class HealthBar extends ANode {
 			percent = 0f;
 		}
 		fg.setLocalScale(percent, 1f, 1f);
-	}
-	
-	@Override
-	public void destroy() {
-		game.getRootNode().detachChild(this);
 	}
 
 }
