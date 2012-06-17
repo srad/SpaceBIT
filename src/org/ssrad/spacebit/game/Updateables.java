@@ -1,3 +1,4 @@
+
 package org.ssrad.spacebit.game;
 
 import java.util.ArrayList;
@@ -151,7 +152,7 @@ public class Updateables {
 			}
 		}
 		
-		// TODO:
+		// TODO: planets
 		// Update planets
 //		if (planets.size() > 0) {
 //		for (Iterator<Planet> it = planets.iterator(); it.hasNext();) {

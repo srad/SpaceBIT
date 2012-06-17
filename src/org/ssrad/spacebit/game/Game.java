@@ -105,7 +105,6 @@ public class Game extends SimpleApplication {
      * Attaches a skybox to the root node.
      */
     public void addSkyBox() {
-    	System.err.println("add sky");
         Texture west, east, north, south, up, down;   
         
         if (level == GameLevel.LEVEL_ONE) {
