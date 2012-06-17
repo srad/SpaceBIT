@@ -1,0 +1,123 @@
+# Blender MTL File: 'rocket3.blend'
+# Material Count: 11
+newmtl Material.001_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.002_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.445201 0.737911 0.514918
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.003_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.326368 0.326368 0.326368
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.004_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.223901 0.789814 0.800000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.005_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.041875 0.181799
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.006_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 0.703484 0.396308
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.007_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.016302 0.016302 0.016302
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.008_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.276511 0.090847
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.009_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.020165 0.150219 0.800000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material.010_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.854965 0.854965 0.854965
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
+newmtl Material_untitled.027
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.238398 0.181164 0.407240
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd rocket3_normals.png
+
+
