@@ -6,6 +6,7 @@ import org.ssrad.spacebit.interfaces.ICoinTaker;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreTaker;
 
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -17,17 +18,15 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 
-public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyable, IDamageMaker {
+public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyable, IDamageMaker, IScoreTaker {
 
 	ParticleEmitter centerJet;
 	ParticleEmitter leftJet;
 	ParticleEmitter rightJet;
 	
-	private final float DELTA_MOVE = .004f;
-	
 	Boolean enableLeftJet = false, enableRightJet = false;
 	
-	private float moveFactor = 12f;
+	private float moveFactor = 10f;
 	
 	public static final int MAX_HEALTH = 100;
 	public static final int MAX_COINS = 100;
@@ -44,6 +43,8 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	GameAudio heartSound;
 	GameAudio coinSound;
 	GameAudio explosionSound;
+	
+	private int score = 0;
 
 	boolean left = false, right = false;
 
@@ -165,7 +166,11 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	}
 	
 	public void incLives() {
-		lives += 1;
+		incLives(1);
+	}
+	
+	public void incLives(int count) {
+		lives += count;
 		if (lives > MAX_LIVES) {
 			lives = MAX_LIVES;
 		}
@@ -197,7 +202,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 			left = true;
 			rotate(0, 0, -FastMath.PI/12 * rotFactor);
 		}
-		moveShip(getLocalTranslation().clone().add(moveFactor * DELTA_MOVE, 0, 0));
+		moveShip(getLocalTranslation().clone().add(moveFactor * tpf, 0, 0));
 	}
 
 	public void right(float tpf) {
@@ -210,15 +215,15 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 			right = true;
 			rotate(0, 0, FastMath.PI/12 * rotFactor);
 		}
-		moveShip(getLocalTranslation().clone().add(-moveFactor * DELTA_MOVE, 0, 0));
+		moveShip(getLocalTranslation().clone().add(-moveFactor * tpf, 0, 0));
 	}
 	
 	public void up(float tpf) {
-		moveShip(getLocalTranslation().clone().add(0, 0, moveFactor * DELTA_MOVE));
+		moveShip(getLocalTranslation().clone().add(0, 0, moveFactor * tpf));
 	}
 	
 	public void down(float tpf) {
-		moveShip(getLocalTranslation().clone().add(0, 0, -moveFactor * DELTA_MOVE));
+		moveShip(getLocalTranslation().clone().add(0, 0, -moveFactor * tpf));
 	}
 	
 	/**
@@ -278,6 +283,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	@Override
 	public void destroy() {
 		super.destroy();
+		incLives(-1);
 		game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
 	}
 
@@ -331,4 +337,13 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		return lives <= 0;
 	}
 	
+	@Override
+	public void onScore(int score) {
+		this.score += score;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
 }

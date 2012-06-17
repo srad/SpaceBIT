@@ -373,8 +373,12 @@ public class Updateables {
 		rootNode.attachChild(planet);
 	}	
 
-	public ArrayList<Ufo> getAllUfos() {
+	public ArrayList<Ufo> getUfos() {
 		return ufos;
+	}
+	
+	public ArrayList<Ape> getApes() {
+		return apes;
 	}
 
 }

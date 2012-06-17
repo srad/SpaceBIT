@@ -9,6 +9,7 @@ public class HudScreen extends ANode {
 	HealthBar healthBar;
 	HeartBar heartBar;
 	CoinBar coinBar;
+	ScoreBar scoreBar;
 	
 	Picture background;
 
@@ -24,6 +25,7 @@ public class HudScreen extends ANode {
 		addCoinStatus();
 		addHealthBar();
 		addHeartBar();
+		addScoreBar();
 		
 		// TODO: Background looks meh
 //		background = new Picture("HUD Picture");
@@ -41,6 +43,14 @@ public class HudScreen extends ANode {
 		healthBar.update(tpf);
 		coinBar.update(tpf);
 		heartBar.update(tpf);
+		scoreBar.update(tpf);
+	}
+	
+	private void addScoreBar() {
+		scoreBar = new ScoreBar(game);
+		scoreBar.setLocalTranslation(750, 50, 0f);
+		
+		attachChild(scoreBar);
 	}
 	
 	private void addHeartBar() {

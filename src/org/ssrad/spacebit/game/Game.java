@@ -32,7 +32,7 @@ import com.jme3.util.SkyFactory;
 
 public class Game extends SimpleApplication {
 	
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 
 	public final float SCROLL_SPEED = 6f;
 	

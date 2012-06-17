@@ -9,6 +9,7 @@ import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreGiver;
 
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.material.Material;
@@ -30,16 +31,16 @@ public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroya
 	@Override
 	protected void init() {	
 		Cylinder c = new Cylinder(8, 10, .15f, 4f);
-		Geometry rocket = new Geometry("c", c);
+		spatial = new Geometry("c", c);
 		
 		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		material.setColor("Color", ColorRGBA.Red);
 		material.setColor("GlowColor", ColorRGBA.Pink);
 		
 
-		rocket.setMaterial(material);
+		spatial.setMaterial(material);
 
-		attachChild(rocket);
+		attachChild(spatial);
 		
 //		Vector3f cursor = game.getCamera().getWorldCoordinates(new Vector2f(game.getInputManager().getCursorPosition().x, game.getInputManager().getCursorPosition().y), 0);
 //		Vector3f target = game.getShip().getLocalTranslation().clone().mult(cursor);
@@ -57,6 +58,8 @@ public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroya
 	
 	@Override
 	public void update(float tpf) {
+		super.update(tpf);
+		 
 		float deltaMove = FastMath.exp(tpf) / 2.5f;
 		
 		moveDistance += deltaMove;
@@ -70,15 +73,27 @@ public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroya
 
 	@Override
 	public ArrayList<ANode> collidesWith() {
-		return null;
+		ArrayList<ANode> nodes = new ArrayList<ANode>();
+		
+		nodes.addAll(game.getUpdateables().getApes());
+		nodes.addAll(game.getUpdateables().getUfos());
+		
+		return nodes;
 	}
 
 	@Override
 	public void onCollision(ANode collidedWith) {
 		if (collidedWith instanceof IDamageTaker) {
 			((IDamageTaker) collidedWith).onDamage(getDamage());
-						
+
 			active = !destroyOnCollision();
+			
+			if (!active && (collidedWith instanceof IDestroyable)) {
+				IDestroyable destroyable = (IDestroyable) collidedWith;
+				if (destroyable.destroyOnCollision() && (destroyable instanceof IScoreGiver)) {
+					game.getShip().onScore(((IScoreGiver) destroyable).getScore());
+				}
+			}
 		}
 	}
 

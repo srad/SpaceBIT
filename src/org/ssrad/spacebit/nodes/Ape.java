@@ -9,6 +9,8 @@ import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreGiver;
+import org.ssrad.spacebit.interfaces.IScoreTaker;
 
 import com.jme3.animation.LoopMode;
 import com.jme3.bounding.BoundingVolume;
@@ -23,11 +25,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.texture.Texture;
 
-public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTaker, IDestroyable {
+public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver {
+	
+	private static int DEFAULT_HEALTH = 15;
 	
 	Random random;
 	float timer = 0f;
-	private int health = 15;
+	private int health = DEFAULT_HEALTH;
 	
 	ParticleEmitter fire;
 	
@@ -164,8 +168,7 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 	@Override
 	public ArrayList<ANode> collidesWith() {
 		ArrayList<ANode> nodes = new ArrayList<ANode>();
-		
-		nodes.addAll(game.getUpdateables().getLasers());
+
 		nodes.add(game.getShip());
 		
 		return nodes;
@@ -183,12 +186,7 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 			
 			IDamageMaker damageMaker = (IDamageMaker) collidedWith;
 			onDamage(damageMaker.getDamage());
-			
-			// Check for ape's self destruction
-			if (destroyOnCollision()) {
-				destroy();
-			}
-			
+									
 			if (damageMaker instanceof IDestroyable) {
 				IDestroyable destroyable = (IDestroyable) damageMaker;
 				if (destroyable.destroyOnCollision()) {
@@ -206,6 +204,10 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 	@Override
 	public void onDamage(int damage) {
 		health += damage;
+		
+		if (destroyOnCollision()) {
+			destroy();
+		}
 	}
 
 	@Override
@@ -224,6 +226,11 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 	@Override
 	public boolean isDetroyable() {
 		return true;
+	}
+
+	@Override
+	public int getScore() {
+		return DEFAULT_HEALTH;
 	}
 
 }
