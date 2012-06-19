@@ -5,19 +5,13 @@ import java.util.logging.Level;
 import org.ssrad.spacebit.audio.GameMusic;
 import org.ssrad.spacebit.enums.GameLevel;
 import org.ssrad.spacebit.helpers.GameLogger;
-import org.ssrad.spacebit.listeners.KeyBoardActionListener;
-import org.ssrad.spacebit.listeners.KeyboardAnalogListener;
-import org.ssrad.spacebit.listeners.MouseListener;
-import org.ssrad.spacebit.nodes.HudScreen;
 import org.ssrad.spacebit.nodes.Ship;
-import org.ssrad.spacebit.nodes.TitleScreen;
+import org.ssrad.spacebit.nodes.screens.GameOverScreen;
+import org.ssrad.spacebit.nodes.screens.HudScreen;
+import org.ssrad.spacebit.nodes.screens.TitleScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapFont;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -32,66 +26,97 @@ import com.jme3.util.SkyFactory;
 
 public class Game extends SimpleApplication {
 	
-	public final static boolean DEBUG = false;
+	public final static boolean DEBUG = true;
 
 	public final float SCROLL_SPEED = 6f;
 	
-	private HudScreen hudScreen;	
 
 	private Ship ship;
 	
 	FilterPostProcessor fpp;
 	
-	TitleScreen titleScreen;
+	private HudScreen hudScreen;	
+	private TitleScreen titleScreen;
+	private GameOverScreen gameOverScreen;
 	
 	private GameLevel level;
 	
-	Boolean isRunning = false;
+	/** Game paused/unpaused */
+	boolean running = false;
 	
-	private PssmShadowRenderer pssmRenderer;
+	/** Game initilized */
+	private boolean launched = false;
 	
-
+	// SHADOW
+	private PssmShadowRenderer shadowRenderer;
+	private boolean shadow = true;
+	
+	// BLOOM
+	private BloomFilter bloomFilter;
+	private boolean bloom = true;	
 	private GameMusic gameMusic;
 	
 	Updateables updateables;
+	
+	private float timer;
 
 	@Override
-	public void simpleInitApp() {		
-		hudScreen = new HudScreen(this);
+	public void simpleInitApp() {	
+		running = false;
+		titleScreen = new TitleScreen(this);
+		return;
+	}
+	
+	public void init() {
+		timer = 0f;
+		running = true;
+		launched = true;
 
+		// Screens
+		hudScreen = new HudScreen(this);
+		gameOverScreen = new GameOverScreen(this);
+		
+		// SHIP
 		ship = new Ship(this);
 		rootNode.attachChild(ship);
 		GameLogger.Log(Level.INFO, "Added ship");
-		
+
+	    // CAMERA		
 		getCamera().setLocation(ship.clone().getLocalTranslation().add(0, 60f, -25f));
 		getCamera().lookAt(ship.getLocalTranslation(), Vector3f.UNIT_Y);
         flyCam.setEnabled(false);
         GameLogger.Log(Level.INFO, "Adjusted camera");
-                
+                	    
+        addEffects();
+        
+	    // AUDIO
+	    gameMusic = new GameMusic(this);
+	    gameMusic.setVolume(0.1f);
+	    GameLogger.Log(Level.INFO, "Added and playing music");
+
+		setUpLight();
+
+		updateables = new Updateables(this);
+	}
+	
+	private void addEffects() {
+        // FILTERS
 		fpp = new FilterPostProcessor(assetManager);
-		BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
-		fpp.addFilter(bloom);
+		
+		bloomFilter = new BloomFilter(BloomFilter.GlowMode.Objects);
+		fpp.addFilter(bloomFilter);
 		viewPort.addProcessor(fpp);
 		GameLogger.Log(Level.INFO, "Added bloom filter");
-		
-		pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
-	    pssmRenderer.setDirection(new Vector3f(0,0,20f)); // light direction
-	    viewPort.addProcessor(pssmRenderer);
+			
+		// SHADOW
+		rootNode.setShadowMode(ShadowMode.Off);
+		shadowRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
+	    shadowRenderer.setDirection(new Vector3f(0,0,20f)); // light direction
+	    viewPort.addProcessor(shadowRenderer);
 	    GameLogger.Log(Level.INFO, "Added sharow renderer");
 
 	    rootNode.setShadowMode(ShadowMode.Off);
-	    
-	    // AUDIO
-	    gameMusic = new GameMusic(this);
-	    gameMusic.setVolume(0.4f);
-	    gameMusic.play();
-	    GameLogger.Log(Level.INFO, "Added and playing music");
 
-		initKeys();
-		setUpLight();
-
-		titleScreen = new TitleScreen(this);
-		updateables = new Updateables(this);
 	}
 
 	private void setUpLight() {
@@ -126,63 +151,42 @@ public class Game extends SimpleApplication {
         rootNode.attachChild(SkyFactory.createSky(assetManager, west, east, north, south, up, down));
     }
 
-	private void initKeys() {
-		// Remove ALL bindings
-		inputManager.clearMappings();
-		
-		// You can map one or several inputs to one named action
-		inputManager.addMapping("pause", new KeyTrigger(KeyInput.KEY_P));
-		inputManager.addMapping("shoot", new KeyTrigger(KeyInput.KEY_SPACE));
-				
-		inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_W));
-		inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_S));
-		inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_A));
-		inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_D));
-
-		inputManager.addMapping("level_1", new KeyTrigger(KeyInput.KEY_1));
-		inputManager.addMapping("level_2", new KeyTrigger(KeyInput.KEY_2));
-
-		inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_ESCAPE));
-		
-		inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-
-		inputManager.addListener(new KeyBoardActionListener(this), new String[] { "pause", "shoot", "level_1", "level_2", "quit" });
-		inputManager.addListener(new KeyboardAnalogListener(this), new String[] { "up", "down", "left", "right" });
-		inputManager.addListener(new MouseListener(this), new String[] { "shoot" });
-	}
-
 	@Override
 	public void simpleUpdate(float tpf) {
 		super.simpleUpdate(tpf);
-				
-//		if (titleScreen.isActive()) {
-//			titleScreen.update(tpf);
-//		}
-	
-		if (!isRunning) {
-			return;
-		}
-
-		// SHIP
-		// Only thing we update here
-		if (!ship.isActive()) {
-			ship.destroy();
-			if (ship.isDead()) {
-				// TODO: goto game over screen
+		
+		if (isRunning()) {
+			// SHIP: Only thing we update here
+			if (!ship.isActive()) {
+				if (timer == 0f) {
+					timer += tpf;
+				} else if (timer < 2f) {
+					timer += tpf;
+				}
+				else if (timer > 2f) {
+					if (ship.isDead()) {
+						gameOverScreen.show();
+						running = false;
+					} else {
+						updateables.destroyObstacles();
+						ship.reInit();
+						// TODO: Reposition ship on respawn
+						//ship.setLocalTranslation(cam.getLocation().clone().add(0, 0, 5f));
+						timer = 0f;
+					}
+				}
 			} else {
-				ship = new Ship(this);
+				ship.update(tpf);
+				hudScreen.update(tpf);
 			}
+			// SHIP END	
+	
+			// Update all entities
+			updateables.update(tpf);
+	
+			// Move cam		
+			cam.setLocation(cam.getLocation().add(0, 0, SCROLL_SPEED * tpf));	
 		}
-		ship.update(tpf);
-		// SHIP
-		
-		hudScreen.update(tpf);
-
-		// Update all entities
-		updateables.update(tpf);
-		
-		// Move cam		
-		cam.setLocation(cam.getLocation().add(0, 0, SCROLL_SPEED * tpf));		
 	}
 
 	public Ship getShip() {
@@ -194,18 +198,20 @@ public class Game extends SimpleApplication {
 	}
 	
 	public void run() {
-		titleScreen.hide();
-		isRunning = true;
+		running = true;
 		addSkyBox();
+		getGameMusic().play();
+		hudScreen.show();
 	}
 
 	public void pause() {
-		isRunning = false;
+		running = false;
+		getGameMusic().stop();
 		titleScreen.show();
 	}
 	
 	public boolean isRunning() {
-		return isRunning;
+		return running;
 	}
 	
 	public TitleScreen getTitleScreen() {
@@ -238,6 +244,36 @@ public class Game extends SimpleApplication {
 	
 	public GameMusic getGameMusic() {
 		return gameMusic;
+	}
+
+	public void toggleBloom() {
+		if (bloom) {
+			fpp.removeFilter(bloomFilter);
+		} else {
+			fpp.addFilter(bloomFilter);
+		}
+		bloom = !bloom;
+	}
+	
+	public void toggleShadow() {
+		if (shadow) {
+			viewPort.removeProcessor(shadowRenderer);
+		} else {
+			viewPort.addProcessor(shadowRenderer);
+		}
+		shadow = !shadow;
+	}
+
+	public boolean isLaunched() {
+		return launched;
+	}
+
+	public void setLaunched(boolean launched) {
+		this.launched = launched;
+	}
+	
+	public HudScreen getHudScreen() {
+		return hudScreen;
 	}
 
 }

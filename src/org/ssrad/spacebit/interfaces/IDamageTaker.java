@@ -1,5 +1,7 @@
 package org.ssrad.spacebit.interfaces;
 
+import org.ssrad.spacebit.nodes.AbstractNode;
+
 /**
  * Anything that can make damage must implement this interface.
  * 

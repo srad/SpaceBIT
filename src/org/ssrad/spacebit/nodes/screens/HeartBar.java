@@ -1,6 +1,9 @@
-package org.ssrad.spacebit.nodes;
+package org.ssrad.spacebit.nodes.screens;
+
+import java.util.ArrayList;
 
 import org.ssrad.spacebit.game.Game;
+import org.ssrad.spacebit.nodes.AbstractNode;
 
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
@@ -10,7 +13,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 
-public class HeartBar extends ANode {
+public class HeartBar extends AbstractNode {
 	
 	private final int COIN_WIDTH = 40;
 	private final int COIN_HEIGHT = 35;
@@ -58,6 +61,15 @@ public class HeartBar extends ANode {
 
 		attachChild(heartsNode);
 		hearts.setText("Lives  " + game.getShip().getLives());
+	}
+	
+	@Override
+	public void onCollision(AbstractNode collidedWith) {
+	}
+
+	@Override
+	public ArrayList<AbstractNode> collidesWith() {
+		return null;
 	}
 
 }

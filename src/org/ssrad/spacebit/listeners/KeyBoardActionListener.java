@@ -20,6 +20,14 @@ public class KeyBoardActionListener extends AListener implements ActionListener 
 			game.getUpdateables().addLaser(new Laser(game));	
 		}
 		
+		if (name.equals("bloom") && !keyPressed) {
+			game.toggleBloom();
+		}
+		
+		if (name.equals("shadow") && !keyPressed) {
+			game.toggleShadow();
+		}
+		
 		if ( (name.equals("level_1") || name.equals("level_2")) && !keyPressed ) {
 			game.getTitleScreen().hide();
 			game.setLevel(name.equals("level_1") ? GameLevel.LEVEL_ONE : GameLevel.LEVEL_TWO);

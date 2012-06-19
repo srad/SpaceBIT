@@ -1,5 +1,7 @@
 package org.ssrad.spacebit.nodes;
 
+import java.util.ArrayList;
+
 import org.ssrad.spacebit.audio.GameAudio;
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.ICoinTaker;
@@ -18,12 +20,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 
-public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyable, IDamageMaker, IScoreTaker {
+public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDestroyable, IDamageMaker, IScoreTaker {
 
 	ParticleEmitter centerJet;
 	ParticleEmitter leftJet;
 	ParticleEmitter rightJet;
-	
+
 	Boolean enableLeftJet = false, enableRightJet = false;
 	
 	private float moveFactor = 10f;
@@ -31,7 +33,7 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	public static final int MAX_HEALTH = 100;
 	public static final int MAX_COINS = 100;
 	private static final int MAX_LIVES = 5;
-	
+
 	private static final float SHIP_MARGIN = 5f;
 	
 	private int coins = 0;
@@ -65,6 +67,21 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	public void update(float tpf) {	
 		move(0, 0, scrollSpeed * tpf);
 		light.setPosition(getLocalTranslation().clone().add(0,0,5));
+		
+//		// TODO: move in black hole direction
+//		ArrayList<BlackHole> blackHoles = game.getUpdateables().getBlackHoles();
+//		
+//		for (Iterator<BlackHole> iterator = blackHoles.iterator(); iterator.hasNext();) {
+//			BlackHole blackHole = (BlackHole) iterator.next();
+//			
+//			if (spatial.getLocalTranslation().clone().subtract(blackHole.getLocalTranslation().clone()).length() < 20f) {
+//				// Move towards black holes
+//				Vector3f v = new Vector3f(blackHole.getWorldTranslation().multLocal(Vector3f.UNIT_Z));		
+//		        Vector3f blackHoleVec = v.mult(tpf/10f);
+//		        
+//				move(blackHoleVec);
+//			}
+//		}
 	}
 
 	private void addShip() {
@@ -261,17 +278,20 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 	@Override
 	public void onDamage(int damage) {
 		health += damage;
-		
+
 		if (damage < 0) {
 			unwarp();
 		}		
 		if (health > MAX_HEALTH) {
 			health = MAX_HEALTH;
 		}
+		if (health < 0) {
+			health = 0;
+		}
 	}
 
 	@Override
-	public void takeCoins(int amount) {
+	public void onCoins(int amount) {
 		incCoins(amount);
 	}
 
@@ -285,11 +305,6 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		super.destroy();
 		incLives(-1);
 		game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
-	}
-
-	@Override
-	public boolean isDetroyable() {
-		return true;
 	}
 
 	@Override
@@ -310,10 +325,10 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		if (!enableLeftJet) {
 			enableLeftJet = true;
 			leftJet.setCullHint(CullHint.Never);
-			moveFactor *= 1.3;
+			moveFactor *= 1.3f;
 		} else if (!enableRightJet) {
 			enableRightJet = true;
-			moveFactor *= 1.3;
+			moveFactor *= 1.3f;
 			rightJet.setCullHint(CullHint.Never);
 		}
 	}
@@ -325,10 +340,10 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 		if (enableLeftJet) {
 			enableLeftJet = false;
 			leftJet.setCullHint(CullHint.Always);
-			moveFactor *= 0.7;
+			moveFactor *= 0.7f;
 		} else if (enableRightJet) {
 			enableRightJet = false;
-			moveFactor *= 0.7;
+			moveFactor *= 0.7f;
 			rightJet.setCullHint(CullHint.Always);
 		}
 	}
@@ -344,6 +359,23 @@ public class Ship extends ANode implements IDamageTaker, ICoinTaker, IDestroyabl
 
 	public int getScore() {
 		return score;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> collidesWith() {
+		// Don't recursively depend on each others
+		// collisions check, the other entities check
+		// for collisions with this ship
+		return null;
+	}
+
+	public void reInit() {
+		active = true;
+		health = MAX_HEALTH;
+		moveFactor = 10f;
+		
+		game.getRootNode().attachChild(this);
+		addLight();
 	}
 
 }

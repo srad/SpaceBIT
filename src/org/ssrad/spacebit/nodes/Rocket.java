@@ -1,10 +1,12 @@
 package org.ssrad.spacebit.nodes;
 
+import java.util.ArrayList;
+
 import org.ssrad.spacebit.game.Game;
 
 import com.jme3.math.FastMath;
 
-public class Rocket extends ANode {
+public class Rocket extends AbstractNode {
 
 	public Rocket(Game game) {
 		super(game);
@@ -21,6 +23,12 @@ public class Rocket extends ANode {
 	public void update(float tpf) {
 		super.update(tpf);
 		spatial.rotate(0, FastMath.PI/8 * tpf, 0);
+	}
+
+	@Override
+	public ArrayList<AbstractNode> collidesWith() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

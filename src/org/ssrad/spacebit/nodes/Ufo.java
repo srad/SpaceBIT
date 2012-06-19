@@ -3,19 +3,17 @@ package org.ssrad.spacebit.nodes;
 import java.util.ArrayList;
 
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Ufo extends ANode implements IDestroyable, IDamageMaker, IDamageTaker, ICollidable {
+public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker {
 	
 	private int health = 20;
 
@@ -65,57 +63,23 @@ public class Ufo extends ANode implements IDestroyable, IDamageMaker, IDamageTak
 	}
 
 	@Override
-	public boolean isDetroyable() {
-		return true;
-	}
-
-	@Override
 	public void onDamage(int damage) {
 		health += damage;
 	}
 
 	@Override
 	public int getDamage() {
-		return -10;
+		return -30;
 	}
 
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		ArrayList<ANode> n = new ArrayList<ANode>();
+	public ArrayList<AbstractNode> collidesWith() {
+		ArrayList<AbstractNode> n = new ArrayList<AbstractNode>();
+		
 		n.addAll(game.getUpdateables().getLasers());
 		n.add(game.getShip());
 		
 		return n;
-	}
-
-	@Override
-	public void onCollision(ANode collidedWith) {
-		if (collidedWith instanceof IDamageTaker) {
-			// Send this damage
-			((IDamageTaker) collidedWith).onDamage(getDamage());
-		}
-		if (collidedWith instanceof IDamageMaker) {
-			
-			IDamageMaker damageMaker = (IDamageMaker) collidedWith;
-			onDamage(damageMaker.getDamage());
-			
-			// Check for ape's self destruction
-			if (destroyOnCollision()) {
-				destroy();
-			}
-			
-			if (damageMaker instanceof IDestroyable) {
-				IDestroyable destroyable = (IDestroyable) damageMaker;
-				if (destroyable.destroyOnCollision()) {
-					destroyable.destroy();
-				}
-			}
-		}
-	}
-
-	@Override
-	public BoundingVolume getBounds() {
-		return spatial.getWorldBound();
 	}
 
 }

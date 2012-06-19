@@ -15,7 +15,7 @@ import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 
-public class Banana extends ANode implements ICollidable, IDamageMaker, IDestroyable, IDamageTaker {
+public class Banana extends AbstractNode implements ICollidable, IDamageMaker, IDestroyable, IDamageTaker {
 	
 	float speed = 1f;
 	int health = 1;
@@ -52,38 +52,12 @@ public class Banana extends ANode implements ICollidable, IDamageMaker, IDestroy
 	}
 
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		ArrayList<ANode> nodes = new ArrayList<ANode>();
+	public ArrayList<AbstractNode> collidesWith() {
+		ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
 		nodes.addAll(game.getUpdateables().getLasers());
 		nodes.add(game.getShip());
 		
 		return nodes;
-	}
-
-	@Override
-	public void onCollision(ANode collidedWith) {
-		// Destroy itself
-		if (collidedWith instanceof IDamageTaker) {
-			((IDamageTaker) collidedWith).onDamage(getDamage());
-			
-			if (destroyOnCollision()) {
-				destroy();
-			}
-		}
-		if (collidedWith instanceof IDestroyable) {
-			IDestroyable destroyable = (IDestroyable) collidedWith;
-			
-			if (destroyable.destroyOnCollision()) {
-				destroyable.destroy();
-			}
-		}
-		if (collidedWith instanceof IDamageMaker) {
-			IDamageMaker damager = (IDamageMaker) collidedWith;
-			onDamage(damager.getDamage());
-			if (destroyOnCollision()) {
-				destroy();
-			}
-		}
 	}
 
 	@Override
@@ -104,11 +78,6 @@ public class Banana extends ANode implements ICollidable, IDamageMaker, IDestroy
 	public void destroy() {
 		super.destroy();
 		game.getUpdateables().addExplosion(new ShockWaveExplosion(game, getLocalTranslation()));
-	}
-
-	@Override
-	public boolean isDetroyable() {
-		return true;
 	}
 
 	@Override

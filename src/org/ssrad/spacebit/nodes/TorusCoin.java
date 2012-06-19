@@ -3,20 +3,20 @@ package org.ssrad.spacebit.nodes;
 import java.util.ArrayList;
 
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.interfaces.ICoinMaker;
-import org.ssrad.spacebit.interfaces.ICoinTaker;
-import org.ssrad.spacebit.interfaces.ICollidable;
+import org.ssrad.spacebit.interfaces.ICoinGiver;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreGiver;
 
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
+import com.jme3.texture.Texture;
 
 
-public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestroyable {
+public class TorusCoin extends AbstractNode implements ICoinGiver, IDestroyable, IScoreGiver {
 	
 	public TorusCoin(Game game) {
 		super(game);
@@ -24,16 +24,21 @@ public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestro
 	
 	@Override
 	protected void init() {
-		spatial = assetManager.loadModel("ring.obj");		
+		spatial = assetManager.loadModel("toruscoin/ring.obj");		
 
 		// Simple glow material looks nicer than texture
-		Material m = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		
-		m.setColor("Color", ColorRGBA.Red);
-		m.setColor("GlowColor", ColorRGBA.Green);
+		material.setColor("Color", ColorRGBA.Yellow);
+		material.setColor("GlowColor", ColorRGBA.Green);
 		
-		spatial.setMaterial(m);
+		Texture tex_ml = assetManager.loadTexture("toruscoin/ring.png");
+		material.setTexture("ColorMap", tex_ml);
+		
+		spatial.setMaterial(material);
 		scale(1.4f);
+		
+		setShadowMode(ShadowMode.Cast);
 
 		addLight();
 		
@@ -61,21 +66,8 @@ public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestro
 
 	@SuppressWarnings("serial")
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		return new ArrayList<ANode>() {{ add(game.getShip()); }};
-	}
-
-	@Override
-	public void onCollision(ANode collidedWith) {
-		if (collidedWith instanceof ICoinTaker) {
-			((ICoinTaker) collidedWith).takeCoins(getCoins());
-			destroy();
-		}
-	}
-
-	@Override
-	public BoundingVolume getBounds() {
-		return spatial.getWorldBound();
+	public ArrayList<AbstractNode> collidesWith() {
+		return new ArrayList<AbstractNode>() {{ add(game.getShip()); }};
 	}
 
 	@Override
@@ -84,13 +76,18 @@ public class TorusCoin extends ANode implements ICollidable, ICoinMaker, IDestro
 	}
 
 	@Override
-	public boolean isDetroyable() {
+	public boolean destroyOnCollision() {
 		return true;
 	}
 
 	@Override
-	public boolean destroyOnCollision() {
-		return true;
+	public int getScore() {
+		return 1;
+	}
+
+	@Override
+	public boolean isScoreCounted() {
+		return active == false;
 	}
 
 }

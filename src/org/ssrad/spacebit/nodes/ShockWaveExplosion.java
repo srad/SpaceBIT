@@ -1,5 +1,7 @@
 package org.ssrad.spacebit.nodes;
 
+import java.util.ArrayList;
+
 import javax.security.auth.Destroyable;
 
 import org.ssrad.spacebit.game.Game;
@@ -21,7 +23,7 @@ import com.jme3.math.Vector3f;
  * >Source</a>.
  * </p>
  */
-public class ShockWaveExplosion extends ANode implements Destroyable {
+public class ShockWaveExplosion extends AbstractNode implements Destroyable {
 
 	private float time = 0;
 	private int state = 0;
@@ -282,6 +284,15 @@ public class ShockWaveExplosion extends ANode implements Destroyable {
 	@Override
 	public boolean isDestroyed() {
 		return false;
+	}
+	
+	@Override
+	public void onCollision(AbstractNode collidedWith) {
+	}
+
+	@Override
+	public ArrayList<AbstractNode> collidesWith() {
+		return null;
 	}
 
 }

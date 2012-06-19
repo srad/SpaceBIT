@@ -5,15 +5,12 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
-import org.ssrad.spacebit.interfaces.IScoreTaker;
 
 import com.jme3.animation.LoopMode;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.cinematic.MotionPath;
 import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.effect.ParticleEmitter;
@@ -25,10 +22,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.texture.Texture;
 
-public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver {
+public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver {
 	
 	private static int DEFAULT_HEALTH = 15;
-	
+
 	Random random;
 	float timer = 0f;
 	private int health = DEFAULT_HEALTH;
@@ -162,12 +159,12 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 
 	@Override
 	public int getDamage() {
-		return -10;
+		return -20;
 	}
 
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		ArrayList<ANode> nodes = new ArrayList<ANode>();
+	public ArrayList<AbstractNode> collidesWith() {
+		ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
 
 		nodes.add(game.getShip());
 		
@@ -175,39 +172,8 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 	}
 
 	@Override
-	public void onCollision(ANode collidedWith) {
-		// Making damage
-		if (collidedWith instanceof IDamageTaker) {
-			// Send this damage
-			((IDamageTaker) collidedWith).onDamage(getDamage());
-		}
-		// Taking damage
-		if (collidedWith instanceof IDamageMaker) {
-			
-			IDamageMaker damageMaker = (IDamageMaker) collidedWith;
-			onDamage(damageMaker.getDamage());
-									
-			if (damageMaker instanceof IDestroyable) {
-				IDestroyable destroyable = (IDestroyable) damageMaker;
-				if (destroyable.destroyOnCollision()) {
-					destroyable.destroy();
-				}
-			}
-		}
-	}
-
-	@Override
-	public BoundingVolume getBounds() {
-		return spatial.getWorldBound();
-	}
-
-	@Override
 	public void onDamage(int damage) {
 		health += damage;
-		
-		if (destroyOnCollision()) {
-			destroy();
-		}
 	}
 
 	@Override
@@ -217,20 +183,19 @@ public class Ape extends ANode implements ICollidable, IDamageMaker, IDamageTake
 
 	@Override
 	public void destroy() {
-		super.destroy();
-		
+		super.destroy();		
 		game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
-		removeAllBananas();
-	}
-
-	@Override
-	public boolean isDetroyable() {
-		return true;
+		//removeAllBananas();
 	}
 
 	@Override
 	public int getScore() {
-		return DEFAULT_HEALTH;
+		return 25;
+	}
+
+	@Override
+	public boolean isScoreCounted() {
+		return active == false;
 	}
 
 }

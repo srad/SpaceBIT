@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.interfaces.ICollidable;
+import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreGiver;
 
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class WarpCore extends ANode implements ICollidable {
+public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver {
 
 	Random random;
 		
@@ -53,19 +53,29 @@ public class WarpCore extends ANode implements ICollidable {
 
 	@SuppressWarnings("serial")
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		return new ArrayList<ANode>() {{ add(game.getShip()); }};
+	public ArrayList<AbstractNode> collidesWith() {
+		return new ArrayList<AbstractNode>() {{ add(game.getShip()); }};
 	}
 
 	@Override
-	public void onCollision(ANode collidedWith) {
+	public void onCollision(AbstractNode collidedWith) {
 		active = false;
 		game.getShip().warp();
 	}
 
 	@Override
-	public BoundingVolume getBounds() {
-		return spatial.getWorldBound();
+	public boolean destroyOnCollision() {
+		return true;
+	}
+
+	@Override
+	public int getScore() {
+		return 5;
+	}
+
+	@Override
+	public boolean isScoreCounted() {
+		return active == false;
 	}
 
 }

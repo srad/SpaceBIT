@@ -13,7 +13,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 
-public class Asteroid extends ANode implements ICollidable, IDamageMaker, IDestroyable {
+public class Asteroid extends AbstractNode implements ICollidable, IDamageMaker, IDestroyable {
 	
 	public Asteroid(Game game) {
 		super(game);
@@ -53,12 +53,12 @@ public class Asteroid extends ANode implements ICollidable, IDamageMaker, IDestr
 
 	@SuppressWarnings("serial")
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		return new ArrayList<ANode>() {{ add(game.getShip()); }};
+	public ArrayList<AbstractNode> collidesWith() {
+		return new ArrayList<AbstractNode>() {{ add(game.getShip()); }};
 	}
 
 	@Override
-	public void onCollision(ANode collidedWith) {
+	public void onCollision(AbstractNode collidedWith) {
 		if (collidedWith instanceof IDamageTaker) {
 			((IDamageTaker) collidedWith).onDamage(getDamage());
 		}
@@ -77,11 +77,6 @@ public class Asteroid extends ANode implements ICollidable, IDamageMaker, IDestr
 	@Override
 	public void destroy() {
 		// TODO: Asteroid
-	}
-
-	@Override
-	public boolean isDetroyable() {
-		return true;
 	}
 
 }

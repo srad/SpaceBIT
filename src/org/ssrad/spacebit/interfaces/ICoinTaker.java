@@ -8,6 +8,6 @@ package org.ssrad.spacebit.interfaces;
  */
 public interface ICoinTaker {
 	
-	public void takeCoins(int amount);
+	public void onCoins(int amount);
 
 }

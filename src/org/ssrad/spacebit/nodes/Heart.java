@@ -3,19 +3,17 @@ package org.ssrad.spacebit.nodes;
 import java.util.ArrayList;
 
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
-import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreGiver;
 
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroyable {
+public class Heart extends AbstractNode implements IDamageMaker, IDestroyable, IScoreGiver {
 	
 	public Heart(Game game) {
 		super(game);
@@ -53,23 +51,8 @@ public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroya
 
 	@SuppressWarnings("serial")
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		return new ArrayList<ANode>() {{ add(game.getShip()); }};
-	}
-
-	@Override
-	public void onCollision(ANode collidedWith) {
-		if (collidedWith instanceof IDamageTaker) {
-			// Notice that heats make "positive" damage
-			((IDamageTaker) collidedWith).onDamage(getDamage());
-			
-			destroy();
-		}
-	}
-
-	@Override
-	public BoundingVolume getBounds() {
-		return spatial.getWorldBound();
+	public ArrayList<AbstractNode> collidesWith() {
+		return new ArrayList<AbstractNode>() {{ add(game.getShip()); }};
 	}
 
 	@Override
@@ -83,8 +66,13 @@ public class Heart extends ANode implements ICollidable, IDamageMaker, IDestroya
 	}
 
 	@Override
-	public boolean isDetroyable() {
-		return true;
+	public int getScore() {
+		return 5;
+	}
+
+	@Override
+	public boolean isScoreCounted() {
+		return active == false;
 	}
 
 }

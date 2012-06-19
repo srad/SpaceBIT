@@ -6,7 +6,7 @@ package org.ssrad.spacebit.interfaces;
  * @author Saman Sedighi Rad
  *
  */
-public interface ICoinMaker {
+public interface ICoinGiver {
 	
 	public int getCoins();
 

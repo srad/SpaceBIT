@@ -1,6 +1,9 @@
-package org.ssrad.spacebit.nodes;
+package org.ssrad.spacebit.nodes.screens;
+
+import java.util.ArrayList;
 
 import org.ssrad.spacebit.game.Game;
+import org.ssrad.spacebit.nodes.AbstractNode;
 
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
@@ -9,7 +12,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
 
-public class HealthBar extends ANode {
+public class HealthBar extends AbstractNode {
 	
 	private final int HEALTHBAR_WIDTH = 275;
 	private final int HEALTHBAR_HEIGHT = 30;
@@ -69,6 +72,15 @@ public class HealthBar extends ANode {
 			percent = 0f;
 		}
 		fg.setLocalScale(percent, 1f, 1f);
+	}
+	
+	@Override
+	public void onCollision(AbstractNode collidedWith) {
+	}
+
+	@Override
+	public ArrayList<AbstractNode> collidesWith() {
+		return null;
 	}
 	
 }

@@ -5,20 +5,17 @@ import java.util.ArrayList;
 import org.ssrad.spacebit.audio.GameAudio;
 import org.ssrad.spacebit.audio.enums.SoundType;
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
-import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
-import org.ssrad.spacebit.interfaces.IScoreGiver;
+import org.ssrad.spacebit.interfaces.IScoreTaker;
 
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Cylinder;
 
-public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroyable {
+public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, IScoreTaker {
 
 	float moveDistance = 0f;
 	
@@ -72,35 +69,30 @@ public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroya
 	}
 
 	@Override
-	public ArrayList<ANode> collidesWith() {
-		ArrayList<ANode> nodes = new ArrayList<ANode>();
+	public ArrayList<AbstractNode> collidesWith() {
+		ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
 		
 		nodes.addAll(game.getUpdateables().getApes());
 		nodes.addAll(game.getUpdateables().getUfos());
 		
 		return nodes;
 	}
-
-	@Override
-	public void onCollision(ANode collidedWith) {
-		if (collidedWith instanceof IDamageTaker) {
-			((IDamageTaker) collidedWith).onDamage(getDamage());
-
-			active = !destroyOnCollision();
-			
-			if (!active && (collidedWith instanceof IDestroyable)) {
-				IDestroyable destroyable = (IDestroyable) collidedWith;
-				if (destroyable.destroyOnCollision() && (destroyable instanceof IScoreGiver)) {
-					game.getShip().onScore(((IScoreGiver) destroyable).getScore());
-				}
-			}
-		}
-	}
-
-	@Override
-	public BoundingVolume getBounds() {
-		return spatial.getWorldBound();
-	}
+//
+//	@Override
+//	public void onCollision(AbstractNode collidedWith) {
+//		if (collidedWith instanceof IDamageTaker) {
+//			((IDamageTaker) collidedWith).onDamage(getDamage());
+//
+//			active = !destroyOnCollision();
+//
+//			if (!active && (collidedWith instanceof IDestroyable)) {
+//				IDestroyable destroyable = (IDestroyable) collidedWith;
+//				if (destroyable.destroyOnCollision() && (destroyable instanceof IScoreGiver)) {
+//					game.getShip().onScore(((IScoreGiver) destroyable).getScore());
+//				}
+//			}
+//		}
+//	}
 
 	@Override
 	public int getDamage() {
@@ -113,8 +105,10 @@ public class Laser extends ANode implements ICollidable, IDamageMaker, IDestroya
 	}
 
 	@Override
-	public boolean isDetroyable() {
-		return true;
+	public void onScore(int score) {
+		// The laser represent the ship
+		// so it sends its score to the ship
+		game.getShip().onScore(score);
 	}
 
 }

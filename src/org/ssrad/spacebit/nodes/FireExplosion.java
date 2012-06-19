@@ -1,5 +1,7 @@
 package org.ssrad.spacebit.nodes;
 
+import java.util.ArrayList;
+
 import org.ssrad.spacebit.game.Game;
 
 import com.jme3.effect.ParticleEmitter;
@@ -10,7 +12,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
-public class FireExplosion extends ANode {
+public class FireExplosion extends AbstractNode {
 	
 	/** Timer for the explosion animation. */
 	private float time = 0;
@@ -290,6 +292,15 @@ public class FireExplosion extends ANode {
 		shockwave.setMaterial(mat);
 
 		this.attachChild(shockwave);
+	}
+	
+	@Override
+	public void onCollision(AbstractNode collidedWith) {
+	}
+
+	@Override
+	public ArrayList<AbstractNode> collidesWith() {
+		return null;
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.ssrad.spacebit.enums.GameLevel;
 import org.ssrad.spacebit.nodes.Ape;
+import org.ssrad.spacebit.nodes.BlackHole;
 import org.ssrad.spacebit.nodes.FireExplosion;
 import org.ssrad.spacebit.nodes.Heart;
 import org.ssrad.spacebit.nodes.Laser;
@@ -41,6 +42,8 @@ public class Updateables {
 	private ArrayList<Laser> lasers = new ArrayList<Laser>();
 	private ArrayList<TorusCoin> torusCoins = new ArrayList<TorusCoin>();
 	private ArrayList<Heart> hearts = new ArrayList<Heart>();
+	
+	private ArrayList<BlackHole> blackHoles = new ArrayList<BlackHole>();
 	
 	private ArrayList<ShockWaveExplosion> shockWaveExplosions = new ArrayList<ShockWaveExplosion>();
 	private ArrayList<FireExplosion> fireExplosions = new ArrayList<FireExplosion>();
@@ -192,10 +195,25 @@ public class Updateables {
 			}
 		}
 		
+		// Update black holes
+		if (blackHoles.size() > 0) {
+			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
+				BlackHole blackHole = (BlackHole) it.next();
+				if (!blackHole.isActive()) {
+					it.remove();
+					blackHole.destroy();
+				} else {
+					blackHole.update(tpf);
+				}
+			}
+		}
+		
 		spawnRandomTorusCoins();
 		spawnRandomHeart();
 		spawnRandomStars();
 		spawnRandomWarpCore();
+		spawnRandomBlackHoles();
+		
 		// TODO:
 		//spawnRandomPlanet();
 		
@@ -278,6 +296,33 @@ public class Updateables {
 			}
 			newApe.setCullHint(CullHint.Never);
 			addApe(newApe);
+		}
+	}
+	
+	private void spawnRandomBlackHoles() {
+		if ((random.nextInt(10) > 4) && game.getTimer().getTimeInSeconds() % 1f <= 0.01f) {
+			
+			BlackHole blackHole = new BlackHole(game);;
+			
+			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);			
+			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			
+			blackHole.setLocalTranslation(position);			
+			blackHole.setCullHint(CullHint.Always);
+			
+			// Check for free space
+			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
+				BlackHole currentBlackHole = (BlackHole) it.next();
+				
+				// First test if not colliding with another ape
+				rootNode.attachChild(blackHole);
+				if (blackHole.getWorldBound().intersects(currentBlackHole.getWorldBound())) {
+					rootNode.detachChild(blackHole);
+					return;
+				}
+			}
+			blackHole.setCullHint(CullHint.Never);
+			addBlackHole(blackHole);
 		}
 	}
 	
@@ -378,8 +423,50 @@ public class Updateables {
 		return ufos;
 	}
 	
+	public void addBlackHole(BlackHole blackHole) {
+		blackHoles.add(blackHole);
+		rootNode.attachChild(blackHole);
+	}
+	
 	public ArrayList<Ape> getApes() {
 		return apes;
+	}
+
+	public ArrayList<Star> getStars() {
+		return stars;
+	}
+	
+	public ArrayList<BlackHole> getBlackHoles() {
+		return blackHoles;
+	}
+
+	public void destroyObstacles() {
+		// Update ufo enemies
+		if (ufos.size() > 0) {
+			for (Iterator<Ufo> it = ufos.iterator(); it.hasNext();) {
+				Ufo ufo = (Ufo) it.next();
+				it.remove();
+				ufo.destroy();
+			}
+		}
+		
+		// Update ape enemies
+		if (apes.size() > 0) {
+			for (Iterator<Ape> it = apes.iterator(); it.hasNext();) {
+				Ape ape = (Ape) it.next();
+				it.remove();
+				ape.destroy();
+			}
+		}
+		
+		// Update black holes
+		if (blackHoles.size() > 0) {
+			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
+				BlackHole blackHole = (BlackHole) it.next();
+				it.remove();
+				blackHole.destroy();
+			}
+		}
 	}
 
 }

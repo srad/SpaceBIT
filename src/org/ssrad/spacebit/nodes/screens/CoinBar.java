@@ -1,4 +1,4 @@
-package org.ssrad.spacebit.nodes;
+package org.ssrad.spacebit.nodes.screens;
 
 import org.ssrad.spacebit.game.Game;
 
@@ -10,7 +10,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 
-public class CoinBar extends ANode {
+public class CoinBar extends AbstractScreen {
 
 	public CoinBar(Game game) {
 		super(game);
