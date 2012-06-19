@@ -32,7 +32,7 @@ public class Star extends AbstractNode {
 
 		spatial.setMaterial(material);
 		// Move far away from scenery
-		move(0, /*r.nextFloat() * 20 + 20f*/ 0, 0);
+		move(0, r.nextFloat() * 20 + 20f, 0);
 		scale(0.1f);
 		attachChild(spatial);
 	}
