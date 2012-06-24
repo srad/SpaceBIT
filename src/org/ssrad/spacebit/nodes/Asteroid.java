@@ -1,54 +1,26 @@
 package org.ssrad.spacebit.nodes;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
-import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 
-import com.jme3.bounding.BoundingVolume;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 
-public class Asteroid extends AbstractNode implements ICollidable, IDamageMaker, IDestroyable {
+public class Asteroid extends AbstractNode implements IDamageMaker, IDestroyable {
+
+	Random random;
 	
 	public Asteroid(Game game) {
 		super(game);
-	}
-
-	@Override
-	protected void init() {
-		spatial = assetManager.loadModel("asteroid.obj");		
-		
-		// Lighted material
-		Material m = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");
-		
-		m.setTexture("DiffuseMap", this.assetManager.loadTexture("asteroid.png"));
-		m.setTexture("NormalMap", this.assetManager.loadTexture("asteroid_normals.png"));
-		
-		m.setBoolean("UseMaterialColors", true);
-		m.setColor("Specular", ColorRGBA.Yellow);
-		m.setColor("Diffuse", ColorRGBA.White);
-		m.setFloat("Shininess", 128f); // [1,128]//
-
-		spatial.setMaterial(m);
-		scale(1.4f);
-
-		attachChild(spatial);
-	}
-
-	@Override
-	public void update(float tpf) {
-		super.update(tpf);
-		rotate(FastMath.PI/8 * tpf, FastMath.PI/4 * tpf, FastMath.PI/2 * tpf);
-	}
-
-	@Override
-	public int getDamage() {
-		return -2;
 	}
 
 	@SuppressWarnings("serial")
@@ -58,25 +30,77 @@ public class Asteroid extends AbstractNode implements ICollidable, IDamageMaker,
 	}
 
 	@Override
-	public void onCollision(AbstractNode collidedWith) {
-		if (collidedWith instanceof IDamageTaker) {
-			((IDamageTaker) collidedWith).onDamage(getDamage());
-		}
-		active = false;
+	protected void init() {
+		random = new Random();
+		
+		spatial = this.assetManager.loadModel("asteroid/asteroid.obj");		
+		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		
+		material.setTexture("DiffuseMap", this.assetManager.loadTexture("asteroid/asteriod.png"));
+		material.setTexture("NormalMap", this.assetManager.loadTexture("asteroid/asteriod_normals.png"));
+		
+		material.setBoolean("UseMaterialColors", true);
+		material.setColor("Specular", ColorRGBA.Brown);
+		material.setColor("Diffuse", ColorRGBA.Brown);
+		material.setFloat("Shininess", 128f); // [1,128]
+		
+		spatial.setMaterial(material);
+		scale(random.nextFloat() * 3f + 1f);
+
+		attachChild(spatial);
+		addLight();
+		
+		// Add particles
+		ParticleEmitter particle = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 100);
+		
+		Material mat_red = new Material(this.assetManager, "Common/MatDefs/Misc/Particle.j3md");
+		mat_red.setTexture("Texture", this.assetManager.loadTexture("Effects/Explosion/flame.png"));
+		particle.setMaterial(mat_red);
+
+		particle.setImagesX(2);
+		particle.setImagesY(2);
+		
+		particle.setEndColor(ColorRGBA.White);
+		particle.setStartColor(ColorRGBA.Black);
+		
+		particle.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
+		
+		particle.setStartSize(0.1f);
+		particle.setEndSize(1.0f);
+		particle.setGravity(0, 0, 0);
+		particle.setLowLife(0.5f);
+		particle.setHighLife(.6f);
+		
+		particle.getParticleInfluencer().setVelocityVariation(0.3f);
+		
+		attachChild(particle);
+		spatial.move(0, -1f, 0);
+		particle.move(1f, 1f, 1f);
+	}
+	
+	private void addLight() {
+		light = new PointLight();
+		light.setColor(ColorRGBA.White);
+		light.setRadius(200f);
+		
+		game.getRootNode().addLight(light);
 	}
 
 	@Override
-	public BoundingVolume getBounds() {
-		return spatial.getWorldBound();
+	public void update(float tpf) {
+		super.update(tpf);
+		spatial.rotate(FastMath.PI/(random.nextInt(5) + 5) * tpf, FastMath.PI/(random.nextInt(5) + 5) * tpf, FastMath.PI/(random.nextInt(5) + 5) * tpf);
+		light.setPosition(spatial.getLocalTranslation().clone().addLocal(0, 5, 0));
+	}
+	
+	@Override
+	public int getDamage() {
+		return -1000;
 	}
 
+	@Override
 	public boolean destroyOnCollision() {
 		return false;
-	}
-
-	@Override
-	public void destroy() {
-		// TODO: Asteroid
 	}
 
 }

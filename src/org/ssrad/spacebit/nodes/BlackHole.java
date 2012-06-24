@@ -1,12 +1,11 @@
 package org.ssrad.spacebit.nodes;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.light.PointLight;
@@ -17,12 +16,10 @@ import com.jme3.math.Vector3f;
 
 public class BlackHole extends AbstractNode implements IDamageMaker {
 
-	BulletAppState bas;
-	RigidBodyControl phys;
+	Random random;
 	
 	public BlackHole(Game game) {
 		super(game);
-		bas = game.getStateManager().getState(BulletAppState.class);
 	}
 
 	@SuppressWarnings("serial")
@@ -33,6 +30,8 @@ public class BlackHole extends AbstractNode implements IDamageMaker {
 
 	@Override
 	protected void init() {
+		random = new Random();
+		
 		spatial = this.assetManager.loadModel("blackhole/blackhole2.obj");		
 		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");
 		
@@ -45,7 +44,7 @@ public class BlackHole extends AbstractNode implements IDamageMaker {
 		material.setFloat("Shininess", 128f); // [1,128]
 		
 		spatial.setMaterial(material);
-		scale(3.5f);
+		scale(random.nextFloat() * 2f + 2f);
 
 		attachChild(spatial);
 		addLight();

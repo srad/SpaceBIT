@@ -27,7 +27,6 @@ import com.jme3.util.SkyFactory;
 public class Game extends SimpleApplication {
 	
 	public final static boolean DEBUG = false;
-
 	public final float SCROLL_SPEED = 6f;	
 
 	private Ship ship;
@@ -132,12 +131,12 @@ public class Game extends SimpleApplication {
         Texture west, east, north, south, up, down;   
         
         if (level == GameLevel.LEVEL_ONE) {
-	        west = assetManager.loadTexture("skybox_left2.png");
-	        east = assetManager.loadTexture("skybox_right1.png");
-	        north = assetManager.loadTexture("skybox_front5.png");
-	        south = assetManager.loadTexture("skybox_back6.png");
-	        up = assetManager.loadTexture("skybox_top3.png");
-	        down = assetManager.loadTexture("skybox_bottom4.png");
+	        west = assetManager.loadTexture("skybox/skybox_left2.png");
+	        east = assetManager.loadTexture("skybox/skybox_right1.png");
+	        north = assetManager.loadTexture("skybox/skybox_front5.png");
+	        south = assetManager.loadTexture("skybox/skybox_back6.png");
+	        up = assetManager.loadTexture("skybox/skybox_top3.png");
+	        down = assetManager.loadTexture("skybox/skybox_bottom4.png");
         } else {
 	        west = assetManager.loadTexture("skybox/stars_lila/skybox_lila_left2.png");
 	        east = assetManager.loadTexture("skybox/stars_lila/skybox_lila_right1.png");
@@ -199,7 +198,7 @@ public class Game extends SimpleApplication {
 	public void run() {
 		running = true;
 		addSkyBox();
-		getGameMusic().play();
+		//getGameMusic().play();
 		hudScreen.show();
 	}
 

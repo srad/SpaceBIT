@@ -16,7 +16,7 @@ public class HealthBar extends AbstractNode {
 	
 	private final int HEALTHBAR_WIDTH = 275;
 	private final int HEALTHBAR_HEIGHT = 30;
-	
+		
 	private Geometry fg;
 	private Geometry bg;
 	private BitmapText health;

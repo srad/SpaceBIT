@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.ssrad.spacebit.enums.GameLevel;
 import org.ssrad.spacebit.nodes.Ape;
+import org.ssrad.spacebit.nodes.Asteroid;
 import org.ssrad.spacebit.nodes.BlackHole;
 import org.ssrad.spacebit.nodes.FireExplosion;
 import org.ssrad.spacebit.nodes.Heart;
@@ -44,6 +45,7 @@ public class Updateables {
 	private ArrayList<Heart> hearts = new ArrayList<Heart>();
 	
 	private ArrayList<BlackHole> blackHoles = new ArrayList<BlackHole>();
+	private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
 	
 	private ArrayList<ShockWaveExplosion> shockWaveExplosions = new ArrayList<ShockWaveExplosion>();
 	private ArrayList<FireExplosion> fireExplosions = new ArrayList<FireExplosion>();
@@ -208,11 +210,25 @@ public class Updateables {
 			}
 		}
 		
+		// Update asteroids
+		if (asteroids.size() > 0) {
+			for (Iterator<Asteroid> it = asteroids.iterator(); it.hasNext();) {
+				Asteroid asteroid = (Asteroid) it.next();
+				if (!asteroid.isActive()) {
+					it.remove();
+					asteroid.destroy();
+				} else {
+					asteroid.update(tpf);
+				}
+			}
+		}
+		
 		spawnRandomTorusCoins();
 		spawnRandomHeart();
 		spawnRandomStars();
 		spawnRandomWarpCore();
 		spawnRandomBlackHoles();
+		spawnRandomAsteroid();
 		
 		// TODO:
 		//spawnRandomPlanet();
@@ -224,6 +240,33 @@ public class Updateables {
 		}
 	}
 	
+	private void spawnRandomAsteroid() {
+		if ((random.nextInt(10) > 4) && game.getTimer().getTimeInSeconds() % 1f <= 0.01f) {
+
+			Asteroid a = new Asteroid(game);
+			
+			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);			
+			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+
+			a.setLocalTranslation(position);			
+			a.setCullHint(CullHint.Always);
+			
+			// Check for free space
+			for (Iterator<Asteroid> it = asteroids.iterator(); it.hasNext();) {
+				Asteroid a_i = (Asteroid) it.next();
+				
+				// First test if not colliding with another ape
+				rootNode.attachChild(a);
+				if (a.getWorldBound().intersects(a_i.getWorldBound())) {
+					rootNode.detachChild(a);
+					return;
+				}
+			}
+			a.setCullHint(CullHint.Never);
+			addAsteroid(a);
+		}
+	}
+
 	private void spawnRandomTorusCoins() {
 		if (random.nextInt(10) > 2 && (game.getTimer().getTimeInSeconds() % 1f <= 0.01f)) {
 			TorusCoin t = new TorusCoin(game);;
@@ -285,11 +328,11 @@ public class Updateables {
 			
 			// Check for free space
 			for (Iterator<Ape> it = apes.iterator(); it.hasNext();) {
-				Ape currentUfo = (Ape) it.next();
+				Ape ape_i = (Ape) it.next();
 				
 				// First test if not colliding with another ape
 				rootNode.attachChild(newApe);
-				if (newApe.getWorldBound().intersects(currentUfo.getWorldBound())) {
+				if (newApe.getWorldBound().intersects(ape_i.getWorldBound())) {
 					rootNode.detachChild(newApe);
 					return;
 				}
@@ -428,6 +471,11 @@ public class Updateables {
 		rootNode.attachChild(blackHole);
 	}
 	
+	public void addAsteroid(Asteroid asteroid) {
+		asteroids.add(asteroid);
+		rootNode.attachChild(asteroid);
+	}
+	
 	public ArrayList<Ape> getApes() {
 		return apes;
 	}
@@ -449,7 +497,7 @@ public class Updateables {
 				ufo.destroy();
 			}
 		}
-		
+
 		// Update ape enemies
 		if (apes.size() > 0) {
 			for (Iterator<Ape> it = apes.iterator(); it.hasNext();) {
