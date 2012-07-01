@@ -2,10 +2,12 @@
 package org.ssrad.spacebit.game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
 import org.ssrad.spacebit.enums.GameLevel;
+import org.ssrad.spacebit.nodes.AbstractNode;
 import org.ssrad.spacebit.nodes.Ape;
 import org.ssrad.spacebit.nodes.Asteroid;
 import org.ssrad.spacebit.nodes.BlackHole;
@@ -35,6 +37,7 @@ public class Updateables {
 	Game game;
 	Node rootNode;
 	Random random;
+	float stopWatch = 0f;
 	
 	// Enemies
 	private ArrayList<Ape> apes = new ArrayList<Ape>();
@@ -54,6 +57,7 @@ public class Updateables {
 	private ArrayList<Planet> planets = new ArrayList<Planet>();
 	
 	private ArrayList<WarpCore> warpCores = new ArrayList<WarpCore>();
+	
 	
 	public Updateables(Game game) {
 		this.game = game;
@@ -157,19 +161,18 @@ public class Updateables {
 			}
 		}
 		
-		// TODO: planets
 		// Update planets
-//		if (planets.size() > 0) {
-//		for (Iterator<Planet> it = planets.iterator(); it.hasNext();) {
-//			Planet planet = (Planet) it.next();
-//			if (!planet.isActive()) {
-//				it.remove();
-//				planet.destroy();
-//			} else {
-//				planet.update(tpf);
-//			}
-//		}
-//		}
+		if (planets.size() > 0) {
+		for (Iterator<Planet> it = planets.iterator(); it.hasNext();) {
+			Planet planet = (Planet) it.next();
+			if (!planet.isActive()) {
+				it.remove();
+				planet.destroy();
+			} else {
+				planet.update(tpf);
+			}
+		}
+		}
 
 		// Update explosions
 		if (shockWaveExplosions.size() > 0) {
@@ -198,50 +201,54 @@ public class Updateables {
 		}
 		
 		// Update black holes
-		if (blackHoles.size() > 0) {
-			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
-				BlackHole blackHole = (BlackHole) it.next();
-				if (!blackHole.isActive()) {
-					it.remove();
-					blackHole.destroy();
-				} else {
-					blackHole.update(tpf);
-				}
-			}
-		}
+//		if (blackHoles.size() > 0) {
+//			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
+//				BlackHole blackHole = (BlackHole) it.next();
+//				if (!blackHole.isActive()) {
+//					it.remove();
+//					blackHole.destroy();
+//				} else {
+//					blackHole.update(tpf);
+//				}
+//			}
+//		}
 		
 		// Update asteroids
-		if (asteroids.size() > 0) {
-			for (Iterator<Asteroid> it = asteroids.iterator(); it.hasNext();) {
-				Asteroid asteroid = (Asteroid) it.next();
-				if (!asteroid.isActive()) {
-					it.remove();
-					asteroid.destroy();
-				} else {
-					asteroid.update(tpf);
-				}
+//		if (asteroids.size() > 0) {
+//			for (Iterator<Asteroid> it = asteroids.iterator(); it.hasNext();) {
+//				Asteroid asteroid = (Asteroid) it.next();
+//				if (!asteroid.isActive()) {
+//					it.remove();
+//					asteroid.destroy();
+//				} else {
+//					asteroid.update(tpf);
+//				}
+//			}
+//		}
+		
+		if (stopWatch > 0.3f) {
+			stopWatch = 0f;
+			
+			spawnRandomTorusCoins();
+			spawnRandomHeart();
+			spawnRandomStars();
+			spawnRandomWarpCore();
+			//spawnRandomBlackHoles();
+			//spawnRandomAsteroid();
+			spawnRandomPlanet();
+			
+			if (game.getLevel() == GameLevel.LEVEL_ONE) {
+				spawnRandomApes();
+			} else if (game.getLevel() == GameLevel.LEVEL_TWO) {
+				spawnRandomUfos();
 			}
 		}
 		
-		spawnRandomTorusCoins();
-		spawnRandomHeart();
-		spawnRandomStars();
-		spawnRandomWarpCore();
-		spawnRandomBlackHoles();
-		spawnRandomAsteroid();
-		
-		// TODO:
-		//spawnRandomPlanet();
-		
-		if (game.getLevel() == GameLevel.LEVEL_ONE) {
-			spawnRandomApes();
-		} else if (game.getLevel() == GameLevel.LEVEL_TWO) {
-			spawnRandomUfos();
-		}
+		stopWatch += tpf;
 	}
 	
 	private void spawnRandomAsteroid() {
-		if ((random.nextInt(10) > 4) && game.getTimer().getTimeInSeconds() % 1f <= 0.01f) {
+		if ((random.nextInt(20) > 18)) {
 
 			Asteroid a = new Asteroid(game);
 			
@@ -268,7 +275,7 @@ public class Updateables {
 	}
 
 	private void spawnRandomTorusCoins() {
-		if (random.nextInt(10) > 2 && (game.getTimer().getTimeInSeconds() % 1f <= 0.01f)) {
+		if (random.nextInt(20) > 12) {
 			TorusCoin t = new TorusCoin(game);;
 			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
 			// Random x position + random sign
@@ -280,7 +287,7 @@ public class Updateables {
 	}
 
 	private void spawnRandomPlanet() {
-		if (random.nextInt(10) > 7 && (game.getTimer().getTimeInSeconds() % 1f <= 0.01f)) {
+		if (random.nextInt(20) > 18) {
 			Planet planet = new Planet(game);;
 			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
 			// Random x position + random sign
@@ -292,7 +299,7 @@ public class Updateables {
 	}	
 	
 	private void spawnRandomWarpCore() {
-		if (random.nextInt(13) > 10 && (game.getTimer().getTimeInSeconds() % 1f <= 0.01f)) {
+		if (random.nextInt(20) > 18) {
 			WarpCore core = new WarpCore(game);;
 			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
 			// Random x position + random sign
@@ -304,19 +311,17 @@ public class Updateables {
 	}	
 	
 	private void spawnRandomStars() {
-		if ((random.nextInt(10) > 6) && game.getTimer().getTimeInSeconds()  % 1f <= 0.1f) {
-			Star star = new Star(game);;
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, random.nextFloat() * 70f + 40f);
-			// Random x position + random sign
-			// Minus: left side of the ship, Positive: right side
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 40f;
-			star.setLocalTranslation(position);
-			addStar(star);
-		}
+		Star star = new Star(game);;
+		Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, random.nextFloat() * 70f + 40f);
+		// Random x position + random sign
+		// Minus: left side of the ship, Positive: right side
+		position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 40f;
+		star.setLocalTranslation(position);
+		addStar(star);
 	}
 	
 	private void spawnRandomApes() {
-		if ((random.nextInt(10) > 4) && game.getTimer().getTimeInSeconds() % 1f <= 0.01f) {
+		if ((random.nextInt(20) > 12)) {
 
 			Ape newApe = new Ape(game);;
 			
@@ -343,7 +348,7 @@ public class Updateables {
 	}
 	
 	private void spawnRandomBlackHoles() {
-		if ((random.nextInt(10) > 4) && game.getTimer().getTimeInSeconds() % 1f <= 0.01f) {
+		if ((random.nextInt(20) > 17)) {
 			
 			BlackHole blackHole = new BlackHole(game);;
 			
@@ -370,7 +375,7 @@ public class Updateables {
 	}
 	
 	private void spawnRandomUfos() {
-		if ((random.nextInt(10) > 4) && game.getTimer().getTimeInSeconds() % 1f <= 0.01f) {
+		if (random.nextInt(20) > 15) {
 
 			Ufo newUfo = new Ufo(game);;
 			
@@ -397,7 +402,7 @@ public class Updateables {
 	}
 	
 	private void spawnRandomHeart() {
-		if (random.nextInt(10) > 1 && (game.getTimer().getTimeInSeconds() % 1f <= 0.001f)) {
+		if (random.nextInt(20) > 16) {
 			Heart heart = new Heart(game);;
 			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
 			// Random x position + random sign
@@ -437,7 +442,7 @@ public class Updateables {
 		rootNode.attachChild(heart);
 	}
 	
-	public void addExplosion(ShockWaveExplosion explosion) {
+	public void addShockWaveExplosion(ShockWaveExplosion explosion) {
 		shockWaveExplosions.add(explosion);
 		rootNode.attachChild(explosion);
 	}
@@ -466,6 +471,10 @@ public class Updateables {
 		return ufos;
 	}
 	
+	public ArrayList<Asteroid> getAsteroids() {
+		return asteroids;
+	}
+	
 	public void addBlackHole(BlackHole blackHole) {
 		blackHoles.add(blackHole);
 		rootNode.attachChild(blackHole);
@@ -489,7 +498,6 @@ public class Updateables {
 	}
 
 	public void destroyObstacles() {
-		// Update ufo enemies
 		if (ufos.size() > 0) {
 			for (Iterator<Ufo> it = ufos.iterator(); it.hasNext();) {
 				Ufo ufo = (Ufo) it.next();
@@ -498,7 +506,6 @@ public class Updateables {
 			}
 		}
 
-		// Update ape enemies
 		if (apes.size() > 0) {
 			for (Iterator<Ape> it = apes.iterator(); it.hasNext();) {
 				Ape ape = (Ape) it.next();
@@ -507,14 +514,17 @@ public class Updateables {
 			}
 		}
 		
-		// Update black holes
-		if (blackHoles.size() > 0) {
-			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
-				BlackHole blackHole = (BlackHole) it.next();
+		if (planets.size() > 0) {
+			for (Iterator<Planet> it = planets.iterator(); it.hasNext();) {
+				Planet p = (Planet) it.next();
 				it.remove();
-				blackHole.destroy();
+				p.destroy();
 			}
 		}
+	}
+
+	public ArrayList<Planet> getPlanets() {
+		return planets;
 	}
 
 }

@@ -36,6 +36,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 		setShadowMode(ShadowMode.Cast);
 		
 		spatial.scale(2.6f);
+		spatial.rotate(-FastMath.PI/10, 0, FastMath.PI);
 		attachChild(spatial);
 		
 		light = new PointLight();

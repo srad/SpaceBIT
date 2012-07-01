@@ -74,25 +74,10 @@ public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, I
 		
 		nodes.addAll(game.getUpdateables().getApes());
 		nodes.addAll(game.getUpdateables().getUfos());
+		nodes.addAll(game.getUpdateables().getPlanets());
 		
 		return nodes;
 	}
-//
-//	@Override
-//	public void onCollision(AbstractNode collidedWith) {
-//		if (collidedWith instanceof IDamageTaker) {
-//			((IDamageTaker) collidedWith).onDamage(getDamage());
-//
-//			active = !destroyOnCollision();
-//
-//			if (!active && (collidedWith instanceof IDestroyable)) {
-//				IDestroyable destroyable = (IDestroyable) collidedWith;
-//				if (destroyable.destroyOnCollision() && (destroyable instanceof IScoreGiver)) {
-//					game.getShip().onScore(((IScoreGiver) destroyable).getScore());
-//				}
-//			}
-//		}
-//	}
 
 	@Override
 	public int getDamage() {

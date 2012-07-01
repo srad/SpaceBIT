@@ -26,8 +26,8 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	
 	private static int DEFAULT_HEALTH = 15;
 
-	Random random;
-	float timer = 0f;
+	private Random random;
+	private float timer = 0f;
 	private int health = DEFAULT_HEALTH;
 	
 	ParticleEmitter fire;
@@ -105,7 +105,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 		for (Iterator<Banana> it = bananas.iterator(); it.hasNext();) {
 			Banana banana = (Banana) it.next();
 			it.remove();
-			game.getUpdateables().addExplosion(new ShockWaveExplosion(game, banana.getLocalTranslation()));
+			game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, banana.getLocalTranslation()));
 			game.getRootNode().detachChild(banana);
 		}
 	}

@@ -5,6 +5,9 @@ import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
+import org.ssrad.spacebit.interfaces.IDamageTaker;
+import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreGiver;
 
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
@@ -12,9 +15,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Planet extends AbstractNode implements IDamageMaker {
+public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver {
 	
 	Random random;
+	float scale;
+	int health;
 	
 	public Planet(Game game) {
 		super(game);
@@ -35,8 +40,12 @@ public class Planet extends AbstractNode implements IDamageMaker {
 		
 		setShadowMode(ShadowMode.Off);
 		
-		spatial.scale(3.0f);
+		this.scale = random.nextFloat() * 3f + 2f;
+		spatial.scale(this.scale);
 		attachChild(spatial);
+		
+		// Health depends on size
+		this.health = (int) Math.round(this.scale) * 15;
 		
 		light = new PointLight();
 		light.setRadius(30f);
@@ -56,10 +65,36 @@ public class Planet extends AbstractNode implements IDamageMaker {
 	public ArrayList<AbstractNode> collidesWith() {
 		return new ArrayList<AbstractNode>() {{ add(game.getShip()); }};
 	}
+	
+	@Override
+	public void destroy() {
+		super.destroy();
+		game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, getLocalTranslation()));
+	}
 
 	@Override
 	public int getDamage() {
-		return 1000;
+		return -health;
+	}
+
+	@Override
+	public int getScore() {
+		return (int) Math.round(this.scale) * 10;
+	}
+
+	@Override
+	public boolean isScoreCounted() {
+		return active == false;
+	}
+
+	@Override
+	public boolean destroyOnCollision() {
+		return this.health <= 0f;
+	}
+
+	@Override
+	public void onDamage(int damage) {
+		health += damage;
 	}
 
 }

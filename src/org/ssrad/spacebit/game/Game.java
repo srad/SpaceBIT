@@ -52,6 +52,7 @@ public class Game extends SimpleApplication {
 	// BLOOM
 	private BloomFilter bloomFilter;
 	private boolean bloom = true;	
+	
 	private GameMusic gameMusic;
 	
 	Updateables updateables;
@@ -113,6 +114,8 @@ public class Game extends SimpleApplication {
 	    viewPort.addProcessor(shadowRenderer);
 	    GameLogger.Log(Level.INFO, "Added sharow renderer");
 
+        viewPort.addProcessor(fpp);
+	    
 	    rootNode.setShadowMode(ShadowMode.Off);
 
 	}
