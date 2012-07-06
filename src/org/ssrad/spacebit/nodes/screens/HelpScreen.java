@@ -1,0 +1,48 @@
+package org.ssrad.spacebit.nodes.screens;
+
+import org.ssrad.spacebit.game.Game;
+
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.ui.Picture;
+
+public class HelpScreen extends AbstractScreen implements ActionListener {
+
+	Picture background;
+	
+	public HelpScreen(Game game) {
+		super(game);
+	}
+	
+	@Override
+	protected void init() {
+		super.init();
+		
+		background = new Picture("Test");
+		
+		background.setImage(game.getAssetManager(), "help-screen.png", true);		
+		background.setWidth(game.getSettings().getWidth());
+		background.setHeight(game.getSettings().getHeight());
+		
+		background.setPosition(0, 0);
+		game.getGuiNode().attachChild(background);
+	}
+	
+	@Override
+	protected void bindKeys() {
+		inputManager.addMapping("back", new KeyTrigger(KeyInput.KEY_ESCAPE));
+		inputManager.addListener(this, new String[] { "back" });
+	}
+
+	@Override
+	public void onAction(String name, boolean keyPressed, float tpf) {
+
+		if (name.equals("back") && !keyPressed) {
+			hide();
+			game.getTitleScreen().show();
+		}
+	
+	}
+	
+}

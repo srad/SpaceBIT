@@ -34,23 +34,18 @@ public class WinScreen extends AbstractScreen implements ActionListener {
 	
 	@Override
 	protected void bindKeys() {	
-		inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_ESCAPE));
-		inputManager.addMapping("start", new KeyTrigger(KeyInput.KEY_RETURN));
-		inputManager.addMapping("start", new KeyTrigger(KeyInput.KEY_SPACE));
+		inputManager.addMapping("back", new KeyTrigger(KeyInput.KEY_ESCAPE));
 		
-		inputManager.addListener(this, new String[] { "quit" });
+		inputManager.addListener(this, new String[] { "back" });
 	}
 	@Override
 	public void onAction(String name, boolean keyPressed, float tpf) {
 
-		if (name.equals("quit") && !keyPressed) {
-			game.stop();
-		}
-		if (name.equals("start") && !keyPressed) {
-			game.stop();
+		if (name.equals("back") && !keyPressed) {
+			hide();
 			game.getTitleScreen().show();
 		}
-	
+
 	}
 	
 }

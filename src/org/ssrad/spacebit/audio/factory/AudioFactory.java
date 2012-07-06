@@ -26,9 +26,9 @@ public class AudioFactory {
 			audioFilePath = "laser.wav";
 			break;
 		case EXPLOSION:
-			audioFilePath = "";
+			audioFilePath = "explosion.wav";
 			break;
-		case HEARTS:
+		case HEART:
 			audioFilePath = "shortpitch.wav";
 			break;
 		case LASER:

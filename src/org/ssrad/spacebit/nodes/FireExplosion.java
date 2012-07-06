@@ -34,6 +34,8 @@ package org.ssrad.spacebit.nodes;
 
 import java.util.ArrayList;
 
+import org.ssrad.spacebit.audio.GameAudio;
+import org.ssrad.spacebit.audio.enums.SoundType;
 import org.ssrad.spacebit.game.Game;
 
 import com.jme3.effect.ParticleEmitter;
@@ -70,6 +72,8 @@ public class FireExplosion extends AbstractNode {
 
 	/** Initialized the type of the particle emitter based on {@link #POINT_SPRITE}. */
 	private static final Type EMITTER_TYPE = POINT_SPRITE ? Type.Point : Type.Triangle;
+	
+	GameAudio explosion;
 
 	public FireExplosion(Game game) {
 		super(game);
@@ -77,7 +81,7 @@ public class FireExplosion extends AbstractNode {
 
 	public FireExplosion(Game game, Vector3f localTranslation) {
 		super(game);
-		setLocalTranslation(localTranslation);
+		setLocalTranslation(localTranslation);	
 	}
 
 	@Override
@@ -93,6 +97,10 @@ public class FireExplosion extends AbstractNode {
 
 		game.getRenderManager().preloadScene(this);
 		attachChild(this);
+		
+		explosion = new GameAudio(game, this, SoundType.EXPLOSION);
+		//explosion.setVolume(1.2f);
+		explosion.play();
 	}
 	
 	@Override

@@ -18,6 +18,7 @@ import com.jme3.scene.shape.Cylinder;
 public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, IScoreTaker {
 
 	float moveDistance = 0f;
+	float timer = 0f;
 	
 	GameAudio audio;
 
@@ -37,26 +38,20 @@ public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, I
 		spatial.setMaterial(material);
 
 		attachChild(spatial);
-		
-//		Vector3f cursor = game.getCamera().getWorldCoordinates(new Vector2f(game.getInputManager().getCursorPosition().x, game.getInputManager().getCursorPosition().y), 0);
-//		Vector3f target = game.getShip().getLocalTranslation().clone().mult(cursor);
-//		
-//		lookAt(target, Vector3f.UNIT_Y);
 		setLocalTranslation(game.getShip().getLocalTranslation());
-		
 		move(0, 0, 6f);
 		
-		audio = new GameAudio(game, this, SoundType.LASER);
-		
-		audio.setVolume(0.5f);
+		audio = new GameAudio(game, this, SoundType.LASER);		
+		//audio.setVolume(2f);
 		audio.play();
 	}
 	
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
+		timer += tpf;
 
-		float deltaMove = FastMath.exp(tpf) / 2.5f;
+		float deltaMove = FastMath.exp(timer) / 2.5f;
 		
 		moveDistance += deltaMove ;
 		

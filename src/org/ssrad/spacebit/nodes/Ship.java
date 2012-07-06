@@ -402,6 +402,10 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 		setLocalTranslation(new Vector3f(0, 0, game.getCamera().getLocation().z + 10f));
 		addLight();
 	}
+	
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
 
 	public void setScore(int score) {
 		this.score = score;

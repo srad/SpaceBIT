@@ -47,6 +47,7 @@ public abstract class AbstractScreen extends AbstractNode {
 	public void show() {
 		init();		
 		active = true;
+		game.setScreen(this);
 	}
 
 }

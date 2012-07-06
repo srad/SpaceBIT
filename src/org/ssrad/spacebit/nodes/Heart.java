@@ -85,8 +85,8 @@ public class Heart extends AbstractNode implements IDamageMaker, IDestroyable, I
 
 	@Override
 	public void playAudio() {
-		GameAudio audio = new GameAudio(game, this, SoundType.HEARTS);
-		audio.setVolume(0.5f);
+		GameAudio audio = new GameAudio(game, this, SoundType.HEART);
+		//audio.setVolume(1f);
 		audio.play();
 	}
 

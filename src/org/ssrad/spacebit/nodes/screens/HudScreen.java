@@ -82,6 +82,7 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 	@Override
 	protected void bindKeys() {		
 		inputManager.addMapping("pause", new KeyTrigger(KeyInput.KEY_P));
+		inputManager.addMapping("pause", new KeyTrigger(KeyInput.KEY_ESCAPE));
 		inputManager.addMapping("shoot", new KeyTrigger(KeyInput.KEY_SPACE));
 				
 		inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_W));
@@ -93,9 +94,7 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 		inputManager.addMapping("shadow", new KeyTrigger(KeyInput.KEY_F2));
 		inputManager.addMapping("ls", new KeyTrigger(KeyInput.KEY_F3));
 
-		inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_ESCAPE));
-
-		inputManager.addListener(this, new String[] { "pause", "shoot", "quit", "shadow", "bloom", "ls" });
+		inputManager.addListener(this, new String[] { "pause", "shoot", "shadow", "bloom", "ls" });
 		inputManager.addListener(this, new String[] { "up", "down", "left", "right" });
 	}
 

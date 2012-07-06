@@ -9,6 +9,7 @@ public class LoadScreen extends AbstractScreen {
 
 	Picture background;
 	float timer;
+	boolean started;
 	
 	public LoadScreen(Game game) {
 		super(game);
@@ -16,6 +17,7 @@ public class LoadScreen extends AbstractScreen {
 	@Override
 	protected void init() {
 		super.init();
+		started = false;
 		
 		timer = 0f;		
 		background = new Picture("Load");
@@ -35,10 +37,25 @@ public class LoadScreen extends AbstractScreen {
 	@Override
 	public void update(float tpf) {
 		timer += tpf;
-		if (timer > 3f) {
-			hide();
-			game.run();
+		if ((timer > 1f) && !started) {
+			onStartGame();
 		}
+	}
+	private void onStartGame() {
+		started = true;
+		hide();
+				
+		if (game.getShip() != null) {
+			game.getShip().setScore(0);
+			game.getShip().setLives(2);
+			game.getUpdateables().destroyObstacles();
+		}
+		game.getTimer().reset();
+		
+		if (!game.isLaunched()) {
+			game.init();
+		}
+		game.run();
 	}
 
 }

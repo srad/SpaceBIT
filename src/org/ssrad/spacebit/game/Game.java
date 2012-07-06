@@ -6,9 +6,13 @@ import org.ssrad.spacebit.audio.GameMusic;
 import org.ssrad.spacebit.enums.GameLevel;
 import org.ssrad.spacebit.helpers.GameLogger;
 import org.ssrad.spacebit.nodes.Ship;
+import org.ssrad.spacebit.nodes.screens.AbstractScreen;
+import org.ssrad.spacebit.nodes.screens.CopyrightScreen;
 import org.ssrad.spacebit.nodes.screens.GameOverScreen;
+import org.ssrad.spacebit.nodes.screens.HelpScreen;
 import org.ssrad.spacebit.nodes.screens.HudScreen;
 import org.ssrad.spacebit.nodes.screens.LoadScreen;
+import org.ssrad.spacebit.nodes.screens.ModelScreen;
 import org.ssrad.spacebit.nodes.screens.TitleScreen;
 import org.ssrad.spacebit.nodes.screens.WinScreen;
 
@@ -30,20 +34,20 @@ import com.jme3.util.SkyFactory;
 public class Game extends SimpleApplication {
 	
 	public static int GAME_TIME_SECONDS = 200;
-	public static int MUST_SCORE = 200;
+	public static int MUST_SCORE = 2000;
 	
 	public final static boolean DEBUG = false;
 	public final float SCROLL_SPEED = 6f;	
 
-	private Ship ship;
+	private Ship ship = null;
 	
 	FilterPostProcessor fpp;
 	
-	private HudScreen hudScreen;	
-	private TitleScreen titleScreen;
-	private GameOverScreen gameOverScreen;
-	private WinScreen winScreen;
-	private LoadScreen loadScreen;
+	/** Game screens. */
+	private AbstractScreen hudScreen, titleScreen, gameOverScreen, winScreen, loadScreen, modelScreen, helpScreen, copyrightScreen;
+    
+	/** Currently visible screen. */
+	AbstractScreen screen;
 	
 	private GameLevel level;
 	
@@ -75,10 +79,14 @@ public class Game extends SimpleApplication {
 	@Override
 	public void simpleInitApp() {	
 		running = false;
+		
 		titleScreen = new TitleScreen(this);
 		loadScreen = new LoadScreen(this);
 		winScreen = new WinScreen(this);
-		loadScreen.hide();
+		modelScreen = new ModelScreen(this);
+		helpScreen = new HelpScreen(this);
+		copyrightScreen = new CopyrightScreen(this);
+
 		titleScreen.show();
 	}
 	
@@ -109,7 +117,7 @@ public class Game extends SimpleApplication {
         
 	    // AUDIO
 	    gameMusic = new GameMusic(this);
-	    gameMusic.setVolume(0.1f);
+	    //gameMusic.setVolume(0.01f);
 	    GameLogger.Log(Level.INFO, "Added and playing music");
 
 		setUpLight();
@@ -174,23 +182,21 @@ public class Game extends SimpleApplication {
 
         rootNode.attachChild(SkyFactory.createSky(assetManager, west, east, north, south, up, down));
     }
+        
+    public void setScreen(AbstractScreen screen) {
+    	this.screen = screen;
+    }
 
 	@Override
 	public void simpleUpdate(float tpf) {
-		super.simpleUpdate(tpf);
+		super.simpleUpdate(tpf);		
+
+		screen.update(tpf);
 		
-		
-		if (loadScreen.isActive()) {
-			loadScreen.update(tpf);
-		}
-		else if (winScreen.isActive()) {
-			winScreen.update(tpf);
-		}
-		else if (isRunning()) {
+		if (isRunning()) {
 			// SHIP BEGIN
 			if (ship.isActive()) {
 				ship.update(tpf);
-				hudScreen.update(tpf);
 				
 				// FAIL
 				if ((int)getTimer().getTimeInSeconds() > GAME_TIME_SECONDS && ship.getScore() < MUST_SCORE) {
@@ -247,15 +253,15 @@ public class Game extends SimpleApplication {
 	public Ship getShip() {
 		return ship;
 	}
-	
+
 	public AppSettings getSettings() {
 		return settings;
 	}
-	
+
 	public void run() {
 		running = true;
 		addSkyBox();
-		getGameMusic().play();
+		gameMusic.play();
 		hudScreen.show();
 	}
 
@@ -264,12 +270,12 @@ public class Game extends SimpleApplication {
 		getGameMusic().stop();
 		titleScreen.show();
 	}
-	
+
 	public boolean isRunning() {
 		return running;
 	}
-	
-	public TitleScreen getTitleScreen() {
+
+	public AbstractScreen getTitleScreen() {
 		return titleScreen;
 	}
 
@@ -341,12 +347,28 @@ public class Game extends SimpleApplication {
 		this.launched = launched;
 	}
 	
-	public HudScreen getHudScreen() {
+	public AbstractScreen getHudScreen() {
 		return hudScreen;
 	}
 
-	public void load() {
-		loadScreen.show();
+	public AbstractScreen getModelScreen() {
+		return modelScreen;
+	}
+
+	public AbstractScreen getGameOverScreen() {
+		return gameOverScreen;
+	}
+
+	public AbstractScreen getHelpScreen() {
+		return helpScreen;
+	}
+
+	public AbstractScreen getLoadScreen() {
+		return loadScreen;
+	}
+
+	public AbstractScreen getCopyrightScreen() {
+		return copyrightScreen;
 	}
 	
 }

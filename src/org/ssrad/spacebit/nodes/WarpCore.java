@@ -75,7 +75,7 @@ public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver 
 
 	@Override
 	public boolean isScoreCounted() {
-		return active == false;
+		return true;
 	}
 
 }

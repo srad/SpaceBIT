@@ -1,22 +1,29 @@
 package org.ssrad.spacebit.nodes;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IScoreGiver;
 
+import com.jme3.animation.LoopMode;
+import com.jme3.cinematic.MotionPath;
+import com.jme3.cinematic.events.MotionTrack;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker {
+public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker, IScoreGiver {
 	
 	private int health = 20;
-
+	private Random random;
+	
 	public Ufo(Game game) {
 		super(game);
 	}
@@ -25,6 +32,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 
 	@Override
 	protected void init() {
+		random = new Random();
 		spatial = this.assetManager.loadModel("ufo2/ufo2.obj");	
 
 		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
@@ -43,6 +51,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 		light.setRadius(30f);
 		light.setColor(ColorRGBA.Gray);
 		game.getRootNode().addLight(light);
+		startRandomRotation();
 	}
 
 	@Override
@@ -50,6 +59,23 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 		super.update(tpf);
 		spatial.rotate(0, FastMath.PI * tpf * 2.5f, 0);
 		light.setPosition(getLocalTranslation().clone().add(0, 0, 0));
+	}
+	
+	private void startRandomRotation() {
+		MotionPath path = new MotionPath();
+		path.setCycle(true);
+		
+		Vector3f v = getLocalTranslation().clone();
+		
+		path.addWayPoint(v.addLocal(-random.nextFloat()*20f + 2f, 0f, 0f));
+		path.addWayPoint(v.addLocal(0f, 0f, -random.nextFloat()*20f + 2f));
+		path.addWayPoint(v.addLocal(random.nextFloat()*20f + 2f, 0f, 0f));
+		path.addWayPoint(v.addLocal(0f, 0f, random.nextFloat()*20f + 2f));
+
+		MotionTrack motionControl = new MotionTrack(spatial,path);
+		motionControl.setSpeed(3f);
+		motionControl.setLoopMode(LoopMode.Cycle);
+		motionControl.play();
 	}
 
 	@Override
@@ -81,6 +107,16 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 		n.add(game.getShip());
 		
 		return n;
+	}
+
+	@Override
+	public int getScore() {
+		return 35;
+	}
+
+	@Override
+	public boolean isScoreCounted() {
+		return health <= 0;
 	}
 
 }
