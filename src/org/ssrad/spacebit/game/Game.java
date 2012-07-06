@@ -32,7 +32,7 @@ public class Game extends SimpleApplication {
 	public static int GAME_TIME_SECONDS = 200;
 	public static int MUST_SCORE = 200;
 	
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 	public final float SCROLL_SPEED = 6f;	
 
 	private Ship ship;
@@ -202,6 +202,7 @@ public class Game extends SimpleApplication {
 					if (level == GameLevel.LEVEL_ONE) {
 						ship.setScore(0);
 						getTimer().reset();
+						updateables.destroyObstacles();
 						level = GameLevel.LEVEL_TWO;
 						loadScreen.show();
 					}

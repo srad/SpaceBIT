@@ -32,8 +32,7 @@ public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, I
 		
 		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		material.setColor("Color", ColorRGBA.Red);
-		material.setColor("GlowColor", ColorRGBA.Pink);
-		
+		material.setColor("GlowColor", ColorRGBA.Pink);		
 
 		spatial.setMaterial(material);
 
@@ -49,17 +48,17 @@ public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, I
 		
 		audio = new GameAudio(game, this, SoundType.LASER);
 		
-		audio.setVolume(100);
+		audio.setVolume(0.5f);
 		audio.play();
 	}
 	
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-		 
+
 		float deltaMove = FastMath.exp(tpf) / 2.5f;
 		
-		moveDistance += deltaMove;
+		moveDistance += deltaMove ;
 		
 		move(0, 0, deltaMove);
 		

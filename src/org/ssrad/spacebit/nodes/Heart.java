@@ -2,7 +2,10 @@ package org.ssrad.spacebit.nodes;
 
 import java.util.ArrayList;
 
+import org.ssrad.spacebit.audio.GameAudio;
+import org.ssrad.spacebit.audio.enums.SoundType;
 import org.ssrad.spacebit.game.Game;
+import org.ssrad.spacebit.interfaces.IAudible;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
@@ -13,7 +16,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Heart extends AbstractNode implements IDamageMaker, IDestroyable, IScoreGiver {
+public class Heart extends AbstractNode implements IDamageMaker, IDestroyable, IScoreGiver, IAudible {
 	
 	public Heart(Game game) {
 		super(game);
@@ -73,6 +76,18 @@ public class Heart extends AbstractNode implements IDamageMaker, IDestroyable, I
 	@Override
 	public boolean isScoreCounted() {
 		return active == false;
+	}
+
+	@Override
+	public boolean playSoundOnDestroy() {
+		return true;
+	}
+
+	@Override
+	public void playAudio() {
+		GameAudio audio = new GameAudio(game, this, SoundType.HEARTS);
+		audio.setVolume(0.5f);
+		audio.play();
 	}
 
 }

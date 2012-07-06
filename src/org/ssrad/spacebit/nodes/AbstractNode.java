@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.ssrad.spacebit.game.Game;
+import org.ssrad.spacebit.interfaces.IAudible;
 import org.ssrad.spacebit.interfaces.ICoinGiver;
 import org.ssrad.spacebit.interfaces.ICoinTaker;
 import org.ssrad.spacebit.interfaces.ICollidable;
@@ -102,6 +103,13 @@ public abstract class AbstractNode extends Node implements ICollidable {
 			IDestroyable destroyable = (IDestroyable) this;
 			if (destroyable.destroyOnCollision()) {
 				destroyable.destroy();
+				// AUDIOdd
+				if (destroyable instanceof IAudible) {
+					IAudible audible = (IAudible) destroyable;
+					if (audible.playSoundOnDestroy()) {
+						audible.playAudio();
+					}
+				}
 			}
 		}
 		// COLLIDER DESTRUCTION
