@@ -4,7 +4,6 @@ import org.ssrad.spacebit.enums.GameLevel;
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.nodes.Laser;
 
-
 import com.jme3.input.controls.ActionListener;
 
 public class KeyBoardActionListener extends AListener implements ActionListener {
@@ -29,9 +28,7 @@ public class KeyBoardActionListener extends AListener implements ActionListener 
 		}
 		
 		if ( (name.equals("level_1") || name.equals("level_2")) && !keyPressed ) {
-			game.getTitleScreen().hide();
 			game.setLevel(name.equals("level_1") ? GameLevel.LEVEL_ONE : GameLevel.LEVEL_TWO);
-			game.run();
 		}
 		
 		if (name.equals("quit") && !keyPressed) {

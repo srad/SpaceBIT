@@ -8,7 +8,9 @@ import org.ssrad.spacebit.helpers.GameLogger;
 import org.ssrad.spacebit.nodes.Ship;
 import org.ssrad.spacebit.nodes.screens.GameOverScreen;
 import org.ssrad.spacebit.nodes.screens.HudScreen;
+import org.ssrad.spacebit.nodes.screens.LoadScreen;
 import org.ssrad.spacebit.nodes.screens.TitleScreen;
+import org.ssrad.spacebit.nodes.screens.WinScreen;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapFont;
@@ -18,6 +20,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
+import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.system.AppSettings;
@@ -26,7 +29,10 @@ import com.jme3.util.SkyFactory;
 
 public class Game extends SimpleApplication {
 	
-	public final static boolean DEBUG = false;
+	public static int GAME_TIME_SECONDS = 200;
+	public static int MUST_SCORE = 200;
+	
+	public final static boolean DEBUG = true;
 	public final float SCROLL_SPEED = 6f;	
 
 	private Ship ship;
@@ -36,6 +42,8 @@ public class Game extends SimpleApplication {
 	private HudScreen hudScreen;	
 	private TitleScreen titleScreen;
 	private GameOverScreen gameOverScreen;
+	private WinScreen winScreen;
+	private LoadScreen loadScreen;
 	
 	private GameLevel level;
 	
@@ -48,29 +56,40 @@ public class Game extends SimpleApplication {
 	// SHADOW
 	private PssmShadowRenderer shadowRenderer;
 	private boolean shadow = true;
-	
+
 	// BLOOM
 	private BloomFilter bloomFilter;
-	private boolean bloom = true;	
-	
+	private boolean bloom = true;
+
+	private LightScatteringFilter lsFilter;
+	private boolean useLSFilter = true;
+
 	private GameMusic gameMusic;
-	
+
 	Updateables updateables;
-	
+
 	private float timer;
+	
+	private boolean win = false;
 
 	@Override
 	public void simpleInitApp() {	
 		running = false;
 		titleScreen = new TitleScreen(this);
-		return;
+		loadScreen = new LoadScreen(this);
+		winScreen = new WinScreen(this);
+		loadScreen.hide();
+		titleScreen.show();
 	}
 	
 	public void init() {
 		timer = 0f;
 		running = true;
 		launched = true;
-
+		
+		// SHADOW
+		rootNode.setShadowMode(ShadowMode.Off);
+		
 		// Screens
 		hudScreen = new HudScreen(this);
 		gameOverScreen = new GameOverScreen(this);
@@ -81,11 +100,11 @@ public class Game extends SimpleApplication {
 		GameLogger.Log(Level.INFO, "Added ship");
 
 	    // CAMERA		
-		getCamera().setLocation(ship.clone().getLocalTranslation().add(0, 60f, -25f));
-		getCamera().lookAt(ship.getLocalTranslation(), Vector3f.UNIT_Y);
+		cam.setLocation(ship.clone().getLocalTranslation().add(0, 60f, -25f));
+		cam.lookAt(ship.getLocalTranslation(), Vector3f.UNIT_Y);
         flyCam.setEnabled(false);
         GameLogger.Log(Level.INFO, "Adjusted camera");
-                	    
+
         addEffects();
         
 	    // AUDIO
@@ -94,24 +113,28 @@ public class Game extends SimpleApplication {
 	    GameLogger.Log(Level.INFO, "Added and playing music");
 
 		setUpLight();
-
 		updateables = new Updateables(this);
 	}
 	
 	private void addEffects() {
         // FILTERS
 		fpp = new FilterPostProcessor(assetManager);
-		
+				
 		bloomFilter = new BloomFilter(BloomFilter.GlowMode.Objects);
 		fpp.addFilter(bloomFilter);
+		
+		lsFilter = new LightScatteringFilter();
+		lsFilter.setEnabled(false);
+		fpp.addFilter(lsFilter);
+		
 		viewPort.addProcessor(fpp);
 		GameLogger.Log(Level.INFO, "Added bloom filter");
-			
-		// SHADOW
-		rootNode.setShadowMode(ShadowMode.Off);
+
 		shadowRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
 	    shadowRenderer.setDirection(new Vector3f(0,0,20f)); // light direction
+	    
 	    viewPort.addProcessor(shadowRenderer);
+	    
 	    GameLogger.Log(Level.INFO, "Added sharow renderer");
 
         viewPort.addProcessor(fpp);
@@ -119,7 +142,7 @@ public class Game extends SimpleApplication {
 	    rootNode.setShadowMode(ShadowMode.Off);
 
 	}
-
+	
 	private void setUpLight() {
 		// We add light so we see the scene
 		AmbientLight al = new AmbientLight();
@@ -156,11 +179,45 @@ public class Game extends SimpleApplication {
 	public void simpleUpdate(float tpf) {
 		super.simpleUpdate(tpf);
 		
-		if (isRunning()) {
-			// SHIP: Only thing we update here
-			if (!ship.isActive()) {
+		
+		if (loadScreen.isActive()) {
+			loadScreen.update(tpf);
+		}
+		else if (winScreen.isActive()) {
+			winScreen.update(tpf);
+		}
+		else if (isRunning()) {
+			// SHIP BEGIN
+			if (ship.isActive()) {
+				ship.update(tpf);
+				hudScreen.update(tpf);
+				
+				// FAIL
+				if ((int)getTimer().getTimeInSeconds() > GAME_TIME_SECONDS && ship.getScore() < MUST_SCORE) {
+					ship.destroy();		
+				}
+				// WIN
+				else if ((ship.getScore() >= MUST_SCORE) && ((int)getTimer().getTimeInSeconds() <= GAME_TIME_SECONDS)) {
+					// LEVEL 2
+					if (level == GameLevel.LEVEL_ONE) {
+						ship.setScore(0);
+						getTimer().reset();
+						level = GameLevel.LEVEL_TWO;
+						loadScreen.show();
+					}
+					// GAME WON
+					else if (level == GameLevel.LEVEL_TWO) {
+						running = false;
+						win = true;
+						winScreen.show();
+					}
+				}
+			}
+			// Ship destroyed...
+			else {
 				if (timer == 0f) {
 					timer += tpf;
+					toggleLSEffect();
 				} else if (timer < 2f) {
 					timer += tpf;
 				}
@@ -170,15 +227,11 @@ public class Game extends SimpleApplication {
 						running = false;
 					} else {
 						updateables.destroyObstacles();
+						toggleLSEffect();
 						ship.reInit();
-						// TODO: Reposition ship on respawn
-						//ship.setLocalTranslation(cam.getLocation().clone().add(0, 0, 5f));
 						timer = 0f;
 					}
 				}
-			} else {
-				ship.update(tpf);
-				hudScreen.update(tpf);
 			}
 			// SHIP END	
 	
@@ -201,7 +254,7 @@ public class Game extends SimpleApplication {
 	public void run() {
 		running = true;
 		addSkyBox();
-		//getGameMusic().play();
+		getGameMusic().play();
 		hudScreen.show();
 	}
 
@@ -264,6 +317,20 @@ public class Game extends SimpleApplication {
 		}
 		shadow = !shadow;
 	}
+	
+	public void toggleLSFilter() {
+		useLSFilter = !useLSFilter;
+	}
+	
+	public void toggleLSEffect() {
+		if (useLSFilter && !lsFilter.isEnabled()) {
+			lsFilter.setLightPosition(cam.getLocation().add(0, -100, 20));
+			lsFilter.setBlurWidth(0.2f);
+			lsFilter.setEnabled(true);			
+		} else if (useLSFilter && lsFilter.isEnabled() || !useLSFilter) {
+			lsFilter.setEnabled(false);
+		}
+	}
 
 	public boolean isLaunched() {
 		return launched;
@@ -277,4 +344,8 @@ public class Game extends SimpleApplication {
 		return hudScreen;
 	}
 
+	public void load() {
+		loadScreen.show();
+	}
+	
 }

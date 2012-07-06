@@ -10,10 +10,12 @@ import com.jme3.input.controls.KeyTrigger;
 
 public class HudScreen extends AbstractScreen implements AnalogListener, ActionListener {
 	
-	HealthBar healthBar;
+	HealthBar
+	healthBar;
 	HeartBar heartBar;
 	CoinBar coinBar;
 	ScoreBar scoreBar;
+	TimeBar timeBar;
 	
 	boolean init;
 
@@ -24,6 +26,7 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 		addHealthBar();
 		addHeartBar();
 		addScoreBar();
+		addTimeBar();	
 	}
 	
 	@Override
@@ -38,13 +41,21 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 		coinBar.update(tpf);
 		heartBar.update(tpf);
 		scoreBar.update(tpf);
+		timeBar.update(tpf);
 	}
 	
 	private void addScoreBar() {
 		scoreBar = new ScoreBar(game);
-		scoreBar.setLocalTranslation(750, 50, 0f);
+		scoreBar.setLocalTranslation(game.getSettings().getWidth() - 160, game.getSettings().getHeight() - 10, 0f);
 		
 		attachChild(scoreBar);
+	}
+	
+	private void addTimeBar() {
+		timeBar = new TimeBar(game);
+		timeBar.setLocalTranslation(10, game.getSettings().getHeight() - 10, 0);
+		
+		attachChild(timeBar);
 	}
 	
 	private void addHeartBar() {
@@ -80,10 +91,11 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 		
 		inputManager.addMapping("bloom", new KeyTrigger(KeyInput.KEY_F1));
 		inputManager.addMapping("shadow", new KeyTrigger(KeyInput.KEY_F2));
+		inputManager.addMapping("ls", new KeyTrigger(KeyInput.KEY_F3));
 
 		inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_ESCAPE));
 
-		inputManager.addListener(this, new String[] { "pause", "shoot", "quit", "shadow", "bloom" });
+		inputManager.addListener(this, new String[] { "pause", "shoot", "quit", "shadow", "bloom", "ls" });
 		inputManager.addListener(this, new String[] { "up", "down", "left", "right" });
 	}
 
@@ -100,6 +112,10 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 		
 		if (name.equals("shadow") && !keyPressed) {
 			game.toggleShadow();
+		}
+		
+		if (name.equals("ls") && !keyPressed) {
+			game.toggleLSFilter();
 		}
 		
 		if (name.equals("quit") && !keyPressed) {

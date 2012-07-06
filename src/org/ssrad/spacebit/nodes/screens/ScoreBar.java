@@ -22,13 +22,13 @@ public class ScoreBar extends AbstractNode {
 		score.setSize(game.getGuiFont().getCharSet().getRenderedSize() * 1.5f);      // font size
 		score.setColor(ColorRGBA.White);                             // font color
 		score.setLocalTranslation(0, -5, 0.1f); // position
-
+		
 		attachChild(score);
 	}
 	
 	@Override
 	public void update(float tpf) {
-		score.setText("Score " + game.getShip().getScore());
+		score.setText("Score " + game.getShip().getScore() + "/" + Game.MUST_SCORE);
 	}
 	
 	@Override

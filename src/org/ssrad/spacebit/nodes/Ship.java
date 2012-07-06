@@ -19,6 +19,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
+import com.jme3.system.AppSettings;
 
 public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDestroyable, IDamageMaker, IScoreTaker {
 
@@ -33,8 +34,6 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	public static final int MAX_HEALTH = 100;
 	public static final int MAX_COINS = 100;
 	private static final int MAX_LIVES = 5;
-
-	private static final float SHIP_MARGIN = 5f;
 	
 	private int coins = 0;
 	private int health = 100;
@@ -48,7 +47,7 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	
 	private int score = 0;
 
-	boolean left = false, right = false;
+	boolean left = false, right = false, up = false, down = false;
 
 	public Ship(Game game) {
 		super(game);
@@ -210,6 +209,9 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	}
 
 	public void left(float tpf) {
+		up = false;
+		down = false;
+		
 		if (!left) {
 			float rotFactor = 1f;
 			if (right) {
@@ -223,6 +225,9 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	}
 
 	public void right(float tpf) {
+		up = false;
+		down = false;
+		
 		if (!right) {
 			float rotFactor = 1f;
 			if (left) {
@@ -236,10 +241,14 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	}
 	
 	public void up(float tpf) {
+		up = true;
+		down = false;
 		moveShip(getLocalTranslation().clone().add(0, 0, moveFactor * tpf));
 	}
 	
 	public void down(float tpf) {
+		down = true;
+		up = false;
 		moveShip(getLocalTranslation().clone().add(0, 0, -moveFactor * tpf));
 	}
 	
@@ -248,14 +257,23 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	 * @param v New location.
 	 */
 	public void moveShip(Vector3f v) {
-		if (!(
-				v.z < game.getCamera().getLocation().z + SHIP_MARGIN
-				|| ((getLocalTranslation().x) > 31f && !right)
-				|| ((getLocalTranslation().x) < -31f && !left)
-				)
-			) {
-			setLocalTranslation(v);
-		}
+		int margin = 20;
+		AppSettings screen = game.getSettings();
+		
+	    Vector3f screenCoords = game.getCamera().getScreenCoordinates(getLocalTranslation());
+	    int sX1 = (int)Math.floor(screenCoords.getX());
+	    int sY1 = (int)Math.floor(screenCoords.getY());
+	    
+	    // Don't move over screen edge
+	    if ( ((sX1 <= margin) && left) ||
+	    	 ((sX1 >= (screen.getWidth()-margin)) && right) ||
+	    	 ((sY1 <= margin) && down) ||
+	    	 ((sY1 >= (screen.getHeight()-margin)) && up)
+	    	 ) {
+	    	// SCREEN EDGE
+	    } else {
+	    	setLocalTranslation(v);
+	    }
 	}
 
 	public void resetRotation() {
@@ -352,6 +370,12 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 		return lives <= 0;
 	}
 	
+	public void kill() {
+		lives = 0;
+		score = 0;
+		active = false;
+	}
+	
 	@Override
 	public void onScore(int score) {
 		this.score += score;
@@ -375,7 +399,12 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 		moveFactor = 10f;
 		
 		game.getRootNode().attachChild(this);
+		setLocalTranslation(new Vector3f(0, 0, game.getCamera().getLocation().z + 10f));
 		addLight();
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 }

@@ -151,6 +151,10 @@ public abstract class AbstractNode extends Node implements ICollidable {
 		return active;
 	}
 	
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
 	/**
 	 * List of {@link ANode} which we avoid collisions for the spawning process.
 	 * @return

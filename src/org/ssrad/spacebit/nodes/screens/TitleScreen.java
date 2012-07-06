@@ -64,9 +64,8 @@ public class TitleScreen extends AbstractScreen implements ActionListener {
 		}
 
 		if ( (name.equals("level_1") || name.equals("level_2")) && !keyPressed ) {
-			hide();
 			game.setLevel(name.equals("level_1") ? GameLevel.LEVEL_ONE : GameLevel.LEVEL_TWO);
-			game.run();
+			game.load();
 		}
 
 		if (name.equals("quit") && !keyPressed) {
