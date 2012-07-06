@@ -15,8 +15,8 @@ public class SpaceBit {
 
 	public static void main(String[] args) {
 		try {
-			 Logger.getLogger("com.jme3").setLevel(Level.SEVERE);
-			Logger.getLogger("org.ssrad").setLevel(Level.ALL);
+			Logger.getLogger("com.jme3").setLevel(Level.SEVERE);
+			Logger.getLogger("org.ssrad").setLevel(Level.WARNING);
 			
 			AppSettings settings = new AppSettings(true);
 			

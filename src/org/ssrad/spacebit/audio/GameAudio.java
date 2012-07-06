@@ -109,5 +109,9 @@ public class GameAudio {
 	public void setVolume(float volume) {
 		this.audioNode.setVolume(volume);
 	}
+	
+	public void detachFromParent() {
+		this.parentNode.detachChild(audioNode);
+	}
 
 }

@@ -1,5 +1,6 @@
 package org.ssrad.spacebit.nodes.screens;
 
+import org.ssrad.spacebit.audio.GameMusic;
 import org.ssrad.spacebit.enums.GameLevel;
 import org.ssrad.spacebit.game.Game;
 
@@ -48,6 +49,7 @@ public class LoadScreen extends AbstractScreen {
 		if (game.getShip() != null) {
 			game.getShip().setScore(0);
 			game.getShip().setLives(2);
+			game.getShip().setCoins(0);
 			game.getUpdateables().destroyObstacles();
 		}
 		game.getTimer().reset();
@@ -55,6 +57,11 @@ public class LoadScreen extends AbstractScreen {
 		if (!game.isLaunched()) {
 			game.init();
 		}
+		if (game.getGameMusic() != null) {
+			game.getGameMusic().detachFromParent();
+		}
+		game.setGameMusic(new GameMusic(game));		
+
 		game.run();
 	}
 

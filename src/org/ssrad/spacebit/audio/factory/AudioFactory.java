@@ -1,5 +1,7 @@
 package org.ssrad.spacebit.audio.factory;
 
+import java.util.Random;
+
 import org.ssrad.spacebit.audio.enums.SoundType;
 import org.ssrad.spacebit.main.SpaceBit;
 
@@ -18,9 +20,10 @@ public class AudioFactory {
 		String audioFilePath = "";
 
 		switch (soundType) {
-		// TODO: choose random track order, for 3 different music
 		case MUSIC:
-			audioFilePath = "8bp088_04_nullsleep_valentine_final.ogg";
+			// Pick a random track
+			Random r = new Random();
+			audioFilePath = (r.nextInt(3)+1) + ".ogg";
 			break;
 		case COINS:
 			audioFilePath = "laser.wav";

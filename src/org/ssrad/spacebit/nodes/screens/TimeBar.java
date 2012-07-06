@@ -28,7 +28,13 @@ public class TimeBar extends AbstractNode {
 	
 	@Override
 	public void update(float tpf) {
-		time.setText("Countdown " + (Game.GAME_TIME_SECONDS-(int)game.getTimer().getTimeInSeconds()));
+		int countDown = Game.GAME_TIME_SECONDS-(int)game.getTimer().getTimeInSeconds();
+		
+		if (countDown < 20) {
+			time.setColor(ColorRGBA.Red);    
+		}
+		
+		time.setText("Countdown " + countDown);
 	}
 	
 	@Override

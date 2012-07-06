@@ -41,10 +41,10 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	@Override
 	protected void init() {
 		random = new Random();
-		spatial = assetManager.loadModel("affe.obj");
+		spatial = assetManager.loadModel("affe/affe.obj");
 
 		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		Texture tex_ml = assetManager.loadTexture("affe.png");
+		Texture tex_ml = assetManager.loadTexture("affe/affe.png");
 		material.setTexture("ColorMap", tex_ml);
 		spatial.setMaterial(material);
 		
@@ -61,8 +61,8 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-		timer += tpf;		
-		fire.setLocalTranslation(spatial.getLocalTranslation().clone().add(0f, .5f, 0f));
+//		timer += tpf;		
+		fire.setLocalTranslation(spatial.getLocalTranslation().add(0f, .5f, 0f));
 		
 //		if (bananas.size() > 0) {
 //			// TODO: object not cleaned up, no clue why
@@ -78,7 +78,10 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 //				}
 //			}
 //		}
-//		spawnRandomBananas();
+//		if (timer > .7f) {
+//			timer = 0f;
+//			spawnRandomBananas();
+//		}
 	}
 	
 	private void startRandomRotation() {
@@ -111,10 +114,10 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	}
 	
 	private void spawnRandomBananas() {
-		if (random.nextInt(10) > 5 && (timer % 1d <= 0.01d)) {
+		if ((random.nextInt(10) > 7)) {
 			Banana b = new Banana(game);
 			addBanana(b);
-			b.setLocalTranslation(getLocalTranslation().clone().add(3f, 0, -7f));
+			b.setLocalTranslation(getLocalTranslation().add(3f, 0, -7f));
 		}
 	}
 	
@@ -185,7 +188,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	public void destroy() {
 		super.destroy();		
 		game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
-		//removeAllBananas();
+		removeAllBananas();
 	}
 
 	@Override

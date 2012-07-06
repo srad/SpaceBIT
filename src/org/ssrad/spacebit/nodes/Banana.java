@@ -13,7 +13,6 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Spatial;
 
 public class Banana extends AbstractNode implements ICollidable, IDamageMaker, IDestroyable, IDamageTaker {
 	
@@ -47,7 +46,7 @@ public class Banana extends AbstractNode implements ICollidable, IDamageMaker, I
 
 		rotate(FastMath.PI * tpf, 0, 0);
 
-		float deltaMove = FastMath.exp(speed * tpf) / 100;
+		float deltaMove = FastMath.exp(speed * tpf) / 10;
 		move(0, 0, -deltaMove);
 	}
 

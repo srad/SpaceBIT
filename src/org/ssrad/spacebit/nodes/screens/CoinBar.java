@@ -79,7 +79,7 @@ public class CoinBar extends AbstractScreen {
 		}
 		
 		attachChild(coinsNode);
-		coins.setText("Coins " + game.getShip().getCoins());
+		coins.setText("Power Rings  " + game.getShip().getCoins());
 	}
 
 }

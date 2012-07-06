@@ -46,7 +46,7 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 	
 	private void addScoreBar() {
 		scoreBar = new ScoreBar(game);
-		scoreBar.setLocalTranslation(game.getSettings().getWidth() - 160, game.getSettings().getHeight() - 10, 0f);
+		scoreBar.setLocalTranslation(game.getSettings().getWidth() - 200, game.getSettings().getHeight() - 10, 0f);
 		
 		attachChild(scoreBar);
 	}
@@ -86,9 +86,16 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 		inputManager.addMapping("shoot", new KeyTrigger(KeyInput.KEY_SPACE));
 				
 		inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_W));
+		inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_UP));
+		
 		inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_S));
+		inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_DOWN));
+		
 		inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_A));
+		inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
+		
 		inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_D));
+		inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
 		
 		inputManager.addMapping("bloom", new KeyTrigger(KeyInput.KEY_F1));
 		inputManager.addMapping("shadow", new KeyTrigger(KeyInput.KEY_F2));
@@ -124,10 +131,8 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 		if (name.equals("pause") && !keyPressed) {
 			if (game.isRunning()) {
 				game.pause();
-				game.getGameMusic().play();
 			} else {
 				game.run();
-				game.getGameMusic().play();
 			}
 		}	
 	

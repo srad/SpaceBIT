@@ -2,7 +2,6 @@
 package org.ssrad.spacebit.game;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -38,6 +37,7 @@ public class Updateables {
 	Node rootNode;
 	Random random;
 	float stopWatch = 0f;
+	private final float SPAWN_ZDISTANCE_FROM_CAM = 60f;
 	
 	// Enemies
 	private ArrayList<Ape> apes = new ArrayList<Ape>();
@@ -247,13 +247,13 @@ public class Updateables {
 		stopWatch += tpf;
 	}
 	
+	// TODO: too many vertices, rework
 	private void spawnRandomAsteroid() {
 		if ((random.nextInt(20) > 18)) {
 
 			Asteroid a = new Asteroid(game);
 			
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);			
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			Vector3f position = getSpawnCoordinates(a);		
 
 			a.setLocalTranslation(position);			
 			a.setCullHint(CullHint.Always);
@@ -277,56 +277,61 @@ public class Updateables {
 	private void spawnRandomTorusCoins() {
 		if (random.nextInt(20) > 12) {
 			TorusCoin t = new TorusCoin(game);;
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
-			// Random x position + random sign
-			// Minus: left side of the ship, Positive: right side
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			Vector3f position = getSpawnCoordinates(t);
 			t.setLocalTranslation(position);
 			addTorusCoin(t);
 		}
 	}
 
+	/** Prevent also collisions with other planets */
 	private void spawnRandomPlanet() {
-		if (random.nextInt(20) > 18) {
-			Planet planet = new Planet(game);;
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
-			// Random x position + random sign
-			// Minus: left side of the ship, Positive: right side
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
-			planet.setLocalTranslation(position);
-			addPlanet(planet);
+		if (random.nextInt(20) > 17) {
+			Planet p = new Planet(game);;
+			
+			Vector3f position = getSpawnCoordinates(p);	
+
+			p.setLocalTranslation(position);			
+			p.setCullHint(CullHint.Always);
+			
+			// Check for free space
+			for (Iterator<Planet> it = planets.iterator(); it.hasNext();) {
+				Planet p_i = (Planet) it.next();
+				
+				// First test if not colliding with another ape
+				rootNode.attachChild(p);
+				if (p.getWorldBound().intersects(p_i.getWorldBound())) {
+					rootNode.detachChild(p);
+					return;
+				}
+			}
+			p.setCullHint(CullHint.Never);
+			addPlanet(p);
 		}
 	}	
 	
 	private void spawnRandomWarpCore() {
 		if (random.nextInt(20) > 18) {
 			WarpCore core = new WarpCore(game);;
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
-			// Random x position + random sign
-			// Minus: left side of the ship, Positive: right side
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			Vector3f position = getSpawnCoordinates(core);
 			core.setLocalTranslation(position);
 			addWarpCore(core);
 		}
 	}	
 	
 	private void spawnRandomStars() {
-		Star star = new Star(game);;
-		Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, random.nextFloat() * 70f + 40f);
-		// Random x position + random sign
-		// Minus: left side of the ship, Positive: right side
-		position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 40f;
+		Star star = new Star(game);
+		
+		Vector3f position = getSpawnCoordinates(star);
 		star.setLocalTranslation(position);
 		addStar(star);
 	}
 	
 	private void spawnRandomApes() {
-		if ((random.nextInt(20) > 12)) {
+		if ((random.nextInt(20) > 11)) {
 
 			Ape newApe = new Ape(game);;
 			
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);			
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			Vector3f position = getSpawnCoordinates(newApe);	
 
 			newApe.setLocalTranslation(position);			
 			newApe.setCullHint(CullHint.Always);
@@ -352,8 +357,7 @@ public class Updateables {
 			
 			BlackHole blackHole = new BlackHole(game);;
 			
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);			
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			Vector3f position = getSpawnCoordinates(blackHole);	
 			
 			blackHole.setLocalTranslation(position);			
 			blackHole.setCullHint(CullHint.Always);
@@ -379,8 +383,7 @@ public class Updateables {
 
 			Ufo newUfo = new Ufo(game);;
 			
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);			
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			Vector3f position = getSpawnCoordinates(newUfo);
 
 			newUfo.setLocalTranslation(position);			
 			newUfo.setCullHint(CullHint.Always);
@@ -404,13 +407,18 @@ public class Updateables {
 	private void spawnRandomHeart() {
 		if (random.nextInt(20) > 16) {
 			Heart heart = new Heart(game);;
-			Vector3f position = game.getShip().getLocalTranslation().clone().add(0f, 0f, 50f);
-			// Random x position + random sign
-			// Minus: left side of the ship, Positive: right side
-			position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 32f;
+			Vector3f position = getSpawnCoordinates(heart);
 			heart.setLocalTranslation(position);
 			addHeart(heart);
 		}
+	}
+	
+	public Vector3f getSpawnCoordinates(AbstractNode n) {
+		Vector3f position = game.getCamera().getLocation().add(0f, 0f, SPAWN_ZDISTANCE_FROM_CAM);
+		position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 40f;
+		position.y = 0;
+		
+		return position;
 	}
 
 	public void addLaser(Laser projectile) {

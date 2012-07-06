@@ -27,7 +27,7 @@ public class TitleScreen extends AbstractScreen implements ActionListener {
 	protected void init() {
 		super.init();
 		
-		background = new Picture("Test");
+		background = new Picture("TitleScreen");
 		
 		background.setImage(game.getAssetManager(), "title-screen.png", true);		
 		background.setWidth(game.getSettings().getWidth());
@@ -49,19 +49,21 @@ public class TitleScreen extends AbstractScreen implements ActionListener {
 		inputManager.addMapping("level_1", new KeyTrigger(KeyInput.KEY_1));
 		inputManager.addMapping("level_2", new KeyTrigger(KeyInput.KEY_2));
 		
-		inputManager.addMapping("models", new KeyTrigger(KeyInput.KEY_M));
 		inputManager.addMapping("copyright", new KeyTrigger(KeyInput.KEY_C));
 		inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_ESCAPE));
-		inputManager.addListener(this, new String[] { "pause", "level_1", "level_2", "quit", "models", "help", "copyright" });
+		inputManager.addListener(this, new String[] { "pause", "level_1", "level_2", "quit", "help", "copyright" });
+	}
+	
+	@Override
+	public void show() {
+		super.show();
+		if (game.getGameMusic() != null) {
+			game.getGameMusic().stop();
+		}
 	}
 
 	@Override
 	public void onAction(String name, boolean keyPressed, float tpf) {
-		
-		if (name.equals("models") && !keyPressed) {
-			hide();
-			game.getModelScreen().show();
-		}
 
 		if (name.equals("help") && !keyPressed) {
 			hide();

@@ -15,12 +15,8 @@ public class GameMusic extends GameAudio {
 
 	/** Stops the music if it is playing. */
 	public void stop() {
-		if (this.isPlaying) {
-			this.isPlaying = false;
-			super.stop();
-		} else {
-			this.play();
-		}
+		this.isPlaying = false;
+		super.stop();
 	}
 
 	/** If the music is playing it will stop. */

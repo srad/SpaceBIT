@@ -84,11 +84,11 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	}
 
 	private void addShip() {
-		spatial = this.assetManager.loadModel("ship6.obj");		
+		spatial = this.assetManager.loadModel("ship6/ship6.obj");		
 		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");
 		
-		material.setTexture("DiffuseMap", this.assetManager.loadTexture("ship6.png"));
-		material.setTexture("NormalMap", this.assetManager.loadTexture("ship6_normals.png"));
+		material.setTexture("DiffuseMap", this.assetManager.loadTexture("ship6/ship6.png"));
+		material.setTexture("NormalMap", this.assetManager.loadTexture("ship6/ship6_normals.png"));
 		
 		material.setBoolean("UseMaterialColors", true);
 		material.setColor("Specular", ColorRGBA.White);
@@ -409,6 +409,10 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public void setCoins(int coins) {
+		this.coins = coins;
 	}
 
 }

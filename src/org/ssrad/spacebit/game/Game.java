@@ -12,7 +12,6 @@ import org.ssrad.spacebit.nodes.screens.GameOverScreen;
 import org.ssrad.spacebit.nodes.screens.HelpScreen;
 import org.ssrad.spacebit.nodes.screens.HudScreen;
 import org.ssrad.spacebit.nodes.screens.LoadScreen;
-import org.ssrad.spacebit.nodes.screens.ModelScreen;
 import org.ssrad.spacebit.nodes.screens.TitleScreen;
 import org.ssrad.spacebit.nodes.screens.WinScreen;
 
@@ -33,7 +32,7 @@ import com.jme3.util.SkyFactory;
 
 public class Game extends SimpleApplication {
 	
-	public static int GAME_TIME_SECONDS = 200;
+	public static int GAME_TIME_SECONDS = 300;
 	public static int MUST_SCORE = 2000;
 	
 	public final static boolean DEBUG = false;
@@ -44,7 +43,7 @@ public class Game extends SimpleApplication {
 	FilterPostProcessor fpp;
 	
 	/** Game screens. */
-	private AbstractScreen hudScreen, titleScreen, gameOverScreen, winScreen, loadScreen, modelScreen, helpScreen, copyrightScreen;
+	private AbstractScreen hudScreen, titleScreen, gameOverScreen, winScreen, loadScreen, helpScreen, copyrightScreen;
     
 	/** Currently visible screen. */
 	AbstractScreen screen;
@@ -68,7 +67,7 @@ public class Game extends SimpleApplication {
 	private LightScatteringFilter lsFilter;
 	private boolean useLSFilter = true;
 
-	private GameMusic gameMusic;
+	private GameMusic gameMusic = null;
 
 	Updateables updateables;
 
@@ -83,7 +82,6 @@ public class Game extends SimpleApplication {
 		titleScreen = new TitleScreen(this);
 		loadScreen = new LoadScreen(this);
 		winScreen = new WinScreen(this);
-		modelScreen = new ModelScreen(this);
 		helpScreen = new HelpScreen(this);
 		copyrightScreen = new CopyrightScreen(this);
 
@@ -115,11 +113,6 @@ public class Game extends SimpleApplication {
 
         addEffects();
         
-	    // AUDIO
-	    gameMusic = new GameMusic(this);
-	    //gameMusic.setVolume(0.01f);
-	    GameLogger.Log(Level.INFO, "Added and playing music");
-
 		setUpLight();
 		updateables = new Updateables(this);
 	}
@@ -151,7 +144,7 @@ public class Game extends SimpleApplication {
 
 	}
 	
-	private void setUpLight() {
+	public void setUpLight() {
 		// We add light so we see the scene
 		AmbientLight al = new AmbientLight();
 		al.setColor(ColorRGBA.White.mult(500f));
@@ -200,7 +193,8 @@ public class Game extends SimpleApplication {
 				
 				// FAIL
 				if ((int)getTimer().getTimeInSeconds() > GAME_TIME_SECONDS && ship.getScore() < MUST_SCORE) {
-					ship.destroy();		
+					ship.destroy();
+					getTimer().reset();
 				}
 				// WIN
 				else if ((ship.getScore() >= MUST_SCORE) && ((int)getTimer().getTimeInSeconds() <= GAME_TIME_SECONDS)) {
@@ -209,6 +203,7 @@ public class Game extends SimpleApplication {
 						ship.setScore(0);
 						getTimer().reset();
 						updateables.destroyObstacles();
+						getGameMusic().stop();
 						level = GameLevel.LEVEL_TWO;
 						loadScreen.show();
 					}
@@ -306,6 +301,10 @@ public class Game extends SimpleApplication {
 	public GameMusic getGameMusic() {
 		return gameMusic;
 	}
+	
+	public void setGameMusic(GameMusic gameMusic) {
+		this.gameMusic = gameMusic;
+	}
 
 	public void toggleBloom() {
 		if (bloom) {
@@ -349,10 +348,6 @@ public class Game extends SimpleApplication {
 	
 	public AbstractScreen getHudScreen() {
 		return hudScreen;
-	}
-
-	public AbstractScreen getModelScreen() {
-		return modelScreen;
 	}
 
 	public AbstractScreen getGameOverScreen() {

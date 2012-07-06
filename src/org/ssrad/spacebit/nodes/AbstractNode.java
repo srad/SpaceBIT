@@ -41,6 +41,8 @@ public abstract class AbstractNode extends Node implements ICollidable {
 	protected Material material = null;
 	protected PointLight light = null;
 	
+	private static float updateTimer = 0f;
+	
 	public AbstractNode(Game game) {
 		this.game = game;
 		this.assetManager = game.getAssetManager();
@@ -51,11 +53,16 @@ public abstract class AbstractNode extends Node implements ICollidable {
 	protected abstract void init();
 
 	public void update(float tpf) {
-		// Out of sight, remove
-		if (game.getCamera().getLocation().z > getLocalTranslation().z) {
-			active = false;
+		updateTimer += tpf;
+		
+		if (updateTimer > 0.2f) {
+			updateTimer = 0f;
+			// Out of sight, remove
+			if (game.getCamera().getLocation().z > getLocalTranslation().z) {
+				active = false;
+			}
+			checkCollisions();
 		}
-		checkCollisions();
 	}
 	
 	public void destroy() {
