@@ -1,11 +1,10 @@
 package org.ssrad.spacebit.main;
 
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.apache.log4j.Level;
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.helpers.GameLogger;
+import org.ssrad.spacebit.game.GameSettings;
+import org.ssrad.spacebit.helpers.LogHelper;
+import org.ssrad.spacebit.helpers.SettingsHelper;
 
 import com.jme3.system.AppSettings;
 
@@ -15,28 +14,35 @@ public class SpaceBit {
 
 	public static void main(String[] args) {
 		try {
-			Logger.getLogger("com.jme3").setLevel(Level.SEVERE);
-			Logger.getLogger("org.ssrad").setLevel(Level.WARNING);
-			
+			java.util.logging.Logger.getLogger("com.jme3").setLevel(java.util.logging.Level.OFF);
+
 			AppSettings settings = new AppSettings(true);
+			settings.setSettingsDialogImage("splash.png");
 			
-			settings.setResolution(1024, 768);
+			SettingsHelper settingsHelper = new SettingsHelper();
+			GameSettings gameSettings = settingsHelper.getGameSettings();
+			
+			settings.setResolution(gameSettings.gethResolution(), gameSettings.getvResolution());
+			settings.setVSync(gameSettings.isEnableVSync());
+			settings.setFullscreen(gameSettings.isFullScreen());
+			settings.setDepthBits(gameSettings.getBitsPerPixel());
+			settings.setSamples(gameSettings.getSamples());
+			
 			settings.setTitle("Space.BIT");
-			
-			game = new Game();
+						
+			game = new Game(settingsHelper);
 			game.setSettings(settings);
-			//game.setShowSettings(false);
-			game.start();			
+			game.start();
 		} catch (Exception e) {
-			GameLogger.Log(Level.WARNING, e.getMessage());
+			LogHelper.getLogger().log(Level.ERROR, e.getMessage());
 		}
 	}
 
 	public static Game getInstance() {
 		if (game == null) {
-			game = new Game();
+			game = new Game(new SettingsHelper());
 		}
 		return game;
 	}
-	
+
 }

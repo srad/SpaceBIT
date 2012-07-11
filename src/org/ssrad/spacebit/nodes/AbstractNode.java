@@ -55,7 +55,7 @@ public abstract class AbstractNode extends Node implements ICollidable {
 	public void update(float tpf) {
 		updateTimer += tpf;
 		
-		if (updateTimer > 0.2f) {
+		if (updateTimer > 0.1f) {
 			updateTimer = 0f;
 			// Out of sight, remove
 			if (game.getCamera().getLocation().z > getLocalTranslation().z) {

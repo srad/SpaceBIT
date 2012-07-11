@@ -18,7 +18,7 @@ import com.jme3.scene.shape.Cylinder;
 public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, IScoreTaker {
 
 	float moveDistance = 0f;
-	float timer = 0f;
+	float timer = 0.5f;
 	
 	GameAudio audio;
 

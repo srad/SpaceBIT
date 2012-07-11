@@ -82,6 +82,7 @@ public class TitleScreen extends AbstractScreen implements ActionListener {
 		}
 
 		if (name.equals("quit") && !keyPressed) {
+			game.saveSettings();
 			game.stop();
 		}
 		

@@ -1,10 +1,11 @@
 package org.ssrad.spacebit.game;
 
-import java.util.logging.Level;
+import java.io.FileNotFoundException;
 
 import org.ssrad.spacebit.audio.GameMusic;
 import org.ssrad.spacebit.enums.GameLevel;
-import org.ssrad.spacebit.helpers.GameLogger;
+import org.ssrad.spacebit.helpers.LogHelper;
+import org.ssrad.spacebit.helpers.SettingsHelper;
 import org.ssrad.spacebit.nodes.Ship;
 import org.ssrad.spacebit.nodes.screens.AbstractScreen;
 import org.ssrad.spacebit.nodes.screens.CopyrightScreen;
@@ -74,6 +75,13 @@ public class Game extends SimpleApplication {
 	private float timer;
 	
 	private boolean win = false;
+	
+	private SettingsHelper settingsHelper;
+	private GameSettings gameSettings;
+	
+	public Game(SettingsHelper settingsHelper) {
+		this.setSettingsHelper(settingsHelper);
+	}
 
 	@Override
 	public void simpleInitApp() {	
@@ -103,13 +111,11 @@ public class Game extends SimpleApplication {
 		// SHIP
 		ship = new Ship(this);
 		rootNode.attachChild(ship);
-		GameLogger.Log(Level.INFO, "Added ship");
 
 	    // CAMERA		
 		cam.setLocation(ship.clone().getLocalTranslation().add(0, 60f, -25f));
 		cam.lookAt(ship.getLocalTranslation(), Vector3f.UNIT_Y);
         flyCam.setEnabled(false);
-        GameLogger.Log(Level.INFO, "Adjusted camera");
 
         addEffects();
         
@@ -120,7 +126,7 @@ public class Game extends SimpleApplication {
 	private void addEffects() {
         // FILTERS
 		fpp = new FilterPostProcessor(assetManager);
-				
+
 		bloomFilter = new BloomFilter(BloomFilter.GlowMode.Objects);
 		fpp.addFilter(bloomFilter);
 		
@@ -129,19 +135,14 @@ public class Game extends SimpleApplication {
 		fpp.addFilter(lsFilter);
 		
 		viewPort.addProcessor(fpp);
-		GameLogger.Log(Level.INFO, "Added bloom filter");
 
 		shadowRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
 	    shadowRenderer.setDirection(new Vector3f(0,0,20f)); // light direction
 	    
 	    viewPort.addProcessor(shadowRenderer);
-	    
-	    GameLogger.Log(Level.INFO, "Added sharow renderer");
-
         viewPort.addProcessor(fpp);
 	    
 	    rootNode.setShadowMode(ShadowMode.Off);
-
 	}
 	
 	public void setUpLight() {
@@ -172,7 +173,6 @@ public class Game extends SimpleApplication {
 	        up = assetManager.loadTexture("skybox/stars_lila/skybox_lila_top3.png");
 	        down = assetManager.loadTexture("skybox/stars_lila/skybox_lila_bottom4.png");        	
         }
-
         rootNode.attachChild(SkyFactory.createSky(assetManager, west, east, north, south, up, down));
     }
         
@@ -365,5 +365,34 @@ public class Game extends SimpleApplication {
 	public AbstractScreen getCopyrightScreen() {
 		return copyrightScreen;
 	}
+
+	public SettingsHelper getSettingsHelper() {
+		return settingsHelper;
+	}
+
+	public void setSettingsHelper(SettingsHelper settingsHelper) {
+		this.settingsHelper = settingsHelper;
+		try {
+			this.gameSettings = settingsHelper.getGameSettings();
+		} catch (FileNotFoundException e) {
+			LogHelper.getLogger().error("No gamesetting file.");
+		}
+	}
 	
+	@Override
+	public void setSettings(AppSettings settings) {
+		super.setSettings(settings);
+		
+		gameSettings.setBitsPerPixel(settings.getBitsPerPixel());
+		gameSettings.setEnableVSync(settings.isVSync());
+		gameSettings.setFullScreen(settings.isFullscreen());
+		gameSettings.setvResolution(settings.getHeight());
+		gameSettings.sethResolution(settings.getWidth());
+		gameSettings.setSamples(settings.getSamples());
+	}
+	
+	public void saveSettings() {
+		this.settingsHelper.setGameSettings(this.gameSettings);
+	}
+
 }

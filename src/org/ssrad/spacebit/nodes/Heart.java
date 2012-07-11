@@ -60,7 +60,7 @@ public class Heart extends AbstractNode implements IDamageMaker, IDestroyable, I
 
 	@Override
 	public int getDamage() {
-		return 3;
+		return 7;
 	}
 
 	@Override
