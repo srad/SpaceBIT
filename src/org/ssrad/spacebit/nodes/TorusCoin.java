@@ -1,22 +1,22 @@
 package org.ssrad.spacebit.nodes;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.ICoinGiver;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
 
 
-public class TorusCoin extends AbstractNode implements ICoinGiver, IDestroyable, IScoreGiver {
+public class TorusCoin extends AbstractNode implements ICoinGiver, IDestroyable, IScoreGiver, ISpawnable {
 	
 	public TorusCoin(Game game) {
 		super(game);
@@ -37,11 +37,6 @@ public class TorusCoin extends AbstractNode implements ICoinGiver, IDestroyable,
 		
 		spatial.setMaterial(material);
 		scale(1.4f);
-		
-		setShadowMode(ShadowMode.Cast);
-
-		addLight();
-		
 		attachChild(spatial);
 	}
 
@@ -49,15 +44,6 @@ public class TorusCoin extends AbstractNode implements ICoinGiver, IDestroyable,
 	public void update(float tpf) {
 		super.update(tpf);		
 		spatial.rotate(0, FastMath.PI * tpf, 0);
-		light.setPosition(getLocalTranslation());	
-	}
-	
-	private void addLight() {
-		light = new PointLight();
-		light.setColor(ColorRGBA.Yellow);
-		light.setRadius(20f);
-		
-		game.getRootNode().addLight(light);
 	}
 	
 	public Spatial getSpatial() {
@@ -88,6 +74,16 @@ public class TorusCoin extends AbstractNode implements ICoinGiver, IDestroyable,
 	@Override
 	public boolean isScoreCounted() {
 		return active == false;
+	}
+	
+	@Override
+	public boolean isReadyToSpawn() {
+		return (new Random()).nextInt(20) > 10;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> getCollisionAvoiders() {
+		return null;
 	}
 
 }

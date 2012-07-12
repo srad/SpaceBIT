@@ -6,6 +6,7 @@ import java.util.Random;
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
@@ -13,7 +14,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver {
+public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver, ISpawnable {
 
 	Random random;
 		
@@ -76,6 +77,16 @@ public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver 
 	@Override
 	public boolean isScoreCounted() {
 		return true;
+	}
+	
+	@Override
+	public boolean isReadyToSpawn() {
+		return random.nextInt(20) > 18;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> getCollisionAvoiders() {
+		return null;
 	}
 
 }

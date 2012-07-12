@@ -1,6 +1,5 @@
 package org.ssrad.spacebit.nodes;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
@@ -10,6 +9,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
+import java.util.ArrayList;
 
 public class Star extends AbstractNode {
 	
@@ -66,6 +66,10 @@ public class Star extends AbstractNode {
 //			}
 //		}
 	}
+    
+    @Override
+	protected void checkCollisions() {
+    }
 	
 	@Override
 	public void onCollision(AbstractNode collidedWith) {

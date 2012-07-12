@@ -8,6 +8,7 @@ import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
@@ -15,7 +16,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver {
+public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver, ISpawnable {
 	
 	Random random;
 	float scale;
@@ -69,7 +70,7 @@ public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, 
 	@Override
 	public void destroy() {
 		super.destroy();
-		game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, getLocalTranslation()));
+		game.getUpdateables().add(new ShockWaveExplosion(game, getLocalTranslation()));
 	}
 
 	@Override
@@ -95,6 +96,16 @@ public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, 
 	@Override
 	public void onDamage(int damage) {
 		health += damage;
+	}
+	
+	@Override
+	public boolean isReadyToSpawn() {
+		return random.nextInt(20) > 18;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> getCollisionAvoiders() {
+		return game.getUpdateables().getAllObstracles();
 	}
 
 }

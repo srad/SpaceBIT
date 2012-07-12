@@ -22,7 +22,6 @@ import org.ssrad.spacebit.nodes.WarpCore;
 
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial.CullHint;
 
 /**
  * This class contains most entities that needs to be updated
@@ -38,8 +37,7 @@ public class Updateables {
 	Random random;
 	float stopWatch = 0f;
 	private final float SPAWN_ZDISTANCE_FROM_CAM = 60f;
-	
-	// Enemies
+
 	private ArrayList<Ape> apes = new ArrayList<Ape>();
 	private ArrayList<Ufo> ufos = new ArrayList<Ufo>();
 	
@@ -66,10 +64,9 @@ public class Updateables {
 	}
 	
 	public void update(float tpf) {
-		if (Game.DEBUG) {
-			System.err.println(ufos.size() + ", " + fireExplosions.size() + ", " + shockWaveExplosions.size() + ", " + torusCoins.size() + ", " + hearts.size() + ", " + stars.size() + ", " + lasers.size());
-		}
 		
+		System.err.printf("%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n", apes.size(), ufos.size(), planets.size(), shockWaveExplosions.size(), fireExplosions.size(), warpCores.size(), lasers.size(), stars.size(), blackHoles.size(), torusCoins.size(), hearts.size());
+	
 		// Update lasers
 		if (lasers.size() > 0) {
 			for (Iterator<Laser> it = lasers.iterator(); it.hasNext();) {
@@ -201,17 +198,17 @@ public class Updateables {
 		}
 		
 		// Update black holes
-//		if (blackHoles.size() > 0) {
-//			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
-//				BlackHole blackHole = (BlackHole) it.next();
-//				if (!blackHole.isActive()) {
-//					it.remove();
-//					blackHole.destroy();
-//				} else {
-//					blackHole.update(tpf);
-//				}
-//			}
-//		}
+		if (blackHoles.size() > 0) {
+			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
+				BlackHole blackHole = (BlackHole) it.next();
+				if (!blackHole.isActive()) {
+					it.remove();
+					blackHole.destroy();
+				} else {
+					blackHole.update(tpf);
+				}
+			}
+		}
 		
 		// Update asteroids
 //		if (asteroids.size() > 0) {
@@ -229,188 +226,55 @@ public class Updateables {
 		if (stopWatch > 0.3f) {
 			stopWatch = 0f;
 			
-			spawnRandomTorusCoins();
-			spawnRandomHeart();
+			new TorusCoin(game).trySpawn();
+			new Heart(game).trySpawn();
 			spawnRandomStars();
-			spawnRandomWarpCore();
-			//spawnRandomBlackHoles();
-			//spawnRandomAsteroid();
-			spawnRandomPlanet();
+			new WarpCore(game).trySpawn();
+//			new BlackHole(game).trySpawn();
+//			new Planet(game).trySpawn();
 			
 			if (game.getLevel() == GameLevel.LEVEL_ONE) {
-				spawnRandomApes();
+				new Ape(game).trySpawn();
 			} else if (game.getLevel() == GameLevel.LEVEL_TWO) {
-				spawnRandomUfos();
+				new Ufo(game).trySpawn();
 			}
-		}
-		
+		}		
 		stopWatch += tpf;
 	}
 	
 	// TODO: too many vertices, rework
-	private void spawnRandomAsteroid() {
-		if ((random.nextInt(20) > 18)) {
+//	private void spawnRandomAsteroid() {
+//		if ((random.nextInt(20) > 18)) {
+//
+//			Asteroid a = new Asteroid(game);
+//			
+//			Vector3f position = getSpawnCoordinates(a);		
+//
+//			a.setLocalTranslation(position);			
+//			a.setCullHint(CullHint.Always);
+//			
+//			// Check for free space
+//			for (Iterator<Asteroid> it = asteroids.iterator(); it.hasNext();) {
+//				Asteroid a_i = (Asteroid) it.next();
+//				
+//				// First test if not colliding with another ape
+//				rootNode.attachChild(a);
+//				if (a.getWorldBound().intersects(a_i.getWorldBound())) {
+//					rootNode.detachChild(a);
+//					return;
+//				}
+//			}
+//			a.setCullHint(CullHint.Never);
+//			addAsteroid(a);
+//		}
+//	}
 
-			Asteroid a = new Asteroid(game);
-			
-			Vector3f position = getSpawnCoordinates(a);		
-
-			a.setLocalTranslation(position);			
-			a.setCullHint(CullHint.Always);
-			
-			// Check for free space
-			for (Iterator<Asteroid> it = asteroids.iterator(); it.hasNext();) {
-				Asteroid a_i = (Asteroid) it.next();
-				
-				// First test if not colliding with another ape
-				rootNode.attachChild(a);
-				if (a.getWorldBound().intersects(a_i.getWorldBound())) {
-					rootNode.detachChild(a);
-					return;
-				}
-			}
-			a.setCullHint(CullHint.Never);
-			addAsteroid(a);
-		}
-	}
-
-	private void spawnRandomTorusCoins() {
-		if (random.nextInt(20) > 12) {
-			TorusCoin t = new TorusCoin(game);;
-			Vector3f position = getSpawnCoordinates(t);
-			t.setLocalTranslation(position);
-			addTorusCoin(t);
-		}
-	}
-
-	/** Prevent also collisions with other planets */
-	private void spawnRandomPlanet() {
-		if (random.nextInt(20) > 17) {
-			Planet p = new Planet(game);;
-			
-			Vector3f position = getSpawnCoordinates(p);	
-
-			p.setLocalTranslation(position);			
-			p.setCullHint(CullHint.Always);
-			
-			// Check for free space
-			for (Iterator<Planet> it = planets.iterator(); it.hasNext();) {
-				Planet p_i = (Planet) it.next();
-				
-				// First test if not colliding with another ape
-				rootNode.attachChild(p);
-				if (p.getWorldBound().intersects(p_i.getWorldBound())) {
-					rootNode.detachChild(p);
-					return;
-				}
-			}
-			p.setCullHint(CullHint.Never);
-			addPlanet(p);
-		}
-	}	
-	
-	private void spawnRandomWarpCore() {
-		if (random.nextInt(20) > 18) {
-			WarpCore core = new WarpCore(game);;
-			Vector3f position = getSpawnCoordinates(core);
-			core.setLocalTranslation(position);
-			addWarpCore(core);
-		}
-	}	
-	
 	private void spawnRandomStars() {
 		Star star = new Star(game);
 		
 		Vector3f position = getSpawnCoordinates(star);
 		star.setLocalTranslation(position);
-		addStar(star);
-	}
-	
-	private void spawnRandomApes() {
-		if ((random.nextInt(20) > 11)) {
-
-			Ape newApe = new Ape(game);;
-			
-			Vector3f position = getSpawnCoordinates(newApe);	
-
-			newApe.setLocalTranslation(position);			
-			newApe.setCullHint(CullHint.Always);
-			
-			// Check for free space
-			for (Iterator<Ape> it = apes.iterator(); it.hasNext();) {
-				Ape ape_i = (Ape) it.next();
-				
-				// First test if not colliding with another ape
-				rootNode.attachChild(newApe);
-				if (newApe.getWorldBound().intersects(ape_i.getWorldBound())) {
-					rootNode.detachChild(newApe);
-					return;
-				}
-			}
-			newApe.setCullHint(CullHint.Never);
-			addApe(newApe);
-		}
-	}
-	
-	private void spawnRandomBlackHoles() {
-		if ((random.nextInt(20) > 17)) {
-			
-			BlackHole blackHole = new BlackHole(game);;
-			
-			Vector3f position = getSpawnCoordinates(blackHole);	
-			
-			blackHole.setLocalTranslation(position);			
-			blackHole.setCullHint(CullHint.Always);
-			
-			// Check for free space
-			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
-				BlackHole currentBlackHole = (BlackHole) it.next();
-				
-				// First test if not colliding with another ape
-				rootNode.attachChild(blackHole);
-				if (blackHole.getWorldBound().intersects(currentBlackHole.getWorldBound())) {
-					rootNode.detachChild(blackHole);
-					return;
-				}
-			}
-			blackHole.setCullHint(CullHint.Never);
-			addBlackHole(blackHole);
-		}
-	}
-	
-	private void spawnRandomUfos() {
-		if (random.nextInt(20) > 15) {
-
-			Ufo newUfo = new Ufo(game);;
-			
-			Vector3f position = getSpawnCoordinates(newUfo);
-
-			newUfo.setLocalTranslation(position);			
-			newUfo.setCullHint(CullHint.Always);
-			
-			// Check for free space
-			for (Iterator<Ufo> it = ufos.iterator(); it.hasNext();) {
-				Ufo currentUfo = (Ufo) it.next();
-				
-				// First test if not colliding with another ufo
-				rootNode.attachChild(newUfo);
-				if (newUfo.getWorldBound().intersects(currentUfo.getWorldBound())) {
-					rootNode.detachChild(newUfo);
-					return;
-				}
-			}
-			newUfo.setCullHint(CullHint.Never);
-			addUfo(newUfo);
-		}
-	}
-	
-	private void spawnRandomHeart() {
-		if (random.nextInt(20) > 16) {
-			Heart heart = new Heart(game);;
-			Vector3f position = getSpawnCoordinates(heart);
-			heart.setLocalTranslation(position);
-			addHeart(heart);
-		}
+		add(star);
 	}
 	
 	public Vector3f getSpawnCoordinates(AbstractNode n) {
@@ -420,92 +284,26 @@ public class Updateables {
 		
 		return position;
 	}
-
-	public void addLaser(Laser projectile) {
-		lasers.add(projectile);
-		rootNode.attachChild(projectile);
-	}
 	
-	public ArrayList<Laser> getLasers() {
-		return lasers;
-	}
-	
-	public void addTorusCoin(TorusCoin torusCoin) {
-		torusCoins.add(torusCoin);
-		rootNode.attachChild(torusCoin);
-	}
-	
-	public void addApe(Ape ape) {
-		apes.add(ape);
-		rootNode.attachChild(ape);
-	}
-	
-	public void addUfo(Ufo ufo) {
-		ufos.add(ufo);
-		rootNode.attachChild(ufo);
-	}
-	
-	public void addHeart(Heart heart) {
-		hearts.add(heart);
-		rootNode.attachChild(heart);
-	}
-	
-	public void addShockWaveExplosion(ShockWaveExplosion explosion) {
-		shockWaveExplosions.add(explosion);
-		rootNode.attachChild(explosion);
-	}
-	
-	public void addFireExplosion(FireExplosion explosion) {
-		fireExplosions.add(explosion);
-		rootNode.attachChild(explosion);
-	}
-	
-	public void addStar(Star star) {
-		stars.add(star);
-		rootNode.attachChild(star);
-	}
-	
-	public void addWarpCore(WarpCore warpCore) {
-		warpCores.add(warpCore);
-		rootNode.attachChild(warpCore);
-	}
-	
-	public void addPlanet(Planet planet) {
-		planets.add(planet);
-		rootNode.attachChild(planet);
-	}	
-
-	public ArrayList<Ufo> getUfos() {
-		return ufos;
-	}
-	
-	public ArrayList<Asteroid> getAsteroids() {
-		return asteroids;
-	}
-	
-	public void addBlackHole(BlackHole blackHole) {
-		blackHoles.add(blackHole);
-		rootNode.attachChild(blackHole);
-	}
-	
-	public void addAsteroid(Asteroid asteroid) {
-		asteroids.add(asteroid);
-		rootNode.attachChild(asteroid);
-	}
-	
-	public ArrayList<Ape> getApes() {
-		return apes;
-	}
-
-	public ArrayList<Star> getStars() {
-		return stars;
-	}
-	
-	public ArrayList<BlackHole> getBlackHoles() {
-		return blackHoles;
+	@SuppressWarnings("serial")
+	public ArrayList<AbstractNode> getAllObstracles() {
+		return new ArrayList<AbstractNode>() {{
+			addAll(apes);
+			addAll(ufos);
+			addAll(blackHoles);
+			addAll(planets);
+		}};
 	}
 
 	public void destroyObstacles() {
+		if (blackHoles.size() > 0) {
+			for (Iterator<BlackHole> it = blackHoles.iterator(); it.hasNext();) {
+				BlackHole b = (BlackHole) it.next();
+				it.remove();
+				b.destroy();
+			}
+		}
+		
 		if (ufos.size() > 0) {
 			for (Iterator<Ufo> it = ufos.iterator(); it.hasNext();) {
 				Ufo ufo = (Ufo) it.next();
@@ -530,7 +328,64 @@ public class Updateables {
 			}
 		}
 	}
+	
+	/**
+	 * They right way to do this would be polymorpism,
+	 * but this is more compact.
+	 */
+	public void add(AbstractNode abstractNode) {
+		if (abstractNode instanceof Ape) {
+			apes.add((Ape) abstractNode);
+		} else if (abstractNode instanceof BlackHole) {
+			blackHoles.add((BlackHole) abstractNode);
+		} else if (abstractNode instanceof Ufo) {
+			ufos.add((Ufo) abstractNode);
+		} else if (abstractNode instanceof Planet) {
+			planets.add((Planet) abstractNode);
+		} else if (abstractNode instanceof TorusCoin) {
+			torusCoins.add((TorusCoin) abstractNode);
+		} else if (abstractNode instanceof Heart) {
+			hearts.add((Heart) abstractNode);
+		} else if (abstractNode instanceof WarpCore) {
+			warpCores.add((WarpCore) abstractNode);
+		} else if (abstractNode instanceof ShockWaveExplosion) {
+			shockWaveExplosions.add((ShockWaveExplosion) abstractNode);
+		} else if (abstractNode instanceof FireExplosion) {
+			fireExplosions.add((FireExplosion) abstractNode);
+		} else if (abstractNode instanceof Laser) {
+			lasers.add((Laser) abstractNode);
+		} else if (abstractNode instanceof Star) {
+			stars.add((Star) abstractNode);
+		} else {
+			return;
+		}
+		rootNode.attachChild(abstractNode);
+	}	
+	
+	public ArrayList<Laser> getLasers() {
+		return lasers;
+	}
 
+	public ArrayList<Ufo> getUfos() {
+		return ufos;
+	}
+	
+	public ArrayList<Asteroid> getAsteroids() {
+		return asteroids;
+	}
+	
+	public ArrayList<Ape> getApes() {
+		return apes;
+	}
+
+	public ArrayList<Star> getStars() {
+		return stars;
+	}
+	
+	public ArrayList<BlackHole> getBlackHoles() {
+		return blackHoles;
+	}
+	
 	public ArrayList<Planet> getPlanets() {
 		return planets;
 	}

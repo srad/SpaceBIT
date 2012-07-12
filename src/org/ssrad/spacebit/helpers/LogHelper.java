@@ -6,11 +6,12 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.ssrad.spacebit.main.SpaceBit;
 
 public class LogHelper {
 	
 	/** Log file location */
-	private static String LOG_FILE_LOCATION = "game.log";
+	private static String LOG_FILE = "game.log";
 
 	private static final Logger logger = Logger.getLogger(LogHelper.class);
 
@@ -28,7 +29,8 @@ public class LogHelper {
 
 			FileAppender fileAppender;
 			try {
-				fileAppender = new FileAppender(layout, LOG_FILE_LOCATION, true);
+				String logFile = SpaceBit.getInstance().getSettingsHelper().getGameDir() + "/" + LOG_FILE;
+				fileAppender = new FileAppender(layout, logFile, true);
 				logger.addAppender(fileAppender);
 			} catch (IOException e) {
 				logger.error(e.getCause());

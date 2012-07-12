@@ -1,7 +1,7 @@
 package org.ssrad.spacebit.nodes;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.IAudible;
@@ -13,13 +13,16 @@ import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
 import org.ssrad.spacebit.interfaces.IScoreTaker;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 
 /**
  * Super class for all entities.
@@ -36,17 +39,20 @@ public abstract class AbstractNode extends Node implements ICollidable {
 	protected AssetManager assetManager;
 	protected boolean active = true;
 	protected float scrollSpeed = 0f;
-		
+
 	protected Spatial spatial = null;
 	protected Material material = null;
 	protected PointLight light = null;
-	
+
 	private static float updateTimer = 0f;
-	
+
+	private final float SPAWN_ZDISTANCE_FROM_CAM = 60f;
+
 	public AbstractNode(Game game) {
 		this.game = game;
 		this.assetManager = game.getAssetManager();
 		this.scrollSpeed = game.SCROLL_SPEED;
+		setShadowMode(com.jme3.renderer.queue.RenderQueue.ShadowMode.Off);
 		init();
 	}
 	
@@ -55,7 +61,7 @@ public abstract class AbstractNode extends Node implements ICollidable {
 	public void update(float tpf) {
 		updateTimer += tpf;
 		
-		if (updateTimer > 0.1f) {
+		if (updateTimer > 0.2f) {
 			updateTimer = 0f;
 			// Out of sight, remove
 			if (game.getCamera().getLocation().z > getLocalTranslation().z) {
@@ -74,7 +80,7 @@ public abstract class AbstractNode extends Node implements ICollidable {
 		game.getRootNode().detachChild(this);
 	}
 
-	private void checkCollisions() {
+	protected void checkCollisions() {
 		if (this instanceof ICollidable) {
 			ICollidable collision = (ICollidable) this;		
 			ArrayList<AbstractNode> colliders = collision.collidesWith();
@@ -170,10 +176,41 @@ public abstract class AbstractNode extends Node implements ICollidable {
 		this.active = active;
 	}
 	
-	/**
-	 * List of {@link ANode} which we avoid collisions for the spawning process.
-	 * @return
-	 */
-	//public abstract <T> ArrayList<T> getCollisionAvoiders();
-
+	public void trySpawn() {
+		if (this instanceof ISpawnable) {
+			ISpawnable spawner = (ISpawnable) this;
+			if (spawner.isReadyToSpawn()) {
+				game.getRootNode().attachChild(this);
+				setLocalTranslation(getSpawnCoordinates());
+				
+				// PREVENT COLLISIONS
+				ArrayList<AbstractNode> n = spawner.getCollisionAvoiders();
+				if (n != null) {
+					// HIDE
+					setCullHint(CullHint.Always);
+					for (Iterator<AbstractNode> it = n.iterator(); it.hasNext();) {
+						AbstractNode an = (AbstractNode) it.next();
+						if (this.getBounds().intersects(an.getBounds())) {
+							game.getRootNode().detachChild(this);
+							return;
+						}
+					}
+					// SHOW AGAIN
+					setCullHint(CullHint.Never);
+				}
+				game.getUpdateables().add(this);
+			}
+		}
+	}
+	
+	public Vector3f getSpawnCoordinates() {
+		Random random = new Random();
+		
+		Vector3f position = game.getCamera().getLocation().add(0f, 0f, SPAWN_ZDISTANCE_FROM_CAM);
+		position.x = (random.nextBoolean() ? -1 : 1) * random.nextFloat() * 40f;
+		position.y = 0;
+		
+		return position;
+	}
+		
 }

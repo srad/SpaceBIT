@@ -109,7 +109,7 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 	public void onAction(String name, boolean keyPressed, float tpf) {
 
 		if (name.equals("shoot") && !keyPressed) {
-			game.getUpdateables().addLaser(new Laser(game));	
+			game.getUpdateables().add(new Laser(game));	
 		}
 		
 		if (name.equals("bloom") && !keyPressed) {

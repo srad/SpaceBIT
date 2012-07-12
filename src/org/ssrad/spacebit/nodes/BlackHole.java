@@ -5,18 +5,20 @@ import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.texture.Texture;
 
-public class BlackHole extends AbstractNode implements IDamageMaker {
+public class BlackHole extends AbstractNode implements IDamageMaker, ISpawnable {
 
 	Random random;
+	float size;
 	
 	public BlackHole(Game game) {
 		super(game);
@@ -32,22 +34,18 @@ public class BlackHole extends AbstractNode implements IDamageMaker {
 	protected void init() {
 		random = new Random();
 		
-		spatial = this.assetManager.loadModel("blackhole/blackhole2.obj");		
-		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		spatial = this.assetManager.loadModel("blackhole/blackhole2.obj");	
 		
-		material.setTexture("DiffuseMap", this.assetManager.loadTexture("blackhole/blackhole2.png"));
-		material.setTexture("NormalMap", this.assetManager.loadTexture("blackhole/blackhole2_normals.png"));
-		
-		material.setBoolean("UseMaterialColors", true);
-		material.setColor("Specular", ColorRGBA.White);
-		material.setColor("Diffuse", ColorRGBA.White);
-		material.setFloat("Shininess", 128f); // [1,128]
-		
-		spatial.setMaterial(material);
-		scale(random.nextFloat() * 2f + 2f);
+		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		Texture tex_ml = assetManager.loadTexture("blackhole/blackhole2.png");
+		material.setTexture("ColorMap", tex_ml);
 
+		spatial.setMaterial(material);
+
+		spatial.setMaterial(material);
+		size = random.nextFloat() * 2f + 2f;
+		scale(size);
 		attachChild(spatial);
-		addLight();
 		
 		// Add particles
 		ParticleEmitter particle = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 100);
@@ -77,24 +75,25 @@ public class BlackHole extends AbstractNode implements IDamageMaker {
 		particle.move(1f, 1f, 1f);
 	}
 	
-	private void addLight() {
-		light = new PointLight();
-		light.setColor(ColorRGBA.White);
-		light.setRadius(200f);
-		
-		game.getRootNode().addLight(light);
-	}
-	
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
 		rotate(0, 2 * FastMath.PI * tpf, 0);
-		light.setPosition(spatial.getLocalTranslation().clone().addLocal(0, 5, 0));
 	}
 	
 	@Override
 	public int getDamage() {
-		return -1000;
+		return -((int) size);
+	}
+
+	@Override
+	public boolean isReadyToSpawn() {
+		return random.nextInt(20) > 19;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> getCollisionAvoiders() {
+		return game.getUpdateables().getAllObstracles();
 	}
 
 }

@@ -36,7 +36,7 @@ public class Game extends SimpleApplication {
 	public static int GAME_TIME_SECONDS = 300;
 	public static int MUST_SCORE = 2000;
 	
-	public final static boolean DEBUG = false;
+	public final static boolean DEBUG = true;
 	public final float SCROLL_SPEED = 6f;	
 
 	private Ship ship = null;
@@ -54,7 +54,7 @@ public class Game extends SimpleApplication {
 	/** Game paused/unpaused */
 	boolean running = false;
 	
-	/** Game initilized */
+	/** Game initialized */
 	private boolean launched = false;
 	
 	// SHADOW
@@ -73,14 +73,12 @@ public class Game extends SimpleApplication {
 	Updateables updateables;
 
 	private float timer;
-	
-	private boolean win = false;
-	
+
 	private SettingsHelper settingsHelper;
 	private GameSettings gameSettings;
 	
 	public Game(SettingsHelper settingsHelper) {
-		this.setSettingsHelper(settingsHelper);
+		setSettingsHelper(settingsHelper);
 	}
 
 	@Override
@@ -153,25 +151,25 @@ public class Game extends SimpleApplication {
 	}
 
 	/**
-     * Attaches a skybox to the root node.
+     * Attaches a sky box to the root node.
      */
     public void addSkyBox() {
         Texture west, east, north, south, up, down;   
         
         if (level == GameLevel.LEVEL_ONE) {
-	        west = assetManager.loadTexture("skybox/skybox_left2.png");
-	        east = assetManager.loadTexture("skybox/skybox_right1.png");
-	        north = assetManager.loadTexture("skybox/skybox_front5.png");
-	        south = assetManager.loadTexture("skybox/skybox_back6.png");
-	        up = assetManager.loadTexture("skybox/skybox_top3.png");
-	        down = assetManager.loadTexture("skybox/skybox_bottom4.png");
+	        west = assetManager.loadTexture("skybox1/skybox_left2.png");
+	        east = assetManager.loadTexture("skybox1/skybox_right1.png");
+	        north = assetManager.loadTexture("skybox1/skybox_front5.png");
+	        south = assetManager.loadTexture("skybox1/skybox_back6.png");
+	        up = assetManager.loadTexture("skybox1/skybox_top3.png");
+	        down = assetManager.loadTexture("skybox1/skybox_bottom4.png");
         } else {
-	        west = assetManager.loadTexture("skybox/stars_lila/skybox_lila_left2.png");
-	        east = assetManager.loadTexture("skybox/stars_lila/skybox_lila_right1.png");
-	        north = assetManager.loadTexture("skybox/stars_lila/skybox_lila_front5.png");
-	        south = assetManager.loadTexture("skybox/stars_lila/skybox_lila_back6.png");
-	        up = assetManager.loadTexture("skybox/stars_lila/skybox_lila_top3.png");
-	        down = assetManager.loadTexture("skybox/stars_lila/skybox_lila_bottom4.png");        	
+	        west = assetManager.loadTexture("skybox2/skybox_lila_left2.png");
+	        east = assetManager.loadTexture("skybox2/skybox_lila_right1.png");
+	        north = assetManager.loadTexture("skybox2/skybox_lila_front5.png");
+	        south = assetManager.loadTexture("skybox2/skybox_lila_back6.png");
+	        up = assetManager.loadTexture("skybox2/skybox_lila_top3.png");
+	        down = assetManager.loadTexture("skybox2/skybox_lila_bottom4.png");        	
         }
         rootNode.attachChild(SkyFactory.createSky(assetManager, west, east, north, south, up, down));
     }
@@ -210,7 +208,6 @@ public class Game extends SimpleApplication {
 					// GAME WON
 					else if (level == GameLevel.LEVEL_TWO) {
 						running = false;
-						win = true;
 						winScreen.show();
 					}
 				}

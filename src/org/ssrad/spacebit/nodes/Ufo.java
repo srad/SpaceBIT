@@ -8,6 +8,7 @@ import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
 import com.jme3.animation.LoopMode;
 import com.jme3.cinematic.MotionPath;
@@ -19,7 +20,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker, IScoreGiver {
+public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker, IScoreGiver, ISpawnable {
 	
 	private int health = 20;
 	private Random random;
@@ -86,7 +87,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 	@Override
 	public void destroy() {
 		super.destroy();
-		game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));		
+		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));		
 	}
 
 	@Override
@@ -117,6 +118,16 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 	@Override
 	public boolean isScoreCounted() {
 		return health <= 0;
+	}
+	
+	@Override
+	public boolean isReadyToSpawn() {
+		return random.nextInt(20) > 16;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> getCollisionAvoiders() {
+		return game.getUpdateables().getAllObstracles();
 	}
 
 }

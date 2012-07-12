@@ -1,6 +1,7 @@
 package org.ssrad.spacebit.nodes;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.ssrad.spacebit.audio.GameAudio;
 import org.ssrad.spacebit.game.Game;
@@ -63,24 +64,24 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	}
 
 	@Override
-	public void update(float tpf) {	
+	public void update(float tpf) {
 		move(0, 0, scrollSpeed * tpf);
-		light.setPosition(getLocalTranslation().clone().add(0,0,5));
-		
-//		// TODO: move in black hole direction
-//		ArrayList<BlackHole> blackHoles = game.getUpdateables().getBlackHoles();
-//		
-//		for (Iterator<BlackHole> iterator = blackHoles.iterator(); iterator.hasNext();) {
-//			BlackHole blackHole = (BlackHole) iterator.next();
-//			
-//			if (spatial.getLocalTranslation().clone().subtract(blackHole.getLocalTranslation().clone()).length() < 20f) {
-//				// Move towards black holes
-//				Vector3f v = new Vector3f(blackHole.getWorldTranslation().multLocal(Vector3f.UNIT_Z));		
-//		        Vector3f blackHoleVec = v.mult(tpf/10f);
-//		        
-//				move(blackHoleVec);
-//			}
-//		}
+		light.setPosition(getLocalTranslation().add(0,0,5));
+
+		ArrayList<BlackHole> blackHoles = game.getUpdateables().getBlackHoles();
+
+		for (Iterator<BlackHole> iterator = blackHoles.iterator(); iterator.hasNext();) {
+			BlackHole blackHole = (BlackHole) iterator.next();
+			
+			float d = (int) blackHole.getBounds().getCenter().subtract(getBounds().getCenter()).length();
+			if (d < 20f) {
+				// Move towards black holes
+				Vector3f v = new Vector3f(blackHole.getWorldTranslation().multLocal(Vector3f.UNIT_Z));		
+		        Vector3f blackHoleVec = v.mult(tpf/14f);
+
+				move(blackHoleVec);
+			}
+		}
 	}
 
 	private void addShip() {
@@ -322,7 +323,7 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	public void destroy() {
 		super.destroy();
 		incLives(-1);
-		game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
+		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
 	}
 
 	@Override

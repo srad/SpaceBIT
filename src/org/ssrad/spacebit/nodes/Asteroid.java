@@ -34,21 +34,22 @@ public class Asteroid extends AbstractNode implements IDamageMaker, IDamageTaker
 	protected void init() {
 		random = new Random();
 		
-		spatial = this.assetManager.loadModel("asteroid/asteroid.obj");		
+		spatial = this.assetManager.loadModel("asteroid2/asteroid2.obj");		
 		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");
 		
-		material.setTexture("DiffuseMap", this.assetManager.loadTexture("asteroid/asteriod.png"));
-		material.setTexture("NormalMap", this.assetManager.loadTexture("asteroid/asteriod_normals.png"));
+		material.setTexture("DiffuseMap", this.assetManager.loadTexture("asteroid2/tex.png"));
+		material.setTexture("NormalMap", this.assetManager.loadTexture("asteroid2/normals.png"));
 		
 		material.setBoolean("UseMaterialColors", true);
-		material.setColor("Specular", ColorRGBA.Brown);
+		
+		material.setColor("Specular", ColorRGBA.Red);
 		material.setColor("Diffuse", ColorRGBA.Brown);
 		material.setFloat("Shininess", 128f); // [1,128]
 		
 		spatial.setMaterial(material);
 		
-		this.scale = random.nextFloat() * 3f + 1f;
-		this.health = 5 * ((int) Math.round(this.scale));
+		this.scale = random.nextFloat() + 1f;
+		this.health = 2 * ((int) Math.round(this.scale));
 		
 		scale(scale);
 
@@ -62,7 +63,6 @@ public class Asteroid extends AbstractNode implements IDamageMaker, IDamageTaker
 		light.setRadius(200f);
 		
 		game.getRootNode().addLight(light);
-		light.setPosition(spatial.getLocalTranslation().clone().addLocal(0, 5, 0));
 	}
 
 	@Override
@@ -70,10 +70,12 @@ public class Asteroid extends AbstractNode implements IDamageMaker, IDamageTaker
 		super.update(tpf);
 		// Random rotation
 		spatial.rotate(FastMath.PI/(random.nextInt(5) + 5) * tpf, FastMath.PI/(random.nextInt(5) + 5) * tpf, FastMath.PI/(random.nextInt(5) + 5) * tpf);
+		light.setPosition(spatial.getLocalTranslation().add(0, 5, 0));
 	}
-	
+
 	/**
 	 * The health is proportional to the asteriod's size.
+	 * 
 	 * @return Asteroid damage.
 	 */
 	@Override
@@ -89,7 +91,7 @@ public class Asteroid extends AbstractNode implements IDamageMaker, IDamageTaker
 	@Override
 	public void destroy() {
 		super.destroy();		
-		game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, getLocalTranslation()));
+		game.getUpdateables().add(new ShockWaveExplosion(game, getLocalTranslation()));
 	}
 
 	@Override

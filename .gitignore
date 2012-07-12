@@ -30,3 +30,5 @@ local.properties
 .buildpath
 /nbproject/private/
 /build/
+/nbbuild/
+/dist/

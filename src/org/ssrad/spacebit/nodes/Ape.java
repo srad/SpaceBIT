@@ -5,10 +5,12 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
+import org.ssrad.spacebit.game.Updateables;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
 import com.jme3.animation.LoopMode;
 import com.jme3.cinematic.MotionPath;
@@ -20,9 +22,10 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Spatial.CullHint;
 import com.jme3.texture.Texture;
 
-public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver {
+public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver, ISpawnable {
 	
 	private static int DEFAULT_HEALTH = 15;
 
@@ -108,7 +111,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 		for (Iterator<Banana> it = bananas.iterator(); it.hasNext();) {
 			Banana banana = (Banana) it.next();
 			it.remove();
-			game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, banana.getLocalTranslation()));
+			game.getUpdateables().add(new ShockWaveExplosion(game, banana.getLocalTranslation()));
 			game.getRootNode().detachChild(banana);
 		}
 	}
@@ -165,13 +168,10 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 		return -20;
 	}
 
+	@SuppressWarnings("serial")
 	@Override
 	public ArrayList<AbstractNode> collidesWith() {
-		ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
-
-		nodes.add(game.getShip());
-		
-		return nodes;
+		return new ArrayList<AbstractNode>() {{ add(game.getShip()); }};
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	@Override
 	public void destroy() {
 		super.destroy();		
-		game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
+		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
 		removeAllBananas();
 	}
 
@@ -199,6 +199,16 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	@Override
 	public boolean isScoreCounted() {
 		return active == false;
+	}
+
+	@Override
+	public boolean isReadyToSpawn() {
+		return random.nextInt(20) > 16;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> getCollisionAvoiders() {
+		return game.getUpdateables().getAllObstracles();
 	}
 
 }

@@ -76,7 +76,7 @@ public class Banana extends AbstractNode implements ICollidable, IDamageMaker, I
 	@Override
 	public void destroy() {
 		super.destroy();
-		game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, getLocalTranslation()));
+		game.getUpdateables().add(new ShockWaveExplosion(game, getLocalTranslation()));
 	}
 
 	@Override
