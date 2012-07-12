@@ -62,15 +62,14 @@ public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, I
 		}
 	}
 
+	@SuppressWarnings("serial")
 	@Override
 	public ArrayList<AbstractNode> collidesWith() {
-		ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
-		
-		nodes.addAll(game.getUpdateables().getApes());
-		nodes.addAll(game.getUpdateables().getUfos());
-		nodes.addAll(game.getUpdateables().getPlanets());
-		
-		return nodes;
+		return new ArrayList<AbstractNode>() {{
+			addAll(game.getUpdateables().get(Ape.class));
+			addAll(game.getUpdateables().get(Ufo.class));
+			addAll(game.getUpdateables().get(Planet.class));
+		}};
 	}
 
 	@Override

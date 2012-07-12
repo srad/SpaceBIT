@@ -88,11 +88,11 @@ public class BlackHole extends AbstractNode implements IDamageMaker, ISpawnable 
 
 	@Override
 	public boolean isReadyToSpawn() {
-		return random.nextInt(20) > 19;
+		return random.nextInt(45) > 43;
 	}
 
 	@Override
-	public ArrayList<AbstractNode> getCollisionAvoiders() {
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return game.getUpdateables().getAllObstracles();
 	}
 

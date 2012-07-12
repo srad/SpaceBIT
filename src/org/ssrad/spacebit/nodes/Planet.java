@@ -10,11 +10,10 @@ import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
 import org.ssrad.spacebit.interfaces.ISpawnable;
 
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.texture.Texture;
 
 public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver, ISpawnable {
 	
@@ -30,13 +29,16 @@ public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, 
 	protected void init() {
 		random = new Random();
 		
-		spatial = this.assetManager.loadModel("planet/planet.obj");	
+		spatial = assetManager.loadModel("planet/planet.obj");
 
-		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
-		material.setTexture("DiffuseMap", assetManager.loadTexture("planet/planet.png"));
-		material.setTexture("NormalMap", assetManager.loadTexture("planet/planet_normals.png"));
+		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		Texture tex_ml = assetManager.loadTexture("planet/planet.png");
+		material.setTexture("ColorMap", tex_ml);
+		spatial.setMaterial(material);
 
 		spatial.rotate(-FastMath.PI * 0.9f, 0, FastMath.PI/(random.nextFloat() * 10f + 7f));
+		spatial.rotate(FastMath.PI, 0, 0);
+		
 		move((random.nextFloat() * 5f), (random.nextFloat() * 5f), (random.nextFloat() * 5f));
 		
 		setShadowMode(ShadowMode.Off);
@@ -47,18 +49,12 @@ public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, 
 		
 		// Health depends on size
 		this.health = (int) Math.round(this.scale) * 15;
-		
-		light = new PointLight();
-		light.setRadius(30f);
-		light.setColor(ColorRGBA.Brown);
-		game.getRootNode().addLight(light);
 	}
 	
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
 		spatial.rotate(0, FastMath.PI * tpf, 0);
-		light.setPosition(getLocalTranslation());
 	}
 
 	@SuppressWarnings("serial")
@@ -100,11 +96,11 @@ public class Planet extends AbstractNode implements IDamageMaker, IDamageTaker, 
 	
 	@Override
 	public boolean isReadyToSpawn() {
-		return random.nextInt(20) > 18;
+		return random.nextInt(20) > 17;
 	}
 
 	@Override
-	public ArrayList<AbstractNode> getCollisionAvoiders() {
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return game.getUpdateables().getAllObstracles();
 	}
 

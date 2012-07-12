@@ -3,6 +3,7 @@ package org.ssrad.spacebit.nodes;
 import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
+import org.ssrad.spacebit.interfaces.ISpawnable;
 
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -11,7 +12,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 
-public class Star extends AbstractNode {
+public class Star extends AbstractNode implements ISpawnable {
 	
 	private Random r;
 
@@ -47,25 +48,6 @@ public class Star extends AbstractNode {
 				return ColorRGBA.White;
 			}
 	}
-	
-	@Override
-	public void update(float tpf) {
-		super.update(tpf);
-		
-		// TODO: move in black hole direction
-//		ArrayList<BlackHole> blackHoles = game.getUpdateables().getBlackHoles();
-//		
-//		for (Iterator<BlackHole> iterator = blackHoles.iterator(); iterator.hasNext();) {
-//			BlackHole blackHole = (BlackHole) iterator.next();
-//			
-//			if (getLocalTranslation().clone().subtract(blackHole.getLocalTranslation().clone()).length() < 20f) {
-//				// Move towards black holes
-//				Vector3f v = new Vector3f(blackHole.getWorldTranslation().multLocal(Vector3f.UNIT_Z));
-//		        Vector3f blackHoleVec = v.mult(tpf/10f);
-//				move(blackHoleVec);
-//			}
-//		}
-	}
     
     @Override
 	protected void checkCollisions() {
@@ -77,6 +59,16 @@ public class Star extends AbstractNode {
 
 	@Override
 	public ArrayList<AbstractNode> collidesWith() {
+		return null;
+	}
+
+	@Override
+	public boolean isReadyToSpawn() {
+		return true;
+	}
+
+	@Override
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return null;
 	}
 

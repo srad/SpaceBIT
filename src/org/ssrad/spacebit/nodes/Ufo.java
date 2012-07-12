@@ -34,24 +34,24 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 	@Override
 	protected void init() {
 		random = new Random();
-		spatial = this.assetManager.loadModel("ufo2/ufo2.obj");	
+		spatial = this.assetManager.loadModel("ufo4/ufo4.obj");	
 
 		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
-		material.setTexture("DiffuseMap", assetManager.loadTexture("ufo2/ufo2.png"));
-		material.setTexture("NormalMap", assetManager.loadTexture("ufo2/ufo2_normals.png"));
+		material.setTexture("DiffuseMap", assetManager.loadTexture("ufo4/tex.png"));
+		material.setTexture("NormalMap", assetManager.loadTexture("ufo4/normals.png"));
 
 		spatial.rotate(FastMath.PI, 0, 0);
 		
 		setShadowMode(ShadowMode.Cast);
 		
-		spatial.scale(2.6f);
+		spatial.scale(3.3f);
 		spatial.rotate(-FastMath.PI/10, 0, FastMath.PI);
 		attachChild(spatial);
 		
 		light = new PointLight();
-		light.setRadius(30f);
-		light.setColor(ColorRGBA.Gray);
-		game.getRootNode().addLight(light);
+		light.setRadius(40f);
+		light.setColor(ColorRGBA.White);
+		addLight(light);
 		startRandomRotation();
 	}
 
@@ -59,7 +59,6 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 	public void update(float tpf) {
 		super.update(tpf);
 		spatial.rotate(0, FastMath.PI * tpf * 2.5f, 0);
-		light.setPosition(getLocalTranslation().clone().add(0, 0, 0));
 	}
 	
 	private void startRandomRotation() {
@@ -104,7 +103,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 	public ArrayList<AbstractNode> collidesWith() {
 		ArrayList<AbstractNode> n = new ArrayList<AbstractNode>();
 		
-		n.addAll(game.getUpdateables().getLasers());
+		n.addAll(game.getUpdateables().get(Laser.class));
 		n.add(game.getShip());
 		
 		return n;
@@ -126,7 +125,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 	}
 
 	@Override
-	public ArrayList<AbstractNode> getCollisionAvoiders() {
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return game.getUpdateables().getAllObstracles();
 	}
 

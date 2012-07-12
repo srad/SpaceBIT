@@ -36,7 +36,7 @@ public class Game extends SimpleApplication {
 	public static int GAME_TIME_SECONDS = 300;
 	public static int MUST_SCORE = 2000;
 	
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 	public final float SCROLL_SPEED = 6f;	
 
 	private Ship ship = null;
@@ -59,7 +59,7 @@ public class Game extends SimpleApplication {
 	
 	// SHADOW
 	private PssmShadowRenderer shadowRenderer;
-	private boolean shadow = true;
+	private boolean shadow = false;
 
 	// BLOOM
 	private BloomFilter bloomFilter;
@@ -137,7 +137,6 @@ public class Game extends SimpleApplication {
 		shadowRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
 	    shadowRenderer.setDirection(new Vector3f(0,0,20f)); // light direction
 	    
-	    viewPort.addProcessor(shadowRenderer);
         viewPort.addProcessor(fpp);
 	    
 	    rootNode.setShadowMode(ShadowMode.Off);
@@ -372,7 +371,7 @@ public class Game extends SimpleApplication {
 		try {
 			this.gameSettings = settingsHelper.getGameSettings();
 		} catch (FileNotFoundException e) {
-			LogHelper.getLogger().error("No gamesetting file.");
+			LogHelper.getLogger().error("No gamesetting file: " + e.getMessage());
 		}
 	}
 	

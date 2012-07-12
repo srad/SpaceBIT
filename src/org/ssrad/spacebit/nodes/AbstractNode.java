@@ -36,6 +36,7 @@ import java.util.ArrayList;
 public abstract class AbstractNode extends Node implements ICollidable {
 
 	protected Game game;
+	protected Node rootNode;
 	protected AssetManager assetManager;
 	protected boolean active = true;
 	protected float scrollSpeed = 0f;
@@ -50,9 +51,12 @@ public abstract class AbstractNode extends Node implements ICollidable {
 
 	public AbstractNode(Game game) {
 		this.game = game;
+		this.rootNode = game.getRootNode();
 		this.assetManager = game.getAssetManager();
+		
 		this.scrollSpeed = game.SCROLL_SPEED;
 		setShadowMode(com.jme3.renderer.queue.RenderQueue.ShadowMode.Off);
+		
 		init();
 	}
 	
@@ -61,13 +65,15 @@ public abstract class AbstractNode extends Node implements ICollidable {
 	public void update(float tpf) {
 		updateTimer += tpf;
 		
-		if (updateTimer > 0.2f) {
+		// Limit required updates
+		if (updateTimer > 0.1f) {
 			updateTimer = 0f;
 			// Out of sight, remove
-			if (game.getCamera().getLocation().z > getLocalTranslation().z) {
+			if (game.getCamera().getLocation().z > (getLocalTranslation().z + 1f)) {
 				active = false;
+			} else {
+				checkCollisions();
 			}
-			checkCollisions();
 		}
 	}
 	
@@ -75,9 +81,9 @@ public abstract class AbstractNode extends Node implements ICollidable {
 		active = false;
 		
 		if (light != null) {
-			game.getRootNode().removeLight(light);
+			rootNode.removeLight(light);
 		}
-		game.getRootNode().detachChild(this);
+		rootNode.detachChild(this);
 	}
 
 	protected void checkCollisions() {
@@ -88,14 +94,14 @@ public abstract class AbstractNode extends Node implements ICollidable {
 			if (colliders != null) {
 				for (Iterator<AbstractNode> it = colliders.iterator(); it.hasNext();) {
 					
-					AbstractNode anode = (AbstractNode) it.next();
+					AbstractNode node = (AbstractNode) it.next();
 				
 					// Check intersection and invoke collision callback.
-					if (collision.getBounds().intersects(anode.getWorldBound()) && anode.isActive()) {
-						collision.onCollision(anode);
+					if (collision.getBounds().intersects(node.getWorldBound()) && node.isActive()) {
+						collision.onCollision(node);
 					}		
 				}
-			}
+			} 
 		}
 	}
 
@@ -180,25 +186,26 @@ public abstract class AbstractNode extends Node implements ICollidable {
 		if (this instanceof ISpawnable) {
 			ISpawnable spawner = (ISpawnable) this;
 			if (spawner.isReadyToSpawn()) {
-				game.getRootNode().attachChild(this);
+				rootNode.attachChild(this);
 				setLocalTranslation(getSpawnCoordinates());
 				
+				
 				// PREVENT COLLISIONS
-				ArrayList<AbstractNode> n = spawner.getCollisionAvoiders();
+				ArrayList<AbstractNode> n = spawner.getNodesPreventCollisionsWhenSpawn();
 				if (n != null) {
-					// HIDE
+					// Hide if collides with something else
 					setCullHint(CullHint.Always);
 					for (Iterator<AbstractNode> it = n.iterator(); it.hasNext();) {
 						AbstractNode an = (AbstractNode) it.next();
 						if (this.getBounds().intersects(an.getBounds())) {
-							game.getRootNode().detachChild(this);
+							rootNode.detachChild(this);
 							return;
 						}
 					}
 					// SHOW AGAIN
 					setCullHint(CullHint.Never);
 				}
-				game.getUpdateables().add(this);
+				game.getUpdateables().add(this, false);
 			}
 		}
 	}

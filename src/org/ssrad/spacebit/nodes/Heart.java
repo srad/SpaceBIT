@@ -84,7 +84,7 @@ public class Heart extends AbstractNode implements IDamageMaker, IDestroyable, I
 	}
 
 	@Override
-	public ArrayList<AbstractNode> getCollisionAvoiders() {
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return null;
 	}
 

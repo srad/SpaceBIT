@@ -78,11 +78,11 @@ public class TorusCoin extends AbstractNode implements ICoinGiver, IDestroyable,
 	
 	@Override
 	public boolean isReadyToSpawn() {
-		return (new Random()).nextInt(20) > 10;
+		return (new Random()).nextInt(20) > 7;
 	}
 
 	@Override
-	public ArrayList<AbstractNode> getCollisionAvoiders() {
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return null;
 	}
 

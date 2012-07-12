@@ -68,16 +68,16 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 		move(0, 0, scrollSpeed * tpf);
 		light.setPosition(getLocalTranslation().add(0,0,5));
 
-		ArrayList<BlackHole> blackHoles = game.getUpdateables().getBlackHoles();
+		ArrayList<AbstractNode> blackHoles = game.getUpdateables().get(BlackHole.class);
 
-		for (Iterator<BlackHole> iterator = blackHoles.iterator(); iterator.hasNext();) {
+		for (Iterator<AbstractNode> iterator = blackHoles.iterator(); iterator.hasNext();) {
 			BlackHole blackHole = (BlackHole) iterator.next();
 			
 			float d = (int) blackHole.getBounds().getCenter().subtract(getBounds().getCenter()).length();
-			if (d < 20f) {
+			if (d < 18f) {
 				// Move towards black holes
 				Vector3f v = new Vector3f(blackHole.getWorldTranslation().multLocal(Vector3f.UNIT_Z));		
-		        Vector3f blackHoleVec = v.mult(tpf/14f);
+		        Vector3f blackHoleVec = v.mult(tpf/17f);
 
 				move(blackHoleVec);
 			}

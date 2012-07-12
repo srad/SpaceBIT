@@ -53,7 +53,7 @@ public class Banana extends AbstractNode implements ICollidable, IDamageMaker, I
 	@Override
 	public ArrayList<AbstractNode> collidesWith() {
 		ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
-		nodes.addAll(game.getUpdateables().getLasers());
+		nodes.addAll(game.getUpdateables().get(Laser.class));
 		nodes.add(game.getShip());
 		
 		return nodes;

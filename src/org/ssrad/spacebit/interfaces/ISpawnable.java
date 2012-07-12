@@ -8,6 +8,6 @@ public interface ISpawnable {
 	
 	public boolean isReadyToSpawn();
 
-	public ArrayList<AbstractNode> getCollisionAvoiders();
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn();
 
 }

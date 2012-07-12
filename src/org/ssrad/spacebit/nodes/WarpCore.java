@@ -8,16 +8,15 @@ import org.ssrad.spacebit.interfaces.IDestroyable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
 import org.ssrad.spacebit.interfaces.ISpawnable;
 
-import com.jme3.light.PointLight;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.texture.Texture;
 
 public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver, ISpawnable {
 
 	Random random;
-		
+
 	public WarpCore(Game game) {
 		super(game);
 	}
@@ -26,29 +25,22 @@ public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver,
 	protected void init() {
 		random = new Random();
 		
-		spatial = this.assetManager.loadModel("warpcore/warpcore.obj");	
-
-		material = new Material(this.assetManager, "Common/MatDefs/Light/Lighting.j3md");		
-		material.setTexture("DiffuseMap", assetManager.loadTexture("warpcore/warpcore.png"));
-		material.setTexture("NormalMap", assetManager.loadTexture("warpcore/warpcore.png"));
-		material.setTexture("GlowMap", assetManager.loadTexture("warpcore/warpcore_specular.png"));
-		material.setColor("GlowColor", ColorRGBA.White);
-
+		spatial = assetManager.loadModel("warpcore2/warpcore2.obj");
+		
+		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		Texture tex_ml = assetManager.loadTexture("warpcore2/tex.png");
+		material.setTexture("ColorMap", tex_ml);
+		spatial.setMaterial(material);
+		
 		setShadowMode(ShadowMode.Cast);
 		
 		spatial.scale(0.8f);
 		attachChild(spatial);
-
-		light = new PointLight();
-		light.setRadius(30f);
-		light.setColor(ColorRGBA.White);
-		game.getRootNode().addLight(light);
 	}
 	
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-		light.setPosition(getLocalTranslation());
 		spatial.rotate(FastMath.PI/(random.nextInt(5) + 5) * tpf, FastMath.PI/(random.nextInt(5) + 5) * tpf, FastMath.PI/(random.nextInt(5) + 5) * tpf);
 	}
 
@@ -85,7 +77,7 @@ public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver,
 	}
 
 	@Override
-	public ArrayList<AbstractNode> getCollisionAvoiders() {
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return null;
 	}
 

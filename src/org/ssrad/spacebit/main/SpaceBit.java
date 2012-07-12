@@ -1,6 +1,5 @@
 package org.ssrad.spacebit.main;
 
-import org.apache.log4j.Level;
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.game.GameSettings;
 import org.ssrad.spacebit.helpers.LogHelper;
@@ -14,7 +13,7 @@ public class SpaceBit {
 
 	public static void main(String[] args) {
 		try {
-			java.util.logging.Logger.getLogger("com.jme3").setLevel(java.util.logging.Level.OFF);
+			java.util.logging.Logger.getLogger("com.jme3").setLevel(java.util.logging.Level.SEVERE);
 
 			AppSettings settings = new AppSettings(true);
 			settings.setSettingsDialogImage("splash.png");
@@ -34,7 +33,7 @@ public class SpaceBit {
 			game.setSettings(settings);
 			game.start();
 		} catch (Exception e) {
-			LogHelper.getLogger().log(Level.ERROR, e.getMessage());
+			LogHelper.getLogger().error(e.getMessage());
 		}
 	}
 

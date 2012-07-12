@@ -188,7 +188,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	public void destroy() {
 		super.destroy();		
 		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
-		removeAllBananas();
+//		removeAllBananas();
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	}
 
 	@Override
-	public ArrayList<AbstractNode> getCollisionAvoiders() {
+	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return game.getUpdateables().getAllObstracles();
 	}
 

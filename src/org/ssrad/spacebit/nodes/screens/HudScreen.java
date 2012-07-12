@@ -3,10 +3,13 @@ package org.ssrad.spacebit.nodes.screens;
 import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.nodes.Laser;
 
+import com.jme3.app.StatsView;
+import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.renderer.Statistics;
 
 public class HudScreen extends AbstractScreen implements AnalogListener, ActionListener {
 	
@@ -16,27 +19,42 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 	CoinBar coinBar;
 	ScoreBar scoreBar;
 	TimeBar timeBar;
+	StatsView statsView;
+	ScreenshotAppState state;
 	
 	boolean init;
 
 	public HudScreen(Game game) {
 		super(game);
-		
-		addCoinStatus();
-		addHealthBar();
-		addHeartBar();
-		addScoreBar();
-		addTimeBar();	
 	}
 	
 	@Override
 	public void init() {
+		
 		super.init();
+		
+		game.getGuiNode().detachAllChildren();
+
+		addCoinStatus();
+		addHealthBar();
+		addHeartBar();
+		addScoreBar();
+		addTimeBar();
+		
+		state = new ScreenshotAppState();
+		game.getStateManager().attach(state);
+		
+		if (Game.DEBUG) {
+			Statistics stats = game.getRenderer().getStatistics();
+			statsView = new StatsView("MyStats", assetManager, stats);
+			attachChild(statsView);
+			statsView.setLocalTranslation(50, 100, 0);
+		}
 		game.getGuiNode().attachChild(this);
 	}
 
 	@Override
-	public void update(float tpf) {
+	public void update(float tpf) {	
 		healthBar.update(tpf);
 		coinBar.update(tpf);
 		heartBar.update(tpf);
