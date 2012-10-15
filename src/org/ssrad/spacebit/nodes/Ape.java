@@ -5,10 +5,10 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.ssrad.spacebit.game.Game;
-import org.ssrad.spacebit.game.Updateables;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IExplodeable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
 import org.ssrad.spacebit.interfaces.ISpawnable;
 
@@ -22,15 +22,14 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Spatial.CullHint;
 import com.jme3.texture.Texture;
 
-public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver, ISpawnable {
+public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDestroyable, IScoreGiver, ISpawnable, IExplodeable {
 	
 	private static int DEFAULT_HEALTH = 15;
 
 	private Random random;
-	private float timer = 0f;
+//	private float timer = 0f;
 	private int health = DEFAULT_HEALTH;
 	
 	ParticleEmitter fire;
@@ -64,7 +63,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-//		timer += tpf;		
+//		timer += tpf;	
 		fire.setLocalTranslation(spatial.getLocalTranslation().add(0f, .5f, 0f));
 		
 //		if (bananas.size() > 0) {
@@ -185,13 +184,6 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 	}
 
 	@Override
-	public void destroy() {
-		super.destroy();		
-		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
-//		removeAllBananas();
-	}
-
-	@Override
 	public int getScore() {
 		return 25;
 	}
@@ -203,12 +195,22 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 
 	@Override
 	public boolean isReadyToSpawn() {
-		return random.nextInt(20) > 16;
+		return random.nextInt(20) > 14;
 	}
 
 	@Override
 	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return game.getUpdateables().getAllObstracles();
+	}
+
+	@Override
+	public void onExplode() {
+		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
+	}
+
+	@Override
+	public boolean isExplodeable() {
+		return getLocalTranslation().z > game.getCamera().getLocation().z;
 	}
 
 }

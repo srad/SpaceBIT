@@ -34,10 +34,10 @@ public class BlackHole extends AbstractNode implements IDamageMaker, ISpawnable 
 	protected void init() {
 		random = new Random();
 		
-		spatial = this.assetManager.loadModel("blackhole/blackhole2.obj");	
+		spatial = this.assetManager.loadModel("blackhole2/blackhole2.obj");	
 		
 		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		Texture tex_ml = assetManager.loadTexture("blackhole/blackhole2.png");
+		Texture tex_ml = assetManager.loadTexture("blackhole2/tex.png");
 		material.setTexture("ColorMap", tex_ml);
 
 		spatial.setMaterial(material);
@@ -72,7 +72,7 @@ public class BlackHole extends AbstractNode implements IDamageMaker, ISpawnable 
 		
 		attachChild(particle);
 		spatial.move(0, -1f, 0);
-		particle.move(1f, 1f, 1f);
+		particle.move(1f, 0f, 1f);
 	}
 	
 	@Override

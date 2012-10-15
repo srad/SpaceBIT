@@ -73,7 +73,7 @@ public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver,
 	
 	@Override
 	public boolean isReadyToSpawn() {
-		return random.nextInt(20) > 18;
+		return random.nextInt(20) > 17;
 	}
 
 	@Override

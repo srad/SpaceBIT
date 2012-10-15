@@ -48,7 +48,7 @@ public class LoadScreen extends AbstractScreen {
 				
 		if (game.getShip() != null) {
 			game.getShip().setScore(0);
-			game.getShip().setLives(2);
+			game.getShip().setLives(3);
 			game.getShip().setCoins(0);
 			game.getUpdateables().destroyObstacles();
 		}

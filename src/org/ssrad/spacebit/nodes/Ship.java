@@ -9,6 +9,7 @@ import org.ssrad.spacebit.interfaces.ICoinTaker;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IExplodeable;
 import org.ssrad.spacebit.interfaces.IScoreTaker;
 
 import com.jme3.effect.ParticleEmitter;
@@ -22,7 +23,7 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
-public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDestroyable, IDamageMaker, IScoreTaker {
+public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDestroyable, IDamageMaker, IScoreTaker, IExplodeable {
 
 	ParticleEmitter centerJet;
 	ParticleEmitter leftJet;
@@ -38,7 +39,7 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	
 	private int coins = 0;
 	private int health = 100;
-	private int lives = 2;
+	private int lives = 3;
 	
 	// AUDIO
 	GameAudio laserSound;
@@ -77,7 +78,7 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 			if (d < 18f) {
 				// Move towards black holes
 				Vector3f v = new Vector3f(blackHole.getWorldTranslation().multLocal(Vector3f.UNIT_Z));		
-		        Vector3f blackHoleVec = v.mult(tpf/17f);
+		        Vector3f blackHoleVec = v.mult(tpf/23f);
 
 				move(blackHoleVec);
 			}
@@ -323,7 +324,6 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 	public void destroy() {
 		super.destroy();
 		incLives(-1);
-		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
 	}
 
 	@Override
@@ -344,10 +344,10 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 		if (!enableLeftJet) {
 			enableLeftJet = true;
 			leftJet.setCullHint(CullHint.Never);
-			moveFactor *= 1.3f;
+			moveFactor += 3f;
 		} else if (!enableRightJet) {
 			enableRightJet = true;
-			moveFactor *= 1.3f;
+			moveFactor += 3f;
 			rightJet.setCullHint(CullHint.Never);
 		}
 	}
@@ -359,10 +359,10 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 		if (enableLeftJet) {
 			enableLeftJet = false;
 			leftJet.setCullHint(CullHint.Always);
-			moveFactor *= 0.7f;
+			moveFactor -= 3f;
 		} else if (enableRightJet) {
 			enableRightJet = false;
-			moveFactor *= 0.7f;
+			moveFactor -= 3f;
 			rightJet.setCullHint(CullHint.Always);
 		}
 	}
@@ -414,6 +414,16 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 
 	public void setCoins(int coins) {
 		this.coins = coins;
+	}
+	
+	@Override
+	public void onExplode() {
+		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
+	}
+
+	@Override
+	public boolean isExplodeable() {
+		return true;
 	}
 
 }

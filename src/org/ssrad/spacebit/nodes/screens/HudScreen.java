@@ -13,12 +13,12 @@ import com.jme3.renderer.Statistics;
 
 public class HudScreen extends AbstractScreen implements AnalogListener, ActionListener {
 	
-	HealthBar
-	healthBar;
+	HealthBar healthBar;
 	HeartBar heartBar;
 	CoinBar coinBar;
 	ScoreBar scoreBar;
 	TimeBar timeBar;
+	
 	StatsView statsView;
 	ScreenshotAppState state;
 	
@@ -26,23 +26,12 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 
 	public HudScreen(Game game) {
 		super(game);
-	}
-	
-	@Override
-	public void init() {
-		
-		super.init();
-		
-		game.getGuiNode().detachAllChildren();
-
+		detachAllChildren();		
 		addCoinStatus();
 		addHealthBar();
 		addHeartBar();
 		addScoreBar();
 		addTimeBar();
-		
-		state = new ScreenshotAppState();
-		game.getStateManager().attach(state);
 		
 		if (Game.DEBUG) {
 			Statistics stats = game.getRenderer().getStatistics();
@@ -50,6 +39,14 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
 			attachChild(statsView);
 			statsView.setLocalTranslation(50, 100, 0);
 		}
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		
+		state = new ScreenshotAppState();		
+		game.getStateManager().attach(state);
 		game.getGuiNode().attachChild(this);
 	}
 

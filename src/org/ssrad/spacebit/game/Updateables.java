@@ -133,10 +133,6 @@ public class Updateables {
 		add(abstractNode, true);
 	}
 	
-	/**
-	 * They right way to do this would be polymorpism,
-	 * but this is more compact.
-	 */
 	public void add(AbstractNode abstractNode, boolean attachToRoot) {
 		updates.add(abstractNode);
 		if (attachToRoot) {

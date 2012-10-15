@@ -90,6 +90,8 @@ public class Game extends SimpleApplication {
 		winScreen = new WinScreen(this);
 		helpScreen = new HelpScreen(this);
 		copyrightScreen = new CopyrightScreen(this);
+		hudScreen = new HudScreen(this);
+		gameOverScreen = new GameOverScreen(this);
 
 		titleScreen.show();
 	}
@@ -103,8 +105,6 @@ public class Game extends SimpleApplication {
 		rootNode.setShadowMode(ShadowMode.Off);
 		
 		// Screens
-		hudScreen = new HudScreen(this);
-		gameOverScreen = new GameOverScreen(this);
 		
 		// SHIP
 		ship = new Ship(this);

@@ -29,7 +29,7 @@ public abstract class AbstractScreen extends AbstractNode {
 		bindKeys();
 
 		game.setDisplayStatView(Game.DEBUG);
-		game.setDisplayFps(Game.DEBUG);	
+		game.setDisplayFps(Game.DEBUG);
 	}
 	
 	/** Not abstract because some node don't need bindings. */
@@ -45,7 +45,7 @@ public abstract class AbstractScreen extends AbstractNode {
 	}
 	
 	public void show() {
-		init();		
+		init();	
 		active = true;
 		game.setScreen(this);
 	}

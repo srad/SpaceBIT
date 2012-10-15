@@ -7,6 +7,7 @@ import org.ssrad.spacebit.game.Game;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IExplodeable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
 import org.ssrad.spacebit.interfaces.ISpawnable;
 
@@ -18,9 +19,8 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 
-public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker, IScoreGiver, ISpawnable {
+public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker, IScoreGiver, ISpawnable, IExplodeable {
 	
 	private int health = 20;
 	private Random random;
@@ -42,8 +42,6 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 
 		spatial.rotate(FastMath.PI, 0, 0);
 		
-		setShadowMode(ShadowMode.Cast);
-		
 		spatial.scale(3.3f);
 		spatial.rotate(-FastMath.PI/10, 0, FastMath.PI);
 		attachChild(spatial);
@@ -51,7 +49,9 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 		light = new PointLight();
 		light.setRadius(40f);
 		light.setColor(ColorRGBA.White);
-		addLight(light);
+		spatial.addLight(light);
+		light.setPosition(spatial.getLocalTranslation());
+
 		startRandomRotation();
 	}
 
@@ -127,6 +127,16 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
 	@Override
 	public ArrayList<AbstractNode> getNodesPreventCollisionsWhenSpawn() {
 		return game.getUpdateables().getAllObstracles();
+	}
+
+	@Override
+	public void onExplode() {
+		game.getUpdateables().add(new FireExplosion(game, getLocalTranslation()));
+	}
+
+	@Override
+	public boolean isExplodeable() {
+		return getLocalTranslation().z > game.getCamera().getLocation().z;
 	}
 
 }

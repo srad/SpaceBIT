@@ -11,6 +11,7 @@ import org.ssrad.spacebit.interfaces.ICollidable;
 import org.ssrad.spacebit.interfaces.IDamageMaker;
 import org.ssrad.spacebit.interfaces.IDamageTaker;
 import org.ssrad.spacebit.interfaces.IDestroyable;
+import org.ssrad.spacebit.interfaces.IExplodeable;
 import org.ssrad.spacebit.interfaces.IScoreGiver;
 import org.ssrad.spacebit.interfaces.IScoreTaker;
 import org.ssrad.spacebit.interfaces.ISpawnable;
@@ -69,14 +70,14 @@ public abstract class AbstractNode extends Node implements ICollidable {
 		if (updateTimer > 0.1f) {
 			updateTimer = 0f;
 			// Out of sight, remove
-			if (game.getCamera().getLocation().z > (getLocalTranslation().z + 1f)) {
+			if (game.getCamera().getLocation().z > getLocalTranslation().z) {
 				active = false;
 			} else {
 				checkCollisions();
 			}
 		}
 	}
-	
+
 	public void destroy() {
 		active = false;
 		
@@ -84,6 +85,14 @@ public abstract class AbstractNode extends Node implements ICollidable {
 			rootNode.removeLight(light);
 		}
 		rootNode.detachChild(this);
+		
+		// Check if explosion necessary
+		if (this instanceof IExplodeable) {
+			IExplodeable e = (IExplodeable) this;
+			if (e.isExplodeable()) {
+				e.onExplode();
+			}
+		}
 	}
 
 	protected void checkCollisions() {
