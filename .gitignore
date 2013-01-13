@@ -16,6 +16,8 @@ local.properties
 .loadpath
 *.log
 *.log.*
+*.dll
+*.so
 
 # External tool builders
 .externalToolBuilders/
