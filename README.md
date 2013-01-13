@@ -1,5 +1,3 @@
-# Space.BIT
-
 ![](https://raw.github.com/srad/SpaceBIT/master/data/pics/spacebit2.png)
 
 Space.BIT is a 3d space shooter based on the [jMonkeyEngine](http://jmonkeyengine.org/) 3d game engine.
