@@ -2,8 +2,8 @@ package org.ssrad.spacebit.interfaces;
 
 public interface IDestroyable {
 
-	public boolean destroyOnCollision();
-	
-	public void destroy();
-	
+    public boolean destroyOnCollision();
+
+    public void destroy();
+
 }

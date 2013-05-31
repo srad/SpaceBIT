@@ -2,7 +2,7 @@
 
 Space.BIT is a 3d space shooter based on the [jMonkeyEngine](http://jmonkeyengine.org/) 3d game engine.
 
-This game was part of an exercise in my computer graphics course at the Goethe-University in Frankfurt, Germany.
+This game was part of an exercise in my computer graphics course in early 2012 at the Goethe-University in Frankfurt, Germany.
 
 For a playable build of the game and more details visit my blog at: [http://ssrad.org/spacebit](http://ssrad.org/spacebit)
 

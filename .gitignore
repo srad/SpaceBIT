@@ -18,6 +18,12 @@ local.properties
 *.log.*
 *.dll
 *.so
+out/**
+
+*.iml
+*.ipr
+*.iws
+.idea/
 
 # External tool builders
 .externalToolBuilders/

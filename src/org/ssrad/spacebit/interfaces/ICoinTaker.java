@@ -2,12 +2,11 @@ package org.ssrad.spacebit.interfaces;
 
 /**
  * Everthing whatever can accumulate coins must implement this.
- * 
- * @author Saman Sedighi Rad
  *
+ * @author Saman Sedighi Rad
  */
 public interface ICoinTaker {
-	
-	public void onCoins(int amount);
+
+    public void onCoins(int amount);
 
 }

@@ -1,7 +1,7 @@
 package org.ssrad.spacebit.interfaces;
 
 public interface IHealthGiver {
-	
-	public int getHealth();
+
+    public int getHealth();
 
 }
