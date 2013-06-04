@@ -25,12 +25,12 @@ For a playable build of the game and more details visit my blog at: [http://ssra
 
 In game video is available on my website [http://ssrad.org/spacebit](http://ssrad.org/spacebit)
 
-![](https://raw.github.com/srad/SpaceBIT/master/data/pics/title-screen.png)
+![](https://raw.github.com/srad/SpaceBIT/master/assets/screens/title-screen.png)
 
-![](https://raw.github.com/srad/SpaceBIT/master/data/pics/level2.png)
+![](https://raw.github.com/srad/SpaceBIT/master/assets/screens/level2.png)
 
-![](https://raw.github.com/srad/SpaceBIT/master/data/pics/gameover.png)
+![](https://raw.github.com/srad/SpaceBIT/master/assets/screens/gameover.png)
 
-![](https://raw.github.com/srad/SpaceBIT/master/data/pics/win.png)
+![](https://raw.github.com/srad/SpaceBIT/master/assets/screens/win.png)
 
 
