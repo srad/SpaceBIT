@@ -25,6 +25,11 @@ out/**
 *.iws
 .idea/
 
+*.dll
+
+.gradle
+gradle
+
 # External tool builders
 .externalToolBuilders/
 
