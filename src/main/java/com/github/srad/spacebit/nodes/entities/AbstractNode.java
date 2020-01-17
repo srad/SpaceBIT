@@ -1,5 +1,6 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
+import com.github.srad.spacebit.game.Game;
 import com.github.srad.spacebit.interfaces.*;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingVolume;
@@ -7,10 +8,10 @@ import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.github.srad.spacebit.game.Game;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Super class for all entities.
@@ -26,6 +27,7 @@ public abstract class AbstractNode extends Node implements ICollidable {
   protected AssetManager assetManager;
   protected boolean active = true;
   protected float scrollSpeed = 0f;
+  protected Random random;
 
   protected Spatial spatial = null;
   protected Material material = null;
@@ -159,11 +161,4 @@ public abstract class AbstractNode extends Node implements ICollidable {
   public void setActive(boolean active) {
     this.active = active;
   }
-
-  /**
-   * List of {@link ANode} which we avoid collisions for the spawning process.
-   * @return
-   */
-  //public abstract <T> ArrayList<T> getCollisionAvoiders();
-
 }

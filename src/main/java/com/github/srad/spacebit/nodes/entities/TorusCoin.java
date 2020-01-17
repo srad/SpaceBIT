@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.github.srad.spacebit.interfaces.ICoinGiver;
 import com.github.srad.spacebit.interfaces.IDestroyable;

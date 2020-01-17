@@ -1,16 +1,15 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
+import com.github.srad.spacebit.audio.GameAudio;
+import com.github.srad.spacebit.audio.enums.SoundType;
+import com.github.srad.spacebit.game.Game;
 import com.github.srad.spacebit.interfaces.IDamageMaker;
 import com.github.srad.spacebit.interfaces.IDestroyable;
 import com.github.srad.spacebit.interfaces.IScoreTaker;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Cylinder;
-import com.github.srad.spacebit.audio.GameAudio;
-import com.github.srad.spacebit.audio.enums.SoundType;
-import com.github.srad.spacebit.game.Game;
 
 import java.util.ArrayList;
 
@@ -50,7 +49,7 @@ public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, I
     super.update(tpf);
     timer += tpf;
 
-    float deltaMove = FastMath.exp(timer) / 2.5f;
+    float deltaMove = 50f * tpf;
 
     moveDistance += deltaMove;
 
@@ -65,9 +64,9 @@ public class Laser extends AbstractNode implements IDamageMaker, IDestroyable, I
   public ArrayList<AbstractNode> collidesWith() {
     ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
 
-    nodes.addAll(game.getUpdateables().getApes());
-    nodes.addAll(game.getUpdateables().getUfos());
-    nodes.addAll(game.getUpdateables().getPlanets());
+    nodes.addAll(game.getEntities().getType(Ape.class));
+    nodes.addAll(game.getEntities().getType(Ufo.class));
+    nodes.addAll(game.getEntities().getType(Planet.class));
 
     return nodes;
   }

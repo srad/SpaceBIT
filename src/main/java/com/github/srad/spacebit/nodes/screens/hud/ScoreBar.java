@@ -1,9 +1,9 @@
-package com.github.srad.spacebit.nodes.screens;
+package com.github.srad.spacebit.nodes.screens.hud;
 
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.github.srad.spacebit.game.Game;
-import com.github.srad.spacebit.nodes.entity.AbstractNode;
+import com.github.srad.spacebit.nodes.entities.AbstractNode;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public class ScoreBar extends AbstractNode {
     score = new BitmapText(game.getGuiFont(), false);
     score.setSize(game.getGuiFont().getCharSet().getRenderedSize() * 1.5f);      // font size
     score.setColor(ColorRGBA.White);                             // font color
-    score.setLocalTranslation(0, -5, 0.1f); // position
+    score.setLocalTranslation(0, -15, 0.1f); // position
 
     attachChild(score);
   }

@@ -1,7 +1,7 @@
 package com.github.srad.spacebit.interfaces;
 
 import com.jme3.bounding.BoundingVolume;
-import com.github.srad.spacebit.nodes.entity.AbstractNode;
+import com.github.srad.spacebit.nodes.entities.AbstractNode;
 
 import java.util.ArrayList;
 

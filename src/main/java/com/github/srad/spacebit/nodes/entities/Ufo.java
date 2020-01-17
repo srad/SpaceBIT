@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.github.srad.spacebit.interfaces.IDamageMaker;
 import com.github.srad.spacebit.interfaces.IDamageTaker;
@@ -21,7 +21,6 @@ import java.util.Random;
 public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDamageTaker, IScoreGiver {
 
   private int health = 20;
-  private Random random;
 
   public Ufo(Game game) {
     super(game);
@@ -85,7 +84,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
   @Override
   public void destroy() {
     super.destroy();
-    game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
+    game.getEntities().add(new FireExplosion(game, getLocalTranslation()));
   }
 
   @Override
@@ -102,7 +101,7 @@ public class Ufo extends AbstractNode implements IDestroyable, IDamageMaker, IDa
   public ArrayList<AbstractNode> collidesWith() {
     ArrayList<AbstractNode> n = new ArrayList<AbstractNode>();
 
-    n.addAll(game.getUpdateables().getLasers());
+    n.addAll(game.getEntities().getType(Laser.class));
     n.add(game.getShip());
 
     return n;

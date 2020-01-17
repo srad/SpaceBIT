@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.github.srad.spacebit.game.Game;
 import com.github.srad.spacebit.interfaces.IDamageMaker;
@@ -25,7 +25,6 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
 
   private static int DEFAULT_HEALTH = 15;
 
-  private Random random;
   private float timer = 0f;
   private int health = DEFAULT_HEALTH;
 
@@ -107,7 +106,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
     for (Iterator<Banana> it = bananas.iterator(); it.hasNext(); ) {
       Banana banana = (Banana) it.next();
       it.remove();
-      game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, banana.getLocalTranslation()));
+      game.getEntities().add(new ShockWaveExplosion(game, banana.getLocalTranslation()));
       game.getRootNode().detachChild(banana);
     }
   }
@@ -186,7 +185,7 @@ public class Ape extends AbstractNode implements IDamageMaker, IDamageTaker, IDe
   @Override
   public void destroy() {
     super.destroy();
-    game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
+    game.getEntities().add(new FireExplosion(game, getLocalTranslation()));
     removeAllBananas();
   }
 

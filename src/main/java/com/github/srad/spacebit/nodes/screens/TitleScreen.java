@@ -15,7 +15,6 @@ import com.jme3.ui.Picture;
 public class TitleScreen extends AbstractScreen implements ActionListener {
 
   Picture background;
-  boolean active = true;
 
   public TitleScreen(Game game) {
     super(game);
@@ -62,7 +61,6 @@ public class TitleScreen extends AbstractScreen implements ActionListener {
 
   @Override
   public void onAction(String name, boolean keyPressed, float tpf) {
-
     if (name.equals("help") && !keyPressed) {
       hide();
       game.getHelpScreen().show();

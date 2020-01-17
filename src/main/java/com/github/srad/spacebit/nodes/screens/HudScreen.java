@@ -1,7 +1,8 @@
 package com.github.srad.spacebit.nodes.screens;
 
 import com.github.srad.spacebit.game.Game;
-import com.github.srad.spacebit.nodes.entity.Laser;
+import com.github.srad.spacebit.nodes.entities.Laser;
+import com.github.srad.spacebit.nodes.screens.hud.*;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
@@ -9,8 +10,7 @@ import com.jme3.input.controls.KeyTrigger;
 
 public class HudScreen extends AbstractScreen implements AnalogListener, ActionListener {
 
-  HealthBar
-      healthBar;
+  HealthBar healthBar;
   HeartBar heartBar;
   CoinBar coinBar;
   ScoreBar scoreBar;
@@ -108,7 +108,7 @@ public class HudScreen extends AbstractScreen implements AnalogListener, ActionL
   public void onAction(String name, boolean keyPressed, float tpf) {
 
     if (name.equals("shoot") && !keyPressed) {
-      game.getUpdateables().addLaser(new Laser(game));
+      game.getEntities().add(new Laser(game));
     }
 
     if (name.equals("bloom") && !keyPressed) {

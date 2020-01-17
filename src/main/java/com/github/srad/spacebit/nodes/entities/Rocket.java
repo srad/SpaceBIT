@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.jme3.math.FastMath;
 import com.github.srad.spacebit.game.Game;

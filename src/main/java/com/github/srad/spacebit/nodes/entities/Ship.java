@@ -1,5 +1,6 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
+import com.github.srad.spacebit.game.Game;
 import com.github.srad.spacebit.interfaces.*;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
@@ -11,8 +12,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
-import com.github.srad.spacebit.audio.GameAudio;
-import com.github.srad.spacebit.game.Game;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,9 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
 
   Boolean enableLeftJet = false, enableRightJet = false;
 
-  private float moveFactor = 10f;
+  private final static float startSpeed = 15f;
+  private float speed = startSpeed;
+  private float speedUp = 5f;
 
   public static final int MAX_HEALTH = 100;
   public static final int MAX_COINS = 100;
@@ -33,13 +34,6 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
   private int coins = 0;
   private int health = 100;
   private int lives = 2;
-
-  // AUDIO
-  GameAudio laserSound;
-  GameAudio heartSound;
-  GameAudio coinSound;
-  GameAudio explosionSound;
-
   private int score = 0;
 
   boolean left = false, right = false, up = false, down = false;
@@ -53,7 +47,6 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
     addShip();
     addJets();
     addLight();
-
     setShadowMode(ShadowMode.Cast);
   }
 
@@ -88,7 +81,7 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
     material.setBoolean("UseMaterialColors", true);
     material.setColor("Specular", ColorRGBA.White);
     material.setColor("Diffuse", ColorRGBA.White);
-    material.setFloat("Shininess", 50f); // [1,128]
+    material.setFloat("Shininess", 100f); // [1,128]
 
     spatial.setMaterial(material);
     scale(2.5f);
@@ -216,7 +209,7 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
       left = true;
       rotate(0, 0, -FastMath.PI / 12 * rotFactor);
     }
-    moveShip(getLocalTranslation().clone().add(moveFactor * tpf, 0, 0));
+    moveShip(getLocalTranslation().clone().add(speed * tpf, 0, 0));
   }
 
   public void right(float tpf) {
@@ -232,19 +225,19 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
       right = true;
       rotate(0, 0, FastMath.PI / 12 * rotFactor);
     }
-    moveShip(getLocalTranslation().clone().add(-moveFactor * tpf, 0, 0));
+    moveShip(getLocalTranslation().clone().add(-speed * tpf, 0, 0));
   }
 
   public void up(float tpf) {
     up = true;
     down = false;
-    moveShip(getLocalTranslation().clone().add(0, 0, moveFactor * tpf));
+    moveShip(getLocalTranslation().clone().add(0, 0, speed * tpf));
   }
 
   public void down(float tpf) {
     down = true;
     up = false;
-    moveShip(getLocalTranslation().clone().add(0, 0, -moveFactor * tpf));
+    moveShip(getLocalTranslation().clone().add(0, 0, -speed * tpf));
   }
 
   /**
@@ -318,7 +311,7 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
   public void destroy() {
     super.destroy();
     incLives(-1);
-    game.getUpdateables().addFireExplosion(new FireExplosion(game, getLocalTranslation()));
+    game.getEntities().add(new FireExplosion(game, getLocalTranslation()));
   }
 
   @Override
@@ -339,10 +332,10 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
     if (!enableLeftJet) {
       enableLeftJet = true;
       leftJet.setCullHint(CullHint.Never);
-      moveFactor *= 1.3f;
+      speed += speedUp;
     } else if (!enableRightJet) {
       enableRightJet = true;
-      moveFactor *= 1.3f;
+      speed += speedUp;
       rightJet.setCullHint(CullHint.Never);
     }
   }
@@ -354,10 +347,10 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
     if (enableLeftJet) {
       enableLeftJet = false;
       leftJet.setCullHint(CullHint.Always);
-      moveFactor *= 0.7f;
+      speed -= speedUp;
     } else if (enableRightJet) {
       enableRightJet = false;
-      moveFactor *= 0.7f;
+      speed -= speedUp;
       rightJet.setCullHint(CullHint.Always);
     }
   }
@@ -392,11 +385,12 @@ public class Ship extends AbstractNode implements IDamageTaker, ICoinTaker, IDes
   public void reInit() {
     active = true;
     health = MAX_HEALTH;
-    moveFactor = 10f;
+    speed = 10f;
 
     game.getRootNode().attachChild(this);
     setLocalTranslation(new Vector3f(0, 0, game.getCamera().getLocation().z + 10f));
     addLight();
+    speed = startSpeed;
   }
 
   public void setLives(int lives) {

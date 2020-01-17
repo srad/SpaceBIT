@@ -1,13 +1,13 @@
-package com.github.srad.spacebit.nodes.screens;
+package com.github.srad.spacebit.nodes.screens.hud;
 
+import com.github.srad.spacebit.game.Game;
+import com.github.srad.spacebit.nodes.entities.AbstractNode;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Quad;
-import com.github.srad.spacebit.game.Game;
-import com.github.srad.spacebit.nodes.entity.AbstractNode;
 
 import java.util.ArrayList;
 
@@ -15,6 +15,8 @@ public class HealthBar extends AbstractNode {
 
   private final int HEALTHBAR_WIDTH = 275;
   private final int HEALTHBAR_HEIGHT = 30;
+
+  private final float startX = 20f;
 
   private Geometry fg;
   private Geometry bg;
@@ -35,6 +37,7 @@ public class HealthBar extends AbstractNode {
 
     bg = new Geometry("healthbar_bg", quad);
     bg.setMaterial(m_bg);
+    bg.move(startX, game.getSettings().getHeight() - 110f, 0);
 
     attachChild(bg);
 
@@ -45,7 +48,7 @@ public class HealthBar extends AbstractNode {
 
     fg = new Geometry("healthbar_fg", quad.clone());
     fg.setMaterial(m_fg);
-    fg.move(0, 0.1f, 0);
+    fg.move(startX, game.getSettings().getHeight() - 110f, 0);
 
     attachChild(fg);
 
@@ -53,7 +56,7 @@ public class HealthBar extends AbstractNode {
     health = new BitmapText(game.getGuiFont(), false);
     health.setSize(game.getGuiFont().getCharSet().getRenderedSize() * 1.5f);      // font size
     health.setColor(ColorRGBA.White);                             // font color
-    health.setLocalTranslation(0, -5, 0.1f); // position
+    health.setLocalTranslation(startX, game.getSettings().getHeight() - 130f, 0.1f); // position
 
     attachChild(health);
   }

@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.github.srad.spacebit.interfaces.IDestroyable;
 import com.github.srad.spacebit.interfaces.IScoreGiver;
@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class WarpCore extends AbstractNode implements IDestroyable, IScoreGiver {
-
-  Random random;
 
   public WarpCore(Game game) {
     super(game);

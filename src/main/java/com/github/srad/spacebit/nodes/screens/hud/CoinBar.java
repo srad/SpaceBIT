@@ -1,5 +1,6 @@
-package com.github.srad.spacebit.nodes.screens;
+package com.github.srad.spacebit.nodes.screens.hud;
 
+import com.github.srad.spacebit.nodes.screens.AbstractScreen;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
@@ -17,6 +18,7 @@ public class CoinBar extends AbstractScreen {
 
   private final int COIN_WIDTH = 37;
   private final int COIN_HEIGHT = 35;
+  private final float startX = 40f;
 
   private Geometry goldCoins;
   private Geometry greyCoins;
@@ -50,7 +52,7 @@ public class CoinBar extends AbstractScreen {
     coins = new BitmapText(game.getGuiFont(), false);
     coins.setSize(game.getGuiFont().getCharSet().getRenderedSize() * 1.5f);      // font size
     coins.setColor(ColorRGBA.White);                             // font color
-    coins.setLocalTranslation(0, -5, 0.1f); // position
+    coins.setLocalTranslation(startX, game.getSettings().getHeight() - 130f, 0.1f); // position
 
     attachChild(coins);
   }
@@ -66,14 +68,14 @@ public class CoinBar extends AbstractScreen {
     // Make couple more
     for (; counter < goldCoinCount; counter += 1) {
       Geometry temp_gold_coin = goldCoins.clone();
-      temp_gold_coin.move(counter * 20, 0, counter * -0.1f);
+      temp_gold_coin.move(startX + counter * 20, game.getSettings().getHeight() - 110f, counter * -0.1f);
       coinsNode.attachChild(temp_gold_coin);
     }
 
     // Grey coins
     for (; counter < 10; counter += 1) {
       Geometry temp_grey_coin = greyCoins.clone();
-      temp_grey_coin.move(counter * 20, 0, counter * -0.1f);
+      temp_grey_coin.move(startX + counter * 20, game.getSettings().getHeight() - 110f, counter * -0.1f);
       coinsNode.attachChild(temp_grey_coin);
     }
 

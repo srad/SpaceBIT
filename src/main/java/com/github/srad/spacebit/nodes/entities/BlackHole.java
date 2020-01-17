@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.github.srad.spacebit.interfaces.IDamageMaker;
 import com.jme3.effect.ParticleEmitter;
@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class BlackHole extends AbstractNode implements IDamageMaker {
-
-  Random random;
 
   public BlackHole(Game game) {
     super(game);

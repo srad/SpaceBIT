@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;

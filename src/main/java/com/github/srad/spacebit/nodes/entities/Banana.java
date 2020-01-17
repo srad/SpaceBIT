@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.github.srad.spacebit.interfaces.ICollidable;
 import com.github.srad.spacebit.interfaces.IDamageMaker;
@@ -52,7 +52,7 @@ public class Banana extends AbstractNode implements ICollidable, IDamageMaker, I
   @Override
   public ArrayList<AbstractNode> collidesWith() {
     ArrayList<AbstractNode> nodes = new ArrayList<AbstractNode>();
-    nodes.addAll(game.getUpdateables().getLasers());
+    nodes.addAll(game.getEntities().getType(Laser.class));
     nodes.add(game.getShip());
 
     return nodes;
@@ -75,7 +75,7 @@ public class Banana extends AbstractNode implements ICollidable, IDamageMaker, I
   @Override
   public void destroy() {
     super.destroy();
-    game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, getLocalTranslation()));
+    game.getEntities().add(new ShockWaveExplosion(game, getLocalTranslation()));
   }
 
   @Override

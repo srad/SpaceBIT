@@ -15,12 +15,12 @@ public class SpaceBit {
 
       java.util.logging.Logger.getLogger("com.jme3").setLevel(java.util.logging.Level.OFF);
 
-      SettingsHelper settingsHelper = new SettingsHelper();
-      GameSettings gameSettings = settingsHelper.getGameSettings();
+      final var settingsHelper = new SettingsHelper();
+      final var gameSettings = settingsHelper.getGameSettings();
       game = getInstance(settingsHelper);
 
-      AppSettings settings = new AppSettings(true);
-      //settings.setSettingsDialogImage("splash.png");
+      final var settings = new AppSettings(true);
+      settings.setSettingsDialogImage("screens/splash.png");
       settings.setResolution(gameSettings.gethResolution(), gameSettings.getvResolution());
       settings.setVSync(gameSettings.isEnableVSync());
       settings.setFullscreen(gameSettings.isFullScreen());
@@ -31,6 +31,7 @@ public class SpaceBit {
       game.setSettings(settings);
       game.start();
     } catch (Exception e) {
+      e.printStackTrace();
       LogHelper.getLogger().error(e.getMessage());
     }
   }

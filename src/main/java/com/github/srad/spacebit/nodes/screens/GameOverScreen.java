@@ -11,7 +11,7 @@ import com.github.srad.spacebit.game.Game;
 public class GameOverScreen extends AbstractScreen implements ActionListener {
 
   Picture background;
-  float timer;
+  float time;
   private BitmapText keys;
 
   public GameOverScreen(Game game) {
@@ -22,7 +22,7 @@ public class GameOverScreen extends AbstractScreen implements ActionListener {
   protected void init() {
     super.init();
 
-    timer = 0f;
+    time = 0f;
 
     background = new Picture("GameOver");
 

@@ -1,9 +1,9 @@
 package com.github.srad.spacebit.nodes.screens;
 
-import com.jme3.ui.Picture;
 import com.github.srad.spacebit.audio.GameMusic;
 import com.github.srad.spacebit.enums.GameLevel;
 import com.github.srad.spacebit.game.Game;
+import com.jme3.ui.Picture;
 
 public class LoadScreen extends AbstractScreen {
 
@@ -51,7 +51,7 @@ public class LoadScreen extends AbstractScreen {
       game.getShip().setScore(0);
       game.getShip().setLives(2);
       game.getShip().setCoins(0);
-      game.getUpdateables().destroyObstacles();
+      game.getEntities().destroyObstacles();
     }
     game.getTimer().reset();
 

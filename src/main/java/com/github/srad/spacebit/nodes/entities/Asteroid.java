@@ -1,4 +1,4 @@
-package com.github.srad.spacebit.nodes.entity;
+package com.github.srad.spacebit.nodes.entities;
 
 import com.github.srad.spacebit.interfaces.IDamageMaker;
 import com.github.srad.spacebit.interfaces.IDamageTaker;
@@ -15,7 +15,6 @@ import java.util.Random;
 
 public class Asteroid extends AbstractNode implements IDamageMaker, IDamageTaker, IScoreGiver, IDestroyable {
 
-  private Random random;
   private int health;
   private float scale;
 
@@ -91,7 +90,7 @@ public class Asteroid extends AbstractNode implements IDamageMaker, IDamageTaker
   @Override
   public void destroy() {
     super.destroy();
-    game.getUpdateables().addShockWaveExplosion(new ShockWaveExplosion(game, getLocalTranslation()));
+    game.getEntities().add(new ShockWaveExplosion(game, getLocalTranslation()));
   }
 
   @Override

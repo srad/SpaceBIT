@@ -2,7 +2,7 @@ package com.github.srad.spacebit.nodes.screens;
 
 import com.jme3.input.InputManager;
 import com.github.srad.spacebit.game.Game;
-import com.github.srad.spacebit.nodes.entity.AbstractNode;
+import com.github.srad.spacebit.nodes.entities.AbstractNode;
 
 import java.util.ArrayList;
 

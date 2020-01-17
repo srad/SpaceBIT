@@ -1,7 +1,7 @@
-package com.github.srad.spacebit.nodes.screens;
+package com.github.srad.spacebit.nodes.screens.hud;
 
 import com.github.srad.spacebit.game.Game;
-import com.github.srad.spacebit.nodes.entity.AbstractNode;
+import com.github.srad.spacebit.nodes.entities.AbstractNode;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
@@ -16,6 +16,8 @@ public class HeartBar extends AbstractNode {
 
   private final int COIN_WIDTH = 40;
   private final int COIN_HEIGHT = 35;
+
+  private final float startX = 60f;
 
   private Geometry heartGeometry;
   private Node heartsNode;
@@ -42,7 +44,7 @@ public class HeartBar extends AbstractNode {
     hearts = new BitmapText(game.getGuiFont(), false);
     hearts.setSize(game.getGuiFont().getCharSet().getRenderedSize() * 1.5f);      // font size
     hearts.setColor(ColorRGBA.White);                             // font color
-    hearts.setLocalTranslation(0, -5, 0.1f); // position
+    hearts.setLocalTranslation(startX, game.getSettings().getHeight() - 120f, 0.1f); // position
 
     attachChild(hearts);
   }
@@ -54,7 +56,7 @@ public class HeartBar extends AbstractNode {
 
     for (int i = 0; i < game.getShip().getLives(); i += 1) {
       Geometry temp_heart = heartGeometry.clone();
-      temp_heart.move(i * 20, 0, i * -0.1f);
+      temp_heart.move(startX + i * 20, game.getSettings().getHeight() - 110f, i * -0.1f);
       heartsNode.attachChild(temp_heart);
     }
 

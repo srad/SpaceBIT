@@ -4,7 +4,7 @@ import com.github.srad.spacebit.audio.GameMusic;
 import com.github.srad.spacebit.enums.GameLevel;
 import com.github.srad.spacebit.helpers.LogHelper;
 import com.github.srad.spacebit.helpers.SettingsHelper;
-import com.github.srad.spacebit.nodes.entity.Ship;
+import com.github.srad.spacebit.nodes.entities.Ship;
 import com.github.srad.spacebit.nodes.screens.*;
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapFont;
@@ -69,7 +69,7 @@ public class Game extends SimpleApplication {
 
   private GameMusic gameMusic = null;
 
-  Updateables updateables;
+  Entities entities;
 
   private float timer;
 
@@ -122,7 +122,7 @@ public class Game extends SimpleApplication {
     addEffects();
 
     initLight();
-    updateables = new Updateables(this);
+    entities = new Entities(this);
   }
 
   private void addEffects() {
@@ -212,7 +212,7 @@ public class Game extends SimpleApplication {
           if (level == GameLevel.LEVEL_ONE) {
             ship.setScore(0);
             getTimer().reset();
-            updateables.destroyObstacles();
+            entities.destroyObstacles();
             getGameMusic().stop();
             level = GameLevel.LEVEL_TWO;
             loadScreen.show();
@@ -237,7 +237,7 @@ public class Game extends SimpleApplication {
             gameOverScreen.show();
             running = false;
           } else {
-            updateables.destroyObstacles();
+            entities.destroyObstacles();
             toggleLSEffect();
             ship.reInit();
             timer = 0f;
@@ -247,7 +247,7 @@ public class Game extends SimpleApplication {
       // SHIP END
 
       // Update all entities
-      updateables.update(tpf);
+      entities.update(tpf);
 
       // Move cam
       cam.setLocation(cam.getLocation().add(0, 0, SCROLL_SPEED * tpf));
@@ -287,8 +287,8 @@ public class Game extends SimpleApplication {
     return guiFont;
   }
 
-  public Updateables getUpdateables() {
-    return updateables;
+  public Entities getEntities() {
+    return entities;
   }
 
   public GameLevel getLevel() {
