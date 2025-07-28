@@ -49,7 +49,7 @@ repositories {
 }
 
 // Define a constant for JMonkeyEngine version for easy management
-val jme3Version = "3.2.4-stable"
+val jme3Version = "3.9.0-alpha2"
 // Define a constant for JMonkeyEngine group for easy management
 val jme3Group = "org.jmonkeyengine"
 
@@ -80,15 +80,13 @@ dependencies {
     implementation(kotlin("reflect")) // Kotlin reflection library
 
     // Logging dependency
-    implementation("org.apache.logging.log4j:log4j-core:2.13.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.17.1")
 
     // JMonkeyEngine dependencies
     // 'implementation' for compile-time and runtime dependencies
     // 'runtimeOnly' for dependencies only needed at runtime
     implementation("$jme3Group:jme3-core:$jme3Version")
     implementation("$jme3Group:jme3-effects:$jme3Version")
-    implementation("$jme3Group:jme3-bullet:$jme3Version")
-    implementation("$jme3Group:jme3-bullet-native:$jme3Version")
     implementation("$jme3Group:jme3-jogg:$jme3Version")
     runtimeOnly("$jme3Group:jme3-desktop:$jme3Version")
     runtimeOnly("$jme3Group:jme3-lwjgl:$jme3Version")
